@@ -15,3 +15,4 @@ Wlog - World Log erstelle deinen individuellen Reiseblog und teile diesen in ein
 | Sascha Schörnick | ss486  | matNr      |
 
 wir sind ein Trupp aus 6 MI Studenten die sich momentan alle im 4 Semester befinden
+asdf
