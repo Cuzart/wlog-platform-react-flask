@@ -11,8 +11,7 @@ Wlog - World Log erstelle deinen individuellen Reiseblog und teile diesen in ein
 | Chris Heinz      | ch148  | matNr      |
 | Jonas Leitner    | jl121  | 37427      |
 | Peter Orbok      | po012  | matNr      |
-| Peter Orbok      | po012  | matNr      |
 | Salome Wecks     | sw193  | matNr      |
-| Sascha Schörnick | sw193  | matNr      |
+| Sascha Schörnick | ss486  | matNr      |
 
 wir sind ein Trupp aus 6 MI Studenten die sich momentan alle im 4 Semester befinden
