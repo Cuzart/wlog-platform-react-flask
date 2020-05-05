@@ -1,8 +1,7 @@
 # Wlog
 
----
-
-_Beschreibung_: Wlog - World Log erstelle deinen individuellen Reiseblog und teile diesen in einer interaktiven Karte mit anderen Nutzern. Verfolge die Reisen anderer und lasse dich von ihren Erlebnissen inspirieren.
+**Beschreibung**:
+Wlog - World Log erstelle deinen individuellen Reiseblog und teile diesen in einer interaktiven Karte mit anderen Nutzern. Verfolge die Reisen anderer und lasse dich von ihren Erlebnissen inspirieren.
 
 ## Das Team
 
