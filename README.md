@@ -23,7 +23,7 @@ $ cd wlog
 $ docker-compose up
 ```
 
-Das **frontend** ist auf Port `3000` gemappt. Die **api** befindet sich auf Port `5000`. Um das entsprechende Projekt anzuschauen öffne einen Browser deiner Wahl und gebe http://localhost:<PORT>/ ein.
+Das **frontend** ist auf Port `3000` gemappt. Die **api** befindet sich auf Port `5000`. Um das entsprechende Projekt anzuschauen öffne einen Browser deiner Wahl und gebe `http://localhost:<PORT>/` ein.
 
 ## Development
 
@@ -33,7 +33,7 @@ Für den Fall, dass man in den Container schauen muss kann man eine Shell `sh` �
 
 ```bash
 $ docker-compose exec [frontend|api] sh
-\# exit
+# exit
 ```
 
 **LLLLLLLets GO!!**
