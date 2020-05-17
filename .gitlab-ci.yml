@@ -1,0 +1,20 @@
+
+stages:
+    - test
+
+test_f:
+    stage: test
+    script: 
+        - yarn
+        - CI=true yarn test
+#test_b:
+#    image: python:latest
+#    stage: test
+#    before_script:
+#        python -V
+#        pip install virtualenv
+#        virtualenv venv
+#        source env/bin/activate
+#    script:
+#        pip install flask
+#        python test.py
