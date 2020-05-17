@@ -10,7 +10,7 @@ COPY package*.json ./
 RUN npm install
 
 # Copies everything over to Docker environment
-COPY . .
+#COPY . .
 
 # Finally runs the application
 CMD [ "npm", "start" ]
