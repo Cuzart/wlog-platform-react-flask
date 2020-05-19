@@ -1,6 +1,0 @@
-docker-compose exec frontend sh
-
-um docker shell zu öffnen im wlog-ordner 
-und components zu installieren in node-modules
-z.B. npm install express 
-damit alle das haben
