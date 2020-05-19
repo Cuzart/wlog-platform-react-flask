@@ -1,13 +1,14 @@
-import mariadb
+from mariadb import Connector
 
 
-class user:
+class User:
 
-    db = mariadb.connect()
+    db = Connector.connect()
     cursor = db.cursor(prepared=True)
     insertSql = """INSERT INTO users
                     (username, email, password, name, surname, description, profilpicture) 
                     VALUES (%s, %s, %s, %s, %s, %s, %s)"""
+    selectSql = "SELECT * FROM users WHERE id = 10"
 
     def __init__(self, username, email, password, name, surname):
         self.id = None
@@ -30,11 +31,14 @@ class user:
         val = (self.username, self.email, self.password, self.name,
                self.surname, self.description, self.profilpicture)
 
-        user.cursor.execute(user.insertSql, val)
-        user.db.commit()
-        self.id = user.cursor.lastrowid
+        User.cursor.execute(User.insertSql, val)
+        User.db.commit()
+        self.id = User.cursor.lastrowid
         return self.id
 
     @staticmethod
     def get(id):
-        pass
+        val = (id,)
+        User.cursor.execute(User.selectSql, val)
+        result = User.cursor.fetchone()
+        return result
