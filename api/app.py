@@ -1,17 +1,18 @@
-from flask import Flask, url_for
+from flask import Flask, url_for, request, jsonify
 from markupsafe import escape
 import json
 
 from db.user import User
-#import db.user as user
 
 app = Flask(__name__)
-#db = mariadb.connect()
 
 
 @app.route('/')
 def index():
-    return "<h1>Wlog</h1><p>First setup works!!</p>"
+    return """<h1>Wlog</h1><p>Coding..</p>
+            <div><a href="/agilTest">Testseite Agil</a></div><br>
+            <div><a href="/jonasTest">Testseite Jonas</a></div>
+            """
 
 
 @app.route('/hello/<name>')
@@ -19,15 +20,19 @@ def hello(name):
     return "moin wie gehts dir " + name
 
 
-@app.route('/dbtest/get/<id>')
-def dbGet(id):
-    return json.dumps(User.get(id)[1])
+@app.route('/profil/<int:id>')
+def getUser(id):
+    return jsonify(User.get(id))
 
 
-@app.route('/dbtest/add')
-def dbAdd():
-    user = User("Walter32", "walter.maier@gmail.com",
-                "passwort22", "Walter", "Meier")
-    #user.description = "bliblablub"
-    #user.profilpicture = "pp_peter224"
-    return str(user.insert())
+@app.route('/register', methods=["POST"])
+def register():
+    if request.is_json:
+        userData = request.get_json()
+
+    # check userData somehow..
+    user = User(userData["username"], userData["email"],
+                userData["password"], userData["name"], userData["surname"])
+    app.logger.debug(type(user.id))
+    user.save()
+    return "worked", 200
