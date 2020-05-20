@@ -3,12 +3,12 @@ from mariadb import Connector
 
 class User:
 
-    db = Connector.connect()
-    cursor = db.cursor(prepared=True)
+    __db = Connector.connect()
+    cursor = __db.cursor(prepared=True)
     insertSql = """INSERT INTO users
                     (username, email, password, name, surname, description, profilpicture) 
                     VALUES (%s, %s, %s, %s, %s, %s, %s)"""
-    selectSql = "SELECT * FROM users WHERE id = 10"
+    selectSql = "SELECT * FROM users WHERE id = %s"
 
     def __init__(self, username, email, password, name, surname):
         self.id = None
@@ -22,7 +22,7 @@ class User:
         self.createdAt = None
 
     def save(self):
-        if id is None:
+        if self.id is None:
             return self.insert()
         else:
             return self.update()
@@ -32,13 +32,15 @@ class User:
                self.surname, self.description, self.profilpicture)
 
         User.cursor.execute(User.insertSql, val)
-        User.db.commit()
+        User.__db.commit()
         self.id = User.cursor.lastrowid
         return self.id
 
     @staticmethod
     def get(id):
+        cursor = User.__db.cursor(dictionary=True)
         val = (id,)
-        User.cursor.execute(User.selectSql, val)
-        result = User.cursor.fetchone()
+        cursor.execute(User.selectSql, val)
+        result = cursor.fetchall()
+        cursor.close()
         return result
