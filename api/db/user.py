@@ -1,5 +1,7 @@
 from mariadb import Connector
 
+"""eine user klasse"""
+
 
 class User:
 
