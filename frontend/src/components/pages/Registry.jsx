@@ -33,56 +33,59 @@ class Registry extends React.Component {
   // register form
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <div>
-          <label htmlFor="username">Username</label>
-          <input
-            type="text"
-            placeholder="Username"
-            name="username"
-            onChange={this.handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="email">E-Mail</label>
-          <input
-            type="text"
-            placeholder="E-Mail"
-            name="email"
-            onChange={this.handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            type="text"
-            placeholder="Password"
-            name="password"
-            onChange={this.handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            placeholder="Name"
-            name="name"
-            onChange={this.handleChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="surname">Surname</label>
-          <input
-            type="text"
-            placeholder="Surname"
-            name="surname"
-            onChange={this.handleChange}
-          />
-        </div>
-        <div>
-          <button type="submit"> Register</button>
-        </div>
-      </form>
+      <div>
+        <div>Registry</div>
+        <form onSubmit={this.handleSubmit}>
+          <div>
+            <label htmlFor="username">Username</label>
+            <input
+              type="text"
+              placeholder="Username"
+              name="username"
+              onChange={this.handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="email">E-Mail</label>
+            <input
+              type="text"
+              placeholder="E-Mail"
+              name="email"
+              onChange={this.handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="password">Password</label>
+            <input
+              type="text"
+              placeholder="Password"
+              name="password"
+              onChange={this.handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="name">Name</label>
+            <input
+              type="text"
+              placeholder="Name"
+              name="name"
+              onChange={this.handleChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="surname">Surname</label>
+            <input
+              type="text"
+              placeholder="Surname"
+              name="surname"
+              onChange={this.handleChange}
+            />
+          </div>
+          <div>
+            <button type="submit"> Register</button>
+          </div>
+        </form>
+      </div>
     );
   }
 }
