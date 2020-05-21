@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Header from "./components/layout/Header";
 import Registry from "./components/pages/Registry";
-import "./App.css";
 import Login from "./components/Login";
+import "./App.css";
 
 class App extends Component {
   render() {
