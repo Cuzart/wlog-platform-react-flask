@@ -25,14 +25,15 @@ def getUser(id):
     return jsonify(User.get(id))
 
 
-@app.route('/register', methods=["POST"])
+@app.route('/registry', methods=["POST"])
 def register():
-    if request.is_json:
-        userData = request.get_json()
+    if not request.is_json:
+        app.logger.info(request)
+        return "Could not handle request", 400
 
+    userData = request.get_json()
     # check userData somehow..
     user = User(userData["username"], userData["email"],
                 userData["password"], userData["name"], userData["surname"])
-    app.logger.debug(type(user.id))
     user.save()
-    return "worked", 200
+    return "successfully registerd"
