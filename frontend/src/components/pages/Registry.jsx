@@ -1,5 +1,5 @@
 import React from "react";
-//import axios from "axios";
+import axios from "axios";
 
 class Registry extends React.Component {
   constructor(props) {
@@ -19,7 +19,7 @@ class Registry extends React.Component {
     event.preventDefault();
     let user = this.state;
     console.log(user);
-    //axios.post("api:5000/registry", user).then((res) => console.log(res));
+    axios.post("/registry", user).then((res) => console.log(res));
   };
 
   // updates state object when form is changed
