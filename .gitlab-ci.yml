@@ -1,21 +1,14 @@
-image: node:12.14.0
-
 stages:
+    - build
     - test
-
-test_f:
+build:
+    stage: build
+    script:
+        - echo "Building"
+        - mkdir build
+        - touch build/info.txt
+test:
     stage: test
-    script: 
-        - yarn
-        - CI=true yarn test
-#test_b:
-#    image: python:latest
-#    stage: test
-#    before_script:
-#        python -V
-#        pip install virtualenv
-#        virtualenv venv
-#        source env/bin/activate
-#    script:
-#        pip install flask
-#        python test.py
+    script:
+        - echo "Testing"
+        - test -f "build/info.txt"
