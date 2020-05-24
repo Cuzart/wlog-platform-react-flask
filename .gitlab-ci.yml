@@ -28,7 +28,8 @@ Test-Backend-to-Wlog:
         - flake8 api/app.py
         - pip install flask-lint
         - pip run flask-lint
-    only: branches
+    only: 
+        - branches
 #Deploy-Backend-to-Wlog:
 #BuildFrontend-to-Wlog:
 #Test-Frontend-to-Wlog:
