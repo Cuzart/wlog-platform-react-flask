@@ -1,17 +1,35 @@
+variables:
+    APP_NAME_FRONTEND: frontend
+    APP_NAME_BACKEND: api
+
 stages:
     - build
     - test
-build:
+    - deploy
+Build-Backend-to-Wlog:
+    image: python:2.7
     stage: build
     script:
         - echo "Building"
-        - mkdir build
-        - touch build/info.txt
+        - pip install -r api/requirements.txt -t api/
     artifacts:
         paths:
-            - build/
-test:
+            - api/
+            - test_b/
+Test-Backend-to-Wlog:
+    image: python:2.7
     stage: test
     script:
         - echo "Testing"
-        - test -f "build/info.txt"
+        - pip install -r api/requirements.txt
+        #- pip install nose2
+        #- nose2 -v 
+        - pip install flake8
+        - flake8 api/app.py
+        - pip install flask-lint
+        - pip run flask-lint
+    only: branches
+#Deploy-Backend-to-Wlog:
+#BuildFrontend-to-Wlog:
+#Test-Frontend-to-Wlog:
+#Deploy-Frontend-to-Wlog:
