@@ -1,4 +1,4 @@
-from mariadb import Connector
+from .mariadb import Connector
 
 """eine user klasse"""
 
