@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request, jsonify
+from flask import Flask, url_for, request, jsonify, render_template
 from markupsafe import escape
 import json
 
@@ -9,15 +9,12 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return """<h1>Wlog</h1><p>Coding..</p>
-            <div><a href="/agilTest">Testseite Agil</a></div><br>
-            <div><a href="/jonasTest">Testseite Jonas</a></div>
-            """
+    return render_template('home.html')
 
 
-@app.route('/hello/<name>')
+@app.route('/<name>Test')
 def hello(name):
-    return "moin wie gehts dir " + name
+    return render_template('{}Test.html'.format(name))
 
 
 @app.route('/profil/<int:id>')
@@ -37,3 +34,7 @@ def register():
                 userData["password"], userData["name"], userData["surname"])
     user.save()
     return "successfully registerd"
+
+
+if __name__ == '__main__':
+    app.run()
