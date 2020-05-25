@@ -2,7 +2,7 @@ from flask import Flask, url_for, request, jsonify, render_template
 from markupsafe import escape
 import json
 
-from db.user import User
+from .db.user import User
 
 app = Flask(__name__)
 
