@@ -2,16 +2,16 @@ version: "3"
 
 services:
   api:
-    build: ./api
+    build: ./backend
     expose:
       - 5000
     ports:
       - 5000:5000
     volumes:
-      - ./api:/usr/src/app
+      - ./backend:/usr/src/app
     environment:
       - FLASK_ENV=development
-      - FLASK_APP=app.py
+      - FLASK_APP=api
       - FLASK_DEBUG=1
     depends_on:
       - mariadb
