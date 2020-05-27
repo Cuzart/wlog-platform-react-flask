@@ -1,6 +1,6 @@
 from api.db.mariadb import Connector, MariaDB
 from api import app
-
+import re
 
 """
 Model Class for a user which represents a table row
@@ -19,6 +19,7 @@ class User:
                      surname = %(surname)s, description = %(description)s, profilpicture = %(profilpicture)s 
                      WHERE id = %(id)s"""
     __selectSql = "SELECT * FROM users WHERE id = %(id)s"
+    __deleteSql = "DELETE FROM users WHERE id = %(id)s"
 
     # gets a dict with the needed userData an constructs a user instance
     def __init__(self, userData):
@@ -31,10 +32,36 @@ class User:
         self.description = userData.get("description")
         self.profilpicture = userData.get("profilpicture")
         self.created_at = userData.get("created_at")
+        self.trips = []
+
+    # this method fetches a user out of the database
+    # param: id of user
+    # returns user instance
+    @staticmethod
+    def get(id):
+        try:
+            cursor = User.__db.cursor(dictionary=True)
+            cursor.execute(User.__selectSql, {'id': id})
+            result = cursor.fetchone()
+            if result is None:
+                return None
+            user = User(result)
+            return user
+        except MariaDB.Error as err:
+            app.logger.info("Something went wrong: {}".format(err))
+            raise err
+        except Exception as err:
+            app.logger.info("An error occured: {}".format(err))
+            raise err
+            return None
+        finally:
+            cursor.close()
 
     # returns a dict with all user attributes
     def getDict(self):
-        return self.__dict__
+        userData = self.__dict__
+        userData.pop("trips")
+        return userData
 
     # the save functions saves the user instance into the database
     # if the user already exists it gets updated otherwise inserted
@@ -71,25 +98,31 @@ class User:
         finally:
             cursor.close()
 
-    # this method fetches a user out of the database
-    # param: id of user
-    # returns user instance
-    @staticmethod
-    def get(id):
+    # deletes the user in the DB
+    # returns deleted user.id
+    def delete(self):
         try:
-            cursor = User.__db.cursor(dictionary=True)
-            cursor.execute(User.__selectSql, {'id': id})
-            result = cursor.fetchone()
-            if result is None:
-                return None
-            user = User(result)
-            return user
+            cursor = User.__db.cursor()
+            cursor.execute(User.__deleteSql, {'id': self.id})
+            User.__db.commit()
+            return self.id
         except MariaDB.Error as err:
-            app.logger.info("Something went wrong: {}".format(err))
             raise err
-        except Exception as err:
-            app.logger.info("An error occured: {}".format(err))
-            raise err
-            return None
         finally:
             cursor.close()
+
+    # when the user registers the userData needs to be validated
+    @staticmethod
+    def validateUserInput(userData):
+        emailRegex = "(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+        if len(userData.get("username")) < 3 or len(userData.get("username")) > 20:
+            return False
+        if re.search(emailRegex, userData.get("email")) is None:
+            return False
+        if len(userData.get("password")) < 6:
+            return False
+        if len(userData.get("name")) < 2 or len(userData.get("name")) > 50:
+            return False
+        if len(userData.get("surname")) < 2 or len(userData.get("surname")) > 50:
+            return False
+        return True
