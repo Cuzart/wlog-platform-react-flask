@@ -115,7 +115,9 @@ class User:
     @staticmethod
     def validateUserInput(userData):
         emailRegex = "(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
-        if len(userData.get("username")) < 3 or len(userData.get("username")) > 20:
+        usernameRegex = "([a-zA-Z0-9_\-\.]+)"
+        if len(userData.get("username")) < 3 or len(userData.get("username")) > 20 \
+            re.search(usernameRegex, userData.get("username") is None):
             return False
         if re.search(emailRegex, userData.get("email")) is None:
             return False
