@@ -29,21 +29,28 @@ def getUser(id):
     return user.getDict()
 
 
-@app.route('/registry', methods=["POST"])
+@app.route('/registry', methods=["GET", "POST"])
 def register():
-    if not request.is_json:
-        app.logger.info(request)
-        return "Could not handle request", 400
+    if request.method == "POST":
+        if not request.is_json:
+            app.logger.info(request)
+            return "Could not handle request", 400
 
-    userData = request.get_json()
-    if User.validateUserInput(userData) == False:
-        return "error"
+        userData = request.get_json()
+        error = User.validateUserInput(userData)
+        if len(error) > 0:
+            return ', '.join(error)
 
-    user = User(userData)
-    user.save()
-    return "successfully registerd"
+        user = User(userData)
+        user.save()
+        return "successfully registerd"
+
+    return redirect(url_for("/test"))
 
 
+#
+#
+# Test for uploading images
 @app.route('/upload', methods=["GET", "POST"])
 def upload():
     if request.method == 'POST':
