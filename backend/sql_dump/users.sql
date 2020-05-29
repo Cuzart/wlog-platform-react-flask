@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb
--- Generation Time: May 20, 2020 at 06:05 PM
+-- Generation Time: May 29, 2020 at 02:44 PM
 -- Server version: 10.4.13-MariaDB-1:10.4.13+maria~bionic
 -- PHP Version: 7.4.5
 
@@ -44,12 +44,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `name`, `surname`, `description`, `profilpicture`, `created_at`) VALUES
-(1, 'traveljunkie', 'jl121@hdm-stuttgart.de', '12345', 'Jonas', 'Leitner', 'Gerne am erkunden', NULL, '2020-05-17 20:21:32'),
-(2, 'bobi', 'mai212l@gmail.com', 'af3idf9fd', 'Bob', 'Baumeister', NULL, NULL, '2020-05-17 20:26:29'),
-(4, 'peter224', 'peter.schwarz@gmail.com', '324323dd', 'Peter', 'Schwarz', 'bliblablub', 'pp_peter224', '2020-05-17 20:30:02'),
-(5, 'hans', 'mail@gmail.com', 'passwort', 'Hans', 'Wurscht', NULL, NULL, '2020-05-19 09:17:58'),
-(10, 'Walter32', 'walter.maier@gmail.com', 'passwort22', 'Walter', 'Meier', NULL, NULL, '2020-05-19 10:19:04'),
-(11, 'MaxMuster', 'max.mustermann@gmail.com', '1234', 'Max', 'Mustermann', NULL, NULL, '2020-05-20 18:03:09');
+(1, 'traveljunkie', 'user@mail.com', '$5$rounds=535000$ssmNsr0B3jQsPcVv$VvPBFRftlfQ79mi9CWkSvLGpoKpwGX11qP54v49hp64', 'Max', 'Mustermann', NULL, NULL, '2020-05-29 14:40:13'),
+(2, 'bim-bo', 'bimbo@gmail.com', '$5$rounds=535000$9Bz/ZdGEtMMMWybc$tL8mEihSaM.egFB5dyxIThOLYGsptOVep1NvoBqXSdA', 'Bim', 'Booo', NULL, NULL, '2020-05-29 14:42:18'),
+(3, 'Jimyy', 'jim.knopf@tortuga.at', '$5$rounds=535000$/dBVVD.cbvxMWgUP$U6Yd0nmSsCtxH6vJUmfRcSUTLPAXw.sCj0Z1CO.3JS9', 'Jim', 'Knopf', NULL, NULL, '2020-05-29 14:43:29');
 
 --
 -- Indexes for dumped tables
@@ -70,7 +67,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

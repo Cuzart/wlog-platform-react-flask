@@ -1,0 +1,3 @@
+FLASK==1.1
+mysql-connector==2.2.9
+passlib==1.7.2
