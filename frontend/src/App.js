@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Header from "./components/layout/Header";
 import Registry from "./components/pages/Registry";
-import Login from "./components/Login";
+import Home from "./components/pages/Home";
 import "./App.css";
 
 class App extends Component {
@@ -10,11 +10,11 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-          <div className="container">
-            <Header />
-            <Route exact path="/" component={Login} />
-            <Route path="/registry" component={Registry} />
-          </div>
+          <Header />
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route exact path="/registry" component={Registry} />
+          </Switch>
         </div>
       </Router>
     );
