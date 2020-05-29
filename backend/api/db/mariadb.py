@@ -1,14 +1,15 @@
 import mysql.connector as MariaDB
 from api import app
 
-'''
-Class to connect to the MariaDB
-It saves the connection so that the connection 
-does not have to be established for each query 
-'''
 
 
 class Connector:
+    '''
+    Class to connect to the MariaDB
+    It saves the connection so that the connection 
+    does not have to be established for each query 
+    '''
+
     __dbConnection = None
 
     @staticmethod
