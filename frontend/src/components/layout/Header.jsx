@@ -1,31 +1,52 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+//import styled from "styled-components";
+import "../../App.css";
 
 function Header() {
   return (
-    <header style={headerStyle}>
-      <h1>wlog</h1>
-      <Link style={linkStyle} to="/">
-        Home
-      </Link>{" "}
-      |{" "}
-      <Link style={linkStyle} to="/registry">
-        Registry
-      </Link>
-    </header>
+    <div>
+      <header id="navbar">
+        <NavLink exact to="/" activeClassName="nav-link-active">
+          HOME
+        </NavLink>
+        <NavLink to="/feed" activeClassName="nav-link-active">
+          EXPLORE
+        </NavLink>
+        <NavLink exact to="/" activeClassName="nav-link-active">
+          <img src="/images/wlogLogo.png" alt="logo"></img>
+        </NavLink>
+        <NavLink
+          exact
+          className="nav-link"
+          activeClassName="nav-link-active"
+          to="/registry"
+        >
+          REGISTRY
+        </NavLink>
+        <NavLink
+          exact
+          className="nav-link"
+          activeClassName="nav-link-active"
+          to="/profile"
+        >
+          PROFILE
+        </NavLink>
+      </header>
+      <footer style={footerStyle}></footer>
+    </div>
   );
 }
 
-const linkStyle = {
-  color: "#fff",
-  textDecoration: "none",
-};
-
-const headerStyle = {
-  background: "#333",
-  color: "#fff",
+const footerStyle = {
+  position: "fixed",
+  left: "0",
+  bottom: "0",
+  width: "100%",
+  height: "40px",
+  marginTop: "40px",
+  background: "#9EB091",
   textAlign: "center",
-  padding: "10px",
 };
 
 export default Header;
