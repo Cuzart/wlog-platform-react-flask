@@ -10,7 +10,6 @@ class Registry extends React.Component {
       password: "",
       name: "",
       surname: "",
-      changed: false,
     };
   }
 
@@ -27,17 +26,15 @@ class Registry extends React.Component {
     let nam = event.target.name;
     let val = event.target.value;
     this.setState({ [nam]: val });
-    this.setState({ changed: true });
   };
 
   // register form
   render() {
     return (
-      <div>
-        <div>Registry</div>
+      <div style={registryForm}>
+        <div style={captionStyle}>Registry</div>
         <form onSubmit={this.handleSubmit}>
           <div>
-            <label htmlFor="username">Username</label>
             <input
               type="text"
               placeholder="Username"
@@ -46,7 +43,6 @@ class Registry extends React.Component {
             />
           </div>
           <div>
-            <label htmlFor="email">E-Mail</label>
             <input
               type="text"
               placeholder="E-Mail"
@@ -55,16 +51,14 @@ class Registry extends React.Component {
             />
           </div>
           <div>
-            <label htmlFor="password">Password</label>
             <input
-              type="text"
+              type="password"
               placeholder="Password"
               name="password"
               onChange={this.handleChange}
             />
           </div>
           <div>
-            <label htmlFor="name">Name</label>
             <input
               type="text"
               placeholder="Name"
@@ -73,7 +67,6 @@ class Registry extends React.Component {
             />
           </div>
           <div>
-            <label htmlFor="surname">Surname</label>
             <input
               type="text"
               placeholder="Surname"
@@ -89,5 +82,25 @@ class Registry extends React.Component {
     );
   }
 }
+
+const registryForm = {
+  position: "fixed",
+  height: "300px",
+  width: "225px",
+  top: "50%",
+  left: "50%",
+  // half the height and width to center
+  marginTop: "-150px",
+  marginLeft: "-112px",
+  background: "#9EB091",
+  borderRadius: "8%",
+  textAlign: "center",
+};
+const captionStyle = {
+  fontFamily: "Libre Baskerville , serif",
+  padding: "20px",
+  fontSize: "x-large",
+  color: "#4e564b",
+};
 
 export default Registry;
