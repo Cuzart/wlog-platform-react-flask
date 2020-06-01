@@ -31,3 +31,17 @@ header > a {
 .nav-link-active {
   color: #ffffff;
 }
+
+input.error {
+  border: 2px solid #c45c5c;
+}
+
+input {
+  padding: 3px 3px;
+  border-radius: 5px;
+  outline: none;
+  border: 2px solid #cfcfcf;
+  margin-top: 5px;
+  
+  
+}
