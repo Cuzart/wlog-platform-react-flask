@@ -39,6 +39,11 @@ export class Login extends React.Component {
               Login
             </button>
           </div>
+          <div style={linkStyle}>No Account yet?
+          <br/>
+          <a href="/registry">Register here</a> 
+          </div>
+                   
         </form>
       </div>
     );
@@ -60,6 +65,13 @@ const loginForm = {
   background: "#9EB091",
   borderRadius: "8%",
   textAlign: "center",
+};
+const linkStyle = {
+  
+  fontFamily: "Libre Baskerville , serif",
+  padding: "20px",
+  fontSize: "middle",
+  color: "#4e564b"
 };
 
 export default Login;
