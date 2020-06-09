@@ -37,6 +37,7 @@ class Registry extends React.Component {
         username: "",
         email: "",
         password: "",
+        password2: "",
         name:"",
         surname: ""
       }
@@ -88,6 +89,11 @@ class Registry extends React.Component {
       ? "": "passwords needs 6 characters minimum";
       break;
 
+      case 'password2' : 
+      formErrors.password2 = this.state.password === val
+      ? "" : "passwords need to be equal";
+      break;
+
       case 'name' : 
       formErrors.name = val.length <= 50 && val.length >=2
       ? "": "2-50 characters allowed";
@@ -119,10 +125,9 @@ class Registry extends React.Component {
               name="username"
               onChange={this.handleChange}
             />
-            <div>{formErrors.username.length > 0 && (<span style={errorMessage}>{formErrors.username}</span>)}</div>
+            <div style={errorMessage}>{formErrors.username.length > 0 && (<span >{formErrors.username}</span>)}</div>
             
           </div>
-          <div />
           <div>
             <input
               className={formErrors.email.length > 0 ? "error" : null}
@@ -147,6 +152,17 @@ class Registry extends React.Component {
           </div>
           <div>
             <input
+              className={formErrors.password2.length > 0 ? "error" : null}
+              type="password"
+              placeholder="Password"
+              name="password2"
+              onChange={this.handleChange}
+              
+            />
+            <div>{formErrors.password2.length > 0 && (<span style={errorMessage}>{formErrors.password2}</span>)}</div>
+          </div>
+          <div>
+            <input
               className={formErrors.name.length > 0 ? "error" : null}
               type="text"
               placeholder="Name"
@@ -166,7 +182,7 @@ class Registry extends React.Component {
               
             />
             <div>{formErrors.surname.length > 0 && (<span style={errorMessage}>{formErrors.surname}</span>)}</div>
-          </div>
+         </div> <br/>
           <div>
             <button type="submit"> Register</button>
           </div>
@@ -178,13 +194,13 @@ class Registry extends React.Component {
 
 const registryForm = {
   position: "fixed",
-  height: "350px",
+  height: "440px",
   width: "275px",
   top: "50%",
   left: "50%",
   // half the height and width to center
-  marginTop: "-150px",
-  marginLeft: "-112px",
+  marginTop: "-180px",
+  marginLeft: "-138px",
   background: "#9EB091",
   borderRadius: "8%",
   textAlign: "center",
@@ -201,7 +217,7 @@ const errorMessage = {
   fontFamily: "Segoe UI , serif",
   fontWeight: "bold",
   fontSize: "0.7em",
-  display: "relative"
+  //display: "relative"
 }
 
 
