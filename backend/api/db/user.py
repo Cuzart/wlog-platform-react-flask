@@ -125,13 +125,6 @@ class User(Model):
         userData.pop("trips")
         return userData
 
-    # the save functions saves the user instance into the database
-    # if the user already exists it gets updated otherwise inserted
-    def save(self):
-        if self.id is None:
-            return self.insert()
-        else:
-            return self.update()
 
     # inserts the user instance
     # returns user.id
