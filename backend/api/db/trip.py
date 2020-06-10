@@ -7,10 +7,10 @@ class Trip(Model):
 
 
     __insertSql = """INSERT INTO trips
-                   (user_id, title, description, thumbnail) 
-                   VALUES (%(user_id)s, %(title)s, %(description)s, %(thumbnail)s"""
+                   (user_id, title, country, description, thumbnail) 
+                   VALUES (%(user_id)s, %(title)s, %(country)s %(description)s, %(thumbnail)s"""
     __updateSql = """UPDATE users 
-                     SET title = %(title)s, description = %(thumbnail)s
+                     SET title = %(title)s, country = %(country)s, description = %(thumbnail)s
                      WHERE id = %(id)s"""
     __selectSql = "SELECT * FROM trips WHERE id = %(id)s"
     __deleteSql = "DELETE FROM trips WHERE id = %(id)s"
@@ -18,8 +18,9 @@ class Trip(Model):
     # gets a dict with the needed tripData an constructs a trip instance
     def __init__(self, tripData):
         super().__init__(tripData.get("id"), tripData.get("created_at"))
-        self._userId = tripData.get("user_id")
+        self._user_id = tripData.get("user_id")
         self.title = tripData.get("title")
+        self.country = tripData.get("country")
         self.description = tripData.get("description")
         self.thumbnail = tripData.get("thumbnail")
         self.posts = []
@@ -27,7 +28,7 @@ class Trip(Model):
     ## PROPERTIES ##
 
     @property
-    def userId(self):
+    def user_id(self):
         return self._userId
 
     @property
@@ -39,12 +40,20 @@ class Trip(Model):
         self._title = title
 
     @property
+    def country(self):
+        return self._country
+
+    @country.setter
+    def country(self, country):
+        self._country = country    
+
+    @property
     def description(self):
         return self._description
 
     @description.setter
     def description(self, description):
-        self.description = description
+        self._description = description
 
     @property
     def thumbnail(self):
@@ -87,14 +96,6 @@ class Trip(Model):
 
         tripData.pop("posts")
         return tripData
-
-    # the save functions saves the trip instance into the database
-    # if the trip already exists it gets updated otherwise inserted
-    def save(self):
-        if self.id is None:
-            return self.insert()
-        else:
-            return self.update()
 
     # inserts the user instance
     # returns user.id
