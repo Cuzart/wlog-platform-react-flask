@@ -1,7 +1,9 @@
 import React from "react";
-import axios from "axios";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import FormGroup from "react-bootstrap/FormGroup";
 
-export class Login extends React.Component {
+class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -27,19 +29,27 @@ export class Login extends React.Component {
     return (
       <div style={loginForm}>
         <div style={captionStyle}>login</div>
-        <form onSubmit={this.handleSubmit}>
-          <div>
-            <input type="text" name="username" placeholder="username" />
-          </div>
-          <div>
-            <input type="password" name="password" placeholder="password" />
-          </div>
-          <div>
-            <button type="button" className="btn">
-              Login
-            </button>
-          </div>
-        </form>
+        <Form onSubmit={this.handleSubmit}>
+          <FormGroup>
+            <Form.Label>Username</Form.Label>
+            <Form.Control
+              name="username"
+              type="text"
+              onChange={this.handleChange}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              name="password"
+              type="password"
+              onChange={this.handleChange}
+            />
+          </FormGroup>
+          <Button variant="dark" type="submit">
+            Login
+          </Button>
+        </Form>
       </div>
     );
   }
@@ -55,7 +65,7 @@ const loginForm = {
   position: "absolute",
   height: "300px",
   width: "225px",
-  marginTop: "275px",
+  marginTop: "175px",
   marginLeft: "155px",
   background: "#9EB091",
   borderRadius: "8%",

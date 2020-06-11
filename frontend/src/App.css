@@ -1,5 +1,10 @@
+.App {
+  background-color: #f1f1f1;
+  height: 100%;
+}
+
 .home-bg {
-  background-image: url(/images/wlogBG.jpg) !important;
+  background-image: url(/images/wlogBG.jpg);
   height: 100vh;
   background-position: center;
   background-size: cover;
@@ -7,7 +12,6 @@
 
 /* header navigation bar it's elements */
 #navbar {
-  position: absolute;
   background-color: #9eb091;
   color: #ffffff;
   text-align: center;
@@ -42,6 +46,4 @@ input {
   outline: none;
   border: 2px solid #cfcfcf;
   margin-top: 5px;
-  
-  
 }
