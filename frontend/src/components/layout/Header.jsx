@@ -20,9 +20,9 @@ function Header() {
           exact
           className="nav-link"
           activeClassName="nav-link-active"
-          to="/registry"
+          to="/register"
         >
-          REGISTRY
+          REGISTER
         </NavLink>
         <NavLink
           exact
@@ -39,6 +39,7 @@ function Header() {
 }
 
 const footerStyle = {
+  visibility: "hidden",
   position: "fixed",
   left: "0",
   bottom: "0",
