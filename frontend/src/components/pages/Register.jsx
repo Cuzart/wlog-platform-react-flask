@@ -36,6 +36,7 @@ class Register extends React.Component {
         username: "",
         email: "",
         password: "",
+        password2: "",
         name: "",
         surname: "",
       },
@@ -85,6 +86,11 @@ class Register extends React.Component {
           val.length > 6 ? "" : "passwords needs 6 characters minimum";
         break;
 
+      case "password2":
+        formErrors.password2 =
+          this.state.password === val ? "" : "passwords need to be equal";
+        break;
+
       case "name":
         formErrors.name =
           val.length <= 50 && val.length >= 2 ? "" : "2-50 characters allowed";
@@ -121,7 +127,6 @@ class Register extends React.Component {
               )}
             </div>
           </div>
-          <div />
           <div>
             <input
               className={formErrors.email.length > 0 ? "error" : null}
@@ -147,6 +152,20 @@ class Register extends React.Component {
             <div>
               {formErrors.password.length > 0 && (
                 <span style={errorMessage}>{formErrors.password}</span>
+              )}
+            </div>
+          </div>
+          <div>
+            <input
+              className={formErrors.password2.length > 0 ? "error" : null}
+              type="password"
+              placeholder="Password"
+              name="password2"
+              onChange={this.handleChange}
+            />
+            <div>
+              {formErrors.password2.length > 0 && (
+                <span style={errorMessage}>{formErrors.password2}</span>
               )}
             </div>
           </div>
@@ -189,7 +208,7 @@ class Register extends React.Component {
 
 const registerForm = {
   position: "fixed",
-  height: "350px",
+  height: "440px",
   width: "275px",
   top: "50%",
   left: "50%",
@@ -212,7 +231,7 @@ const errorMessage = {
   fontFamily: "Segoe UI , serif",
   fontWeight: "bold",
   fontSize: "0.7em",
-  display: "relative",
+  //display: "relative"
 };
 
 export default Register;
