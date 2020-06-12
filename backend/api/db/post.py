@@ -2,29 +2,29 @@ from api.db.mariadb import Connector, MariaDB
 from api.db.model import Model
 from api import app
 
+
 class Post(Model):
     """post..."""
 
-
-    __insertSql = """INSERT INTO trips
+    __INSERT_SQL = """INSERT INTO trips
                    (trip_id, subtitle, location_longitude, location_latitude, text, gallery) 
                    VALUES (%(tripId)s, %(subtitle)s, %(location_longitude)s, %(location_latitude)s, %(text)s, %(gallery)s """
-    __updateSql = """UPDATE trips 
+    __UPDATE_SQL = """UPDATE trips 
                      SET subtitle = %(subtitle)s, location_longitude = %(location_longitude)s, 
                          location_latitude = %(location_latitude)s, text = %(text)s, gallery = %(gallery)s 
                      WHERE id = %(id)s"""
-    __selectSql = "SELECT * FROM trips WHERE id = %(id)s"
-    __deleteSql = "DELETE FROM trips WHERE id = %(id)s"
+    __SELECT_SQL = "SELECT * FROM trips WHERE id = %(id)s"
+    __DELETE_SQL = "DELETE FROM trips WHERE id = %(id)s"
 
     # gets a dict with the needed tripData an constructs a trip instance
-    def __init__(self, tripData):
-        super().__init__(tripData.get("id"), tripData.get("created_at"))
-        self._trip_id = tripData.get("trip_id")
-        self.subtitle = tripData.get("subtitle")
-        self.location_longitude = tripData.get("location_longitude")
-        self.location_latitude = tripData.get("location_latitude")
-        self.text = tripData.get("text")
-        self.gallery = tripData.get("gallery")
+    def __init__(self, post_data):
+        super().__init__(post_data.get("id"), post_data.get("created_at"))
+        self._trip_id = post_data.get("trip_id")
+        self.subtitle = post_data.get("subtitle")
+        self.location_longitude = post_data.get("location_longitude")
+        self.location_latitude = post_data.get("location_latitude")
+        self.text = post_data.get("text")
+        self.gallery = post_data.get("gallery")
 
     ## PROPERTIES ##
 
@@ -70,18 +70,16 @@ class Post(Model):
 
     @gallery.setter
     def gallery(self, gallery):
-        self._gallery = gallery        
+        self._gallery = gallery
 
-    
     # this method fetches a post out of the database
     # param: id of post
     # returns post instance
-
     @staticmethod
     def get(id):
         try:
             cursor = Model._db.cursor(dictionary=True)
-            cursor.execute(Post.__selectSql, {'id': id})
+            cursor.execute(Post.__SELECT_SQL, {'id': id})
             result = cursor.fetchone()
             if result is None:
                 return None
@@ -97,20 +95,19 @@ class Post(Model):
             cursor.close()
 
     # returns a dict with all post attributes
-    def getDict(self):
+    def get_dict(self):
         postData = {}
         for property, value in self.__dict__.items():
             postData[property.lstrip("_")] = value
 
         return postData
 
-
     # inserts the post instance
     # returns post.id
     def insert(self):
         try:
             cursor = Model._db.cursor()
-            cursor.execute(Post.__insertSql, self.getDict())
+            cursor.execute(Post.__INSERT_SQL, self.get_dict())
             Model._db.commit()
             self._id = cursor.lastrowid
             return self.id
@@ -124,7 +121,7 @@ class Post(Model):
     def update(self):
         try:
             cursor = Model._db.cursor()
-            cursor.execute(Post.__updateSql, self.getDict())
+            cursor.execute(Post.__UPDATE_SQL, self.get_dict())
             Model._db.commit()
             return self.id
         except MariaDB.Error as err:
@@ -137,7 +134,7 @@ class Post(Model):
     def delete(self):
         try:
             cursor = Model._db.cursor()
-            cursor.execute(Post.__deleteSql, {'id': self.id})
+            cursor.execute(Post.__DELETE_SQL, {'id': self.id})
             Model._db.commit()
             return self.id
         except MariaDB.Error as err:

@@ -22,26 +22,26 @@ def hello(name):
 
 
 @app.route('/profil/<int:id>')
-def getUser(id):
+def get_user(id):
     user = User.get(id)
     if user is None:
         return dict()
-    return user.getDict()
+    return user.get_dict()
 
 
-@app.route('/registry', methods=["GET", "POST"])
+@app.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         if not request.is_json:
             app.logger.info(request)
             return "Could not handle request", 400
 
-        userData = request.get_json()
-        error = User.validateUserInput(userData)
+        user_data = request.get_json()
+        error = User.validate_user_input(user_data)
         if len(error) > 0:
             return ', '.join(error)
 
-        user = User(userData)
+        user = User(user_data)
         user.save()
         return "successfully registerd"
 
