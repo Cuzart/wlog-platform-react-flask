@@ -1,20 +1,23 @@
 from api.db.mariadb import Connector, MariaDB
 from api.db.model import Model
+import json
 from api import app
 
 
 class Post(Model):
     """post..."""
 
-    __INSERT_SQL = """INSERT INTO trips
+    __INSERT_SQL = """INSERT INTO posts
                    (trip_id, subtitle, location_longitude, location_latitude, text, gallery) 
-                   VALUES (%(tripId)s, %(subtitle)s, %(location_longitude)s, %(location_latitude)s, %(text)s, %(gallery)s """
-    __UPDATE_SQL = """UPDATE trips 
+                   VALUES (%(trip_id)s, %(subtitle)s, %(location_longitude)s, %(location_latitude)s, %(text)s, %(gallery)s)"""
+    __UPDATE_SQL = """UPDATE posts 
                      SET subtitle = %(subtitle)s, location_longitude = %(location_longitude)s, 
                          location_latitude = %(location_latitude)s, text = %(text)s, gallery = %(gallery)s 
                      WHERE id = %(id)s"""
-    __SELECT_SQL = "SELECT * FROM trips WHERE id = %(id)s"
-    __DELETE_SQL = "DELETE FROM trips WHERE id = %(id)s"
+    __SELECT_SQL = "SELECT * FROM posts WHERE id = %(id)s"
+    __DELETE_SQL = "DELETE FROM posts WHERE id = %(id)s"
+    __SELECT_ALL_TRIP_POSTS_SQL = "SELECT * FROM posts WHERE trip_id = %(trip_id)s"
+
 
     # gets a dict with the needed tripData an constructs a trip instance
     def __init__(self, post_data):
@@ -30,11 +33,11 @@ class Post(Model):
 
     @property
     def trip_id(self):
-        return self._userId
+        return self._trip_id
 
     @property
     def subtitle(self):
-        return self._title
+        return self._subtitle
 
     @subtitle.setter
     def subtitle(self, subtitle):
@@ -107,7 +110,9 @@ class Post(Model):
     def insert(self):
         try:
             cursor = Model._db.cursor()
-            cursor.execute(Post.__INSERT_SQL, self.get_dict())
+            post_data = self.get_dict()
+            post_data["gallery"] = json.dumps(post_data.get("gallery"))
+            cursor.execute(Post.__INSERT_SQL, post_data)
             Model._db.commit()
             self._id = cursor.lastrowid
             return self.id
