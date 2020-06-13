@@ -5,6 +5,8 @@ import json
 from werkzeug.utils import secure_filename
 # own modules
 from api.db.user import User
+from api.db.trip import Trip
+from api.db.post import Post
 from api.helper import allowed_file
 
 ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -15,44 +17,70 @@ def index():
     return render_template('home.html')
 
 
-# development for testing sites
-@app.route('/test')
-def hello(name):
-    return "hallo"
-
-
-@app.route('/profil/<int:id>')
+@app.route('/profile/<int:id>')
 def get_user(id):
-    user = User.get(id)
-    if user is None:
-        return dict()
-    return user.get_dict()
+    return User.get_profile_data(id)
 
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        if not request.is_json:
-            app.logger.info(request)
-            return "Could not handle request", 400
 
         user_data = request.get_json()
         error = User.validate_user_input(user_data)
         if len(error) > 0:
-            return ', '.join(error)
+            if "Username not available" in error:
+                return {'statusCode': 1, 'status': 'Username not available'}
+            else:
+                # should normally not happen because Fronted validates aswell
+                error_msg = ', '.join(error)
+                app.logger.warning(
+                    "Invalid register post. JSON was not validated: {}".format(error_msg))
+                return {'statusCode': 2, 'status': 'Other error', 'error': error_msg}
 
         user = User(user_data)
         user.save()
-        return "successfully registerd"
+        return {'statusCode': 0, 'status': 'successfully registered'}
 
     return redirect(url_for("/test"))
 
+
+@app.route('/createTrip', methods=["POST"])
+def createTrip():
+    if request.method == "POST":
+        req_data = request.get_json()
+        user = User.get(req_data.get("userId"))
+        if user is None:
+            return {'statusCode': 1, 'status': "no valid user"}
+
+        trip = req_data["trip"]
+        trip["user_id"] = user.id
+        post = req_data["post"]
+        user.create_trip(trip, post)
+        return {'statusCode': 0, 'status': "Trip successfully saved"}
+
+
+@app.route('/createPost', methods=["POST"])
+def createPost():
+    if request.method == "POST":
+        req_data = request.get_json()
+        trip = Trip.get(req_data.get("tripId"))
+        if trip is None:
+            return {'statusCode': 1, 'status': "no valid trip"}
+
+        post_data = req_data["post"]
+        trip.add_post(post_data)
+        return {'statusCode': 0, 'status': "Post successfully saved"}
 
 #
 #
 # Test for uploading images
 @app.route('/upload', methods=["GET", "POST"])
 def upload():
+
+    app.logger.info(request.hallo)
+    return "test"
+
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:

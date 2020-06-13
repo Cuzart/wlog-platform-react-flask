@@ -1,5 +1,6 @@
 from api.db.mariadb import Connector, MariaDB
 from api.db.model import Model
+from api.db.post import Post
 from api import app
 
 
@@ -8,7 +9,7 @@ class Trip(Model):
 
     __INSERT_SQL = """INSERT INTO trips
                    (user_id, title, country, description, thumbnail) 
-                   VALUES (%(user_id)s, %(title)s, %(country)s %(description)s, %(thumbnail)s"""
+                   VALUES (%(user_id)s, %(title)s, %(country)s, %(description)s, %(thumbnail)s)"""
     __UPDATE_SQL = """UPDATE users 
                      SET title = %(title)s, country = %(country)s, description = %(thumbnail)s
                      WHERE id = %(id)s"""
@@ -64,6 +65,14 @@ class Trip(Model):
     def thumbnail(self, thumbnail):
         self._thumbnail = thumbnail
 
+    @property
+    def posts(self):
+        return self._posts
+
+    @posts.setter
+    def posts(self, posts):
+        self._posts = posts    
+
     # this method fetches a trip out of the database
     # param: id of trip
     # returns trip instance
@@ -93,7 +102,6 @@ class Trip(Model):
         for property, value in self.__dict__.items():
             trip_data[property.lstrip("_")] = value
 
-        trip_data.pop("posts")
         return trip_data
 
     # inserts the user instance
@@ -101,7 +109,9 @@ class Trip(Model):
     def insert(self):
         try:
             cursor = Model._db.cursor()
-            cursor.execute(Trip.__INSERT_SQL, self.get_dict())
+            trip_data = self.get_dict()
+            trip_data.pop("posts")
+            cursor.execute(Trip.__INSERT_SQL, trip_data)
             Model._db.commit()
             self._id = cursor.lastrowid
             return self.id
@@ -136,11 +146,11 @@ class Trip(Model):
         finally:
             cursor.close()
 
-    @staticmethod
-    def create_trip(trip_data):
-        trip = Trip(trip_data)
-        trip.save()
-        return trip
+    def add_post(self, post_data):
+        post_data["trip_id"] = self.id
+        post = Post(post_data)
+        post.save()        
+
 
     @staticmethod
     def get_all_user_trips(user_id):

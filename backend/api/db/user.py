@@ -1,6 +1,7 @@
 from api.db.mariadb import MariaDB
 from api import app
 from api.db.model import Model
+from api.db.trip import Trip
 import re
 from passlib.hash import sha256_crypt
 
@@ -92,6 +93,14 @@ class User(Model):
     def profilpicture(self, profilpicture):
         self._profilpicture = profilpicture
 
+    @property
+    def trips(self):
+        return self._trips
+
+    @trips.setter
+    def trips(self, trips):
+        self._trips = trips
+
     # this method fetches a user out of the database
     # param: id of user
     # returns user instance
@@ -119,17 +128,24 @@ class User(Model):
     def get_dict(self):
         user_data = {}
         for property, value in self.__dict__.items():
-            user_data[property.replace("_", "")] = value
+            user_data[property.lstrip("_")] = value
 
-        user_data.pop("trips")
         return user_data
+
+    # load all trips of user and save them as dict
+    # to send them to client
+    def load_trips(self):
+        self.trips = Trip.get_all_user_trips(self.id)
 
     # inserts the user instance
     # returns user.id
+
     def insert(self):
         try:
             cursor = Model._db.cursor()
-            cursor.execute(User.__INSERT_SQL, self.get_dict())
+            user_data = self.get_dict()
+            user_data.pop("trips")
+            cursor.execute(User.__INSERT_SQL, user_data)
             Model._db.commit()
             self._id = cursor.lastrowid
             return self.id
@@ -146,7 +162,9 @@ class User(Model):
     def update(self):
         try:
             cursor = Model._db.cursor()
-            cursor.execute(User.__UPDATE_SQL, self.get_dict())
+            user_data = self.get_dict()
+            user_data.pop("trips")
+            cursor.execute(User.__UPDATE_SQL, user_data)
             Model._db.commit()
             return self.id
         except MariaDB.Error as err:
@@ -166,6 +184,11 @@ class User(Model):
             raise err
         finally:
             cursor.close()
+
+    def create_trip(self, trip_data, post_data):
+        trip = Trip(trip_data)
+        trip.save()
+        trip.add_post(post_data)
 
     # when the user registers the userData needs to be validated
     @staticmethod
@@ -203,3 +226,21 @@ class User(Model):
             raise err
         finally:
             cursor.close()
+
+    @staticmethod
+    def get_profile_data(id):
+        user = User.get(id)
+        if user is None:
+            return dict()
+        user.load_trips()
+        # convert trips to Dict
+        trips_dict = []
+        for trip in user.trips:
+            trips_dict.append(trip.get_dict())
+        profile_data = user.get_dict()
+        profile_data["trips"] = trips_dict
+        # remove personal data
+        profile_data.pop("email")
+        profile_data.pop("password")
+        profile_data.pop("created_at")
+        return profile_data
