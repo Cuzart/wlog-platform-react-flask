@@ -146,3 +146,27 @@ class Post(Model):
             raise err
         finally:
             cursor.close()
+
+    @staticmethod
+    def get_all_trip_posts(trip_id):
+        try:
+            cursor = Model._db.cursor(dictionary=True)
+            cursor.execute(Post.__SELECT_ALL_TRIP_POSTS_SQL,
+                           {'trip_id': trip_id})
+            result = cursor.fetchall()
+            if result is None:
+                return []
+            else:
+                posts = []
+                for post_data in result:
+                    posts.append(Post(post_data))
+                return posts
+        except MariaDB.Error as err:
+            app.logger.info("Something went wrong: {}".format(err))
+            raise err
+        except Exception as err:
+            app.logger.info("An error occured: {}".format(err))
+            raise err
+            # return None
+        finally:
+            cursor.close()        
