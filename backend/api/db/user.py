@@ -132,14 +132,12 @@ class User(Model):
 
         return user_data
 
-    # load all trips of user and save them as dict
-    # to send them to client
+    # load all trips of user
     def load_trips(self):
         self.trips = Trip.get_all_user_trips(self.id)
 
     # inserts the user instance
     # returns user.id
-
     def insert(self):
         try:
             cursor = Model._db.cursor()

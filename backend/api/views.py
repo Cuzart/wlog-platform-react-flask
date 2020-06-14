@@ -21,6 +21,10 @@ def index():
 def get_user(id):
     return User.get_profile_data(id)
 
+@app.route('/trip/<int:id>')
+def get_trip(id):
+    return Trip.get_trip_data(id)    
+
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -78,24 +82,28 @@ def createPost():
 @app.route('/upload', methods=["GET", "POST"])
 def upload():
 
-    app.logger.info(request.hallo)
-    return "test"
+    # app.logger.info(request.)
+    # return "test"
 
     if request.method == 'POST':
         # check if the post request has the file part
-        if 'file' not in request.files:
-            return redirect(request.url)
-        file = request.files['file']
+        if 'thumbnail' not in request.files:
+            app.logger.info("test")
+            return "test"
+            #return redirect(request.url)    
+        file = request.files['thumbnail']
         # if user does not select file, browser also
         # submit an empty part without filename
+        app.logger.info(file.filename)
         if file.filename == '':
+            app.logger.info("test")
             return 'No selected file'
         if file and allowed_file(file.filename, ALLOWED_IMAGE_EXTENSIONS):
             filename = secure_filename(file.filename)
             file.save(os.path.join("/usr/src/app/images", filename))
             return redirect(url_for('uploaded_file',
                                     filename=filename))
-    return render_template("fileUpload.html")
+    return {'statusCode': 0}
 
 
 @app.route('/uploads/<filename>')

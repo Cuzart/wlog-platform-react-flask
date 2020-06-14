@@ -104,6 +104,10 @@ class Trip(Model):
 
         return trip_data
 
+    # load all posts of the trip
+    def load_posts(self):
+        self.posts = Post.get_all_trip_posts(self.id)
+
     # inserts the user instance
     # returns user.id
     def insert(self):
@@ -175,3 +179,19 @@ class Trip(Model):
             # return None
         finally:
             cursor.close()
+
+    @staticmethod
+    def get_trip_data(id):
+        trip = Trip.get(id)
+        if trip is None:
+            return dict()
+        trip.load_posts()
+        # convert posts to Dict
+        post_dict = []
+        for post in trip.posts:
+            post_dict.append(post.get_dict())
+        trip_data = trip.get_dict()
+        trip_data["posts"] = post_dict
+        # remove personal data
+        app.logger.info(trip_data)
+        return trip_data
