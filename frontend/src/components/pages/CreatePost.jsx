@@ -52,9 +52,10 @@ export class CreatePost extends Component {
   handleFileUpload = (event) => {
     const fd = new FormData();
     fd.append("thumbnail", this.state.thumbnail);
-    // axios.post("/upload", fd).then((res) => {
-    //   console.log(res);
-    // });
+    axios.post("/upload", fd).then((res) => {
+      console.log(res);
+    });
+    // uploads whole state JSON 
     // axios.post("/tripUpload", this.state).then((res) => {
     //   console.log(res);
     // })
@@ -62,7 +63,7 @@ export class CreatePost extends Component {
 
   //Submitting the Form
   handleSubmit = (event) => {
-    event.preventDefault();
+    window.event.preventDefault();
     this.setState({ showModal: false });
     //this.handleFileUpload()
     console.log(this.state);

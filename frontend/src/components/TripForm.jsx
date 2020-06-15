@@ -3,19 +3,8 @@ import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import FormGroup from "react-bootstrap/FormGroup";
-import axios from "axios";
-
 
 class TripForm extends Component {
-  // File Upload as Form Data to DB
-  handleFileUpload = (event) => {
-    const fd = new FormData();
-    fd.append("thumbnail", this.state.thumbnail);
-    axios.post("/upload", fd).then((res) => {
-      console.log(res);
-    });
-  };
-
   render() {
     return (
       <div>
