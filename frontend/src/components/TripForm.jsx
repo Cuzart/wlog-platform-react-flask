@@ -61,8 +61,7 @@ class TripForm extends Component {
                   rows="3"
                 />
               </Col>
-            </FormGroup>
-            <hr style={hrStyle} />
+            </FormGroup> 
           </Form>
         </div>
       </div>
@@ -73,10 +72,5 @@ const headerStyles = {
   fontFamily: "Libre Baskerville , serif",
   margin: "35px 0px",
 };
-
-const hrStyle = {
-  margin: "60px 0px",
-};
-
 
 export default TripForm;

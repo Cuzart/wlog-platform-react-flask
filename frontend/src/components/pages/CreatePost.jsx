@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import TripForm from "../TripForm";
 import PostForm from "../PostForm";
 import Row from "react-bootstrap/Row";
@@ -20,6 +21,8 @@ export class CreatePost extends Component {
       description: "",
       caption: "",
       content: null,
+      location: "",
+      locationObject: { label: "" },
       showModal: false,
     };
   }
@@ -39,6 +42,15 @@ export class CreatePost extends Component {
     this.setState({ [nam]: val });
   };
 
+  // leaflet-geosearch asynchronous API call to get a result{x: longitude, y: latitude, label: adress}
+  handleLocationApi = async (event) => {
+    const provider = new OpenStreetMapProvider();
+    const results = await provider.search({ 'query': this.state.location });
+    if (results.length > 0) {
+      this.setState({ locationObject: results[0] })
+    }
+  }
+
   // updates thumbnail and its url in state when new file is selected
   handleFileSelect = (event) => {
     this.setState({
@@ -55,10 +67,10 @@ export class CreatePost extends Component {
     axios.post("/upload", fd).then((res) => {
       console.log(res);
     });
-    // uploads whole state JSON 
-    // axios.post("/tripUpload", this.state).then((res) => {
-    //   console.log(res);
-    // })
+    //uploads whole state JSON 
+    axios.post("/tripUpload", this.state).then((res) => {
+      console.log(res);
+    })
   };
 
   //Submitting the Form
@@ -78,10 +90,13 @@ export class CreatePost extends Component {
             handleFileSelect={this.handleFileSelect}
             fileFormLabel={this.state.fileFormLabel}
           />
+          < hr style={hrStyle} />
           <PostForm
             heading="add your first blog entry"
             handleChange={this.handleChange}
             handleEditorChange={this.handleEditorChange}
+            handleLocationApi={this.handleLocationApi}
+            locationObject={this.state.locationObject}
           />
           <div style={previewStyle}>
             <TripImage
@@ -118,7 +133,7 @@ const formStyle = {
 };
 const previewStyle = {
   position: "absolute",
-  top: "10%",
+  top: "5%",
   left: "58%",
 };
 const btnLayout = {
@@ -126,5 +141,8 @@ const btnLayout = {
   textAlign: "right",
   padding: "0px 90px"
 }
+const hrStyle = {
+  margin: "30px 0px",
+};
 
 export default CreatePost;
