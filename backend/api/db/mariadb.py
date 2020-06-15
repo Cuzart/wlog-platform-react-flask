@@ -10,19 +10,19 @@ class Connector:
     does not have to be established for each query 
     '''
 
-    __dbConnection = None
+    __db_connection = None
 
     @staticmethod
     def connect():
-        if Connector.__dbConnection is None:
-            Connector.__dbConnection = MariaDB.connect(
+        if Connector.__db_connection is None:
+            Connector.__db_connection = MariaDB.connect(
                 host="mariadb",
                 user="admin",
                 passwd="wlog2020",
                 database="wlog"
             )
             # app.logger.info("creating new DB Connection")
-            return Connector.__dbConnection
+            return Connector.__db_connection
         else:
             # app.logger.info("get pending DB Connection")
-            return Connector.__dbConnection
+            return Connector.__db_connection

@@ -30,8 +30,8 @@ class TripForm extends Component {
   // File Upload
   handleFileUpload = (event) => {
     const fd = new FormData();
-    fd.append("image", this.state.thumbnail, this.state.thumbnail.name);
-    axios.post("url", fd).then((res) => {
+    fd.append("thumbnail", this.state.thumbnail);
+    axios.post("/upload", fd).then((res) => {
       console.log(res);
     });
   };
@@ -53,7 +53,7 @@ class TripForm extends Component {
       <div>
         <div className="container">
           <h1 style={headerStyles}> Create an individual trip </h1> <br />
-          <Form onSubmit={this.handleSubmit}>
+          <Form onSubmit={this.handleFileUpload}>
             <FormGroup as={Row}>
               <Form.Label column sm={1}>
                 Title
