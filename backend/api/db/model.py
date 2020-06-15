@@ -6,16 +6,16 @@ class Model(ABC):
 
     _db = Connector.connect()
 
-    def __init__(self, id, createdAt):
+    def __init__(self, id, created_at):
         self._id = id
-        self._createdAt = createdAt
+        self._created_at = created_at
 
     @property
     def id(self):
         return self._id
 
     @property
-    def createdAt(self):
+    def created_at(self):
         return self._id
 
     # the save functions saves the instance into the database

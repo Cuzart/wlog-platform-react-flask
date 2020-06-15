@@ -1,6 +1,7 @@
 from api.db.mariadb import MariaDB
 from api import app
 from api.db.model import Model
+from api.db.trip import Trip
 import re
 from passlib.hash import sha256_crypt
 
@@ -11,27 +12,27 @@ class User(Model):
     has functions through which the user can be inserted, updated, selected and deleted   
     """
 
-    __insertSql = """INSERT INTO users
+    __INSERT_SQL = """INSERT INTO users
                    (username, email, password, name, surname) 
                    VALUES (%(username)s, %(email)s, %(password)s, %(name)s, %(surname)s)"""
-    __updateSql = """UPDATE users 
+    __UPDATE_SQL = """UPDATE users 
                      SET username = %(username)s, email = %(email)s, password = %(password)s, name = %(name)s,
                      surname = %(surname)s, description = %(description)s, profilpicture = %(profilpicture)s 
                      WHERE id = %(id)s"""
-    __selectSql = "SELECT * FROM users WHERE id = %(id)s"
-    __deleteSql = "DELETE FROM users WHERE id = %(id)s"
-    __usernameAvailableSql = "SELECT * FROM users WHERE username = %(username)s"
+    __SELECT_SQL = "SELECT * FROM users WHERE id = %(id)s"
+    __DELETE_SQL = "DELETE FROM users WHERE id = %(id)s"
+    __USERNAME_AVAILABLE_SQL = "SELECT * FROM users WHERE username = %(username)s"
 
     # gets a dict with the needed userData an constructs a user instance
-    def __init__(self, userData):
-        super().__init__(userData.get("id"), userData.get("created_at"))
-        self.username = userData.get("username")
-        self.email = userData.get("email")
-        self.password = userData.get("password")
-        self.name = userData.get("name")
-        self.surname = userData.get("surname")
-        self.description = userData.get("description")
-        self.profilpicture = userData.get("profilpicture")
+    def __init__(self, user_data):
+        super().__init__(user_data.get("id"), user_data.get("created_at"))
+        self.username = user_data.get("username")
+        self.email = user_data.get("email")
+        self.password = user_data.get("password")
+        self.name = user_data.get("name")
+        self.surname = user_data.get("surname")
+        self.description = user_data.get("description")
+        self.profilpicture = user_data.get("profilpicture")
         self.trips = []
 
     ## PROPERTIES ##
@@ -92,15 +93,22 @@ class User(Model):
     def profilpicture(self, profilpicture):
         self._profilpicture = profilpicture
 
+    @property
+    def trips(self):
+        return self._trips
+
+    @trips.setter
+    def trips(self, trips):
+        self._trips = trips
+
     # this method fetches a user out of the database
     # param: id of user
     # returns user instance
-
     @staticmethod
     def get(id):
         try:
             cursor = Model._db.cursor(dictionary=True)
-            cursor.execute(User.__selectSql, {'id': id})
+            cursor.execute(User.__SELECT_SQL, {'id': id})
             result = cursor.fetchone()
             if result is None:
                 return None
@@ -117,28 +125,25 @@ class User(Model):
             cursor.close()
 
     # returns a dict with all user attributes
-    def getDict(self):
-        userData = {}
+    def get_dict(self):
+        user_data = {}
         for property, value in self.__dict__.items():
-            userData[property.replace("_", "")] = value
+            user_data[property.lstrip("_")] = value
 
-        userData.pop("trips")
-        return userData
+        return user_data
 
-    # the save functions saves the user instance into the database
-    # if the user already exists it gets updated otherwise inserted
-    def save(self):
-        if self.id is None:
-            return self.insert()
-        else:
-            return self.update()
+    # load all trips of user
+    def load_trips(self):
+        self.trips = Trip.get_all_user_trips(self.id)
 
     # inserts the user instance
     # returns user.id
     def insert(self):
         try:
             cursor = Model._db.cursor()
-            cursor.execute(User.__insertSql, self.getDict())
+            user_data = self.get_dict()
+            user_data.pop("trips")
+            cursor.execute(User.__INSERT_SQL, user_data)
             Model._db.commit()
             self._id = cursor.lastrowid
             return self.id
@@ -155,7 +160,9 @@ class User(Model):
     def update(self):
         try:
             cursor = Model._db.cursor()
-            cursor.execute(User.__updateSql, self.getDict())
+            user_data = self.get_dict()
+            user_data.pop("trips")
+            cursor.execute(User.__UPDATE_SQL, user_data)
             Model._db.commit()
             return self.id
         except MariaDB.Error as err:
@@ -168,7 +175,7 @@ class User(Model):
     def delete(self):
         try:
             cursor = Model._db.cursor()
-            cursor.execute(User.__deleteSql, {'id': self.id})
+            cursor.execute(User.__DELETE_SQL, {'id': self.id})
             Model._db.commit()
             return self.id
         except MariaDB.Error as err:
@@ -176,32 +183,38 @@ class User(Model):
         finally:
             cursor.close()
 
+    def create_trip(self, trip_data, post_data):
+        trip = Trip(trip_data)
+        trip.save()
+        trip.add_post(post_data)
+
     # when the user registers the userData needs to be validated
     @staticmethod
-    def validateUserInput(userData):
-        emailRegex = "(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
-        usernameRegex = "([a-zA-Z0-9_\-\.]+)"
+    def validate_user_input(user_data):
+        email_regex = "(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)"
+        username_regex = "([a-zA-Z0-9_\-\.]+)"
         error = []
-        if len(userData.get("username")) < 3 or len(userData.get("username")) > 20 \
-                or re.search(usernameRegex, userData.get("username")) is None:
+        if len(user_data.get("username")) < 3 or len(user_data.get("username")) > 20 \
+                or re.search(username_regex, user_data.get("username")) is None:
             error.append("Invalid username")
-        if not User.isUsernameAvailable(userData.get("username")):
+        if not User.is_username_available(user_data.get("username")):
             error.append("Username not available")
-        if re.search(emailRegex, userData.get("email")) is None:
+        if re.search(email_regex, user_data.get("email")) is None:
             error.append("Invalid email")
-        if len(userData.get("password")) < 6:
+        if len(user_data.get("password")) < 6:
             error.append("Password to short")
-        if len(userData.get("name")) < 2 or len(userData.get("name")) > 50:
+        if len(user_data.get("name")) < 2 or len(user_data.get("name")) > 50:
             error.append("Invalid name")
-        if len(userData.get("surname")) < 2 or len(userData.get("surname")) > 50:
+        if len(user_data.get("surname")) < 2 or len(user_data.get("surname")) > 50:
             error.append("Invalid surname")
         return error
 
     @staticmethod
-    def isUsernameAvailable(username):
+    def is_username_available(username):
         try:
             cursor = Model._db.cursor()
-            cursor.execute(User.__usernameAvailableSql, {'username': username})
+            cursor.execute(User.__USERNAME_AVAILABLE_SQL,
+                           {'username': username})
             data = cursor.fetchall()
             if len(data) > 0:
                 return False
@@ -211,3 +224,21 @@ class User(Model):
             raise err
         finally:
             cursor.close()
+
+    @staticmethod
+    def get_profile_data(id):
+        user = User.get(id)
+        if user is None:
+            return dict()
+        user.load_trips()
+        # convert trips to Dict
+        trips_dict = []
+        for trip in user.trips:
+            trips_dict.append(trip.get_dict())
+        profile_data = user.get_dict()
+        profile_data["trips"] = trips_dict
+        # remove personal data
+        profile_data.pop("email")
+        profile_data.pop("password")
+        profile_data.pop("created_at")
+        return profile_data
