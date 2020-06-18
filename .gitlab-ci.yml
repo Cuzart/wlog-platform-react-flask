@@ -46,7 +46,7 @@ f_build:
         - CI=false npm run build
     artifacts:
         paths:
-            - build
+            - /builds/ss486/wlog/frontend/package.json
         expire_in: 30 mins
     dependencies:
         - f_install
