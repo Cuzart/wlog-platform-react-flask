@@ -28,6 +28,7 @@ Test-Backend-to-Wlog:
         - branches
 #Deploy-Backend-to-Wlog:
 f_install:
+    image: node:latest
     stage: install
     script:
         - npm install
@@ -39,6 +40,7 @@ f_install:
             - .npm/
             - node_modules/
 f_build:
+    image: node:latest
     stage: build
     script:
         - CI=false npm run build
@@ -49,6 +51,7 @@ f_build:
     dependencies:
         - f_install
 f_linting:
+    image: node:latest
     stage: test
     script:
         -npm run lint
