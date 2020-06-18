@@ -28,6 +28,8 @@ Test-Backend-to-Wlog:
         - branches
 #Deploy-Backend-to-Wlog:
 f_install:
+    before_script:
+        - cd frontend
     image: node:latest
     stage: install
     script:
@@ -42,11 +44,13 @@ f_install:
 f_build:
     image: node:latest
     stage: build
+    before_script:
+        - cd frontend
     script:
         - CI=false npm run build
     artifacts:
         paths:
-            - frontend/package.json
+            - build
         expire_in: 30 mins
     dependencies:
         - f_install
