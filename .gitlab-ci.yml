@@ -18,8 +18,8 @@ Test-Backend-to-Wlog:
     script:
         - echo "Testing"
         - pip install -r api/requirements.txt
-        #- pip install nose2
-        #- nose2 -v 
+        - pip install nose2
+        - nose2 -v 
         - pip install flake8
         - flake8 api/app.py
         - pip install flask-lint
@@ -38,7 +38,7 @@ f_install:
         expire_in: 30 mins
         paths:
             - .npm/
-            - node_modules/
+            - frontend/node_modules/
 f_build:
     image: node:latest
     stage: build
@@ -46,7 +46,7 @@ f_build:
         - CI=false npm run build
     artifacts:
         paths:
-            - /builds/ss486/wlog/frontend/package.json
+            - frontend/package.json
         expire_in: 30 mins
     dependencies:
         - f_install
@@ -60,7 +60,7 @@ f_test:e2e:
     image: cypress/browsers:chrome69
     dependencies:
         - f_install
-        - f_build
+        # - f_build
     script:
         - npm run e2e:ci
     artifacts:
