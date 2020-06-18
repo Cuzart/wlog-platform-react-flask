@@ -60,6 +60,7 @@ f_linting:
     image: node:latest
     stage: test
     script:
+        - npm install lint
         - npm run lint
 f_test:e2e:
     before_script:
