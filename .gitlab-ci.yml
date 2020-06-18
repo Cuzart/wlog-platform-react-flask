@@ -60,8 +60,8 @@ f_linting:
     image: node:latest
     stage: test
     script:
-        - npm install lint
-        - npm run lint
+        - npm i eslint
+        - node_modules/eslint/eslint.js
 f_test:e2e:
     before_script:
         - cd frontend
@@ -69,7 +69,7 @@ f_test:e2e:
     image: cypress/browsers:chrome69
     dependencies:
         - f_install
-        # - f_build
+        - f_build
     script:
         - npm run e2e:ci
     artifacts:
