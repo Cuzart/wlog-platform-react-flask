@@ -55,11 +55,15 @@ f_build:
     dependencies:
         - f_install
 f_linting:
+    before_script:
+        - cd frontend
     image: node:latest
     stage: test
     script:
         -npm run lint
 f_test:e2e:
+    before_script:
+        - cd frontend
     stage: test
     image: cypress/browsers:chrome69
     dependencies:
