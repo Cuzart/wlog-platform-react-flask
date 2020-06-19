@@ -63,9 +63,15 @@ export class CreatePost extends Component {
 
   //Submitting the Form
   handleSubmit = (event) => {
+    window.tinymce.activeEditor.uploadImages(function(success) {
+      axios.post('/createTrip', window.tinymce.activeEditor.getContent()).then(() => {
+      console.log("Uploaded images and posted content as an ajax request.");
+      });
+    });
+    
     window.event.preventDefault();
     this.setState({ showModal: false });
-    //this.handleFileUpload()
+    // this.handleFileUpload()
     console.log(this.state);
   };
 
