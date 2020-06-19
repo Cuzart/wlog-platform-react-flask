@@ -5,7 +5,10 @@ from api import app
 
 
 class Trip(Model):
-    """trips..."""
+    """
+    Model Class for a trip which represents a table row
+    has functions to manipulate and interact with the database  
+    """
 
     __INSERT_SQL = """INSERT INTO trips
                    (user_id, title, country, description, thumbnail) 
@@ -17,8 +20,12 @@ class Trip(Model):
     __DELETE_SQL = "DELETE FROM trips WHERE id = %(id)s"
     __SELECT_ALL_USER_TRIPS_SQL = "SELECT * FROM trips WHERE user_id = %(user_id)s"
 
-    # gets a dict with the needed tripData an constructs a trip instance
     def __init__(self, trip_data):
+        """Constructor of trip instance
+
+        Args:
+            trip_data (dict): includes all properties of trip instance
+        """
         super().__init__(trip_data.get("id"), trip_data.get("created_at"))
         self._user_id = trip_data.get("user_id")
         self.title = trip_data.get("title")
@@ -27,8 +34,9 @@ class Trip(Model):
         self.thumbnail = trip_data.get("thumbnail")
         self.posts = []
 
-    ## PROPERTIES ##
-
+    ####################
+    ##   PROPERTIES   ##
+    ####################
     @property
     def user_id(self):
         return self._userId
@@ -71,13 +79,21 @@ class Trip(Model):
 
     @posts.setter
     def posts(self, posts):
-        self._posts = posts    
+        self._posts = posts
 
-    # this method fetches a trip out of the database
-    # param: id of trip
-    # returns trip instance
+    ####################
+    ##   FUNCTIONS    ##
+    ####################
     @staticmethod
     def get(id):
+        """this method fetches a trip instance out of the database
+
+        Args:
+            id (int): id of the prefered trip instance
+
+        Returns:
+            Trip: trip instance or None
+        """
         try:
             cursor = Model._db.cursor(dictionary=True)
             cursor.execute(Trip.__SELECT_SQL, {'id': id})
@@ -92,25 +108,31 @@ class Trip(Model):
         except Exception as err:
             app.logger.info("An error occured: {}".format(err))
             raise err
-            # return None
         finally:
             cursor.close()
 
-    # returns a dict with all trip attributes
     def get_dict(self):
+        """gets a dict with all trip properties
+
+        Returns:
+            [dict]: with trip properties
+        """
         trip_data = {}
         for property, value in self.__dict__.items():
             trip_data[property.lstrip("_")] = value
-
         return trip_data
 
-    # load all posts of the trip
     def load_posts(self):
+        """loads all posts of the trip out of the database
+        """
         self.posts = Post.get_all_trip_posts(self.id)
 
-    # inserts the user instance
-    # returns user.id
     def insert(self):
+        """method to insert an instance into the DB
+
+        Returns:
+            int: id of trip instance
+        """
         try:
             cursor = Model._db.cursor()
             trip_data = self.get_dict()
@@ -124,9 +146,12 @@ class Trip(Model):
         finally:
             cursor.close()
 
-    # updates the trip instance
-    # returns trip.id
     def update(self):
+        """method to update an instance in the DB
+
+        Returns:
+            int: id of trip instance
+        """
         try:
             cursor = Model._db.cursor()
             cursor.execute(Trip.__UPDATE_SQL, self.get_dict())
@@ -137,9 +162,12 @@ class Trip(Model):
         finally:
             cursor.close()
 
-    # deletes the trip in the DB
-    # returns deleted trip.id
     def delete(self):
+        """method to delete an instance in the DB
+
+        Returns:
+            int: id of deleted trip instance
+        """
         try:
             cursor = Model._db.cursor()
             cursor.execute(Trip.__DELETE_SQL, {'id': self.id})
@@ -151,13 +179,25 @@ class Trip(Model):
             cursor.close()
 
     def add_post(self, post_data):
+        """add a new post to the trip
+
+        Args:
+            post_data (dict): dict with all needed properties for a post
+        """
         post_data["trip_id"] = self.id
         post = Post(post_data)
-        post.save()        
-
+        post.save()
 
     @staticmethod
     def get_all_user_trips(user_id):
+        """provides all trip data belonging to a user
+
+        Args:
+            user_id (int): id of user 
+
+        Returns:
+            list: list of trip instances
+        """
         try:
             cursor = Model._db.cursor(dictionary=True)
             cursor.execute(Trip.__SELECT_ALL_USER_TRIPS_SQL,
@@ -176,12 +216,19 @@ class Trip(Model):
         except Exception as err:
             app.logger.info("An error occured: {}".format(err))
             raise err
-            # return None
         finally:
             cursor.close()
 
     @staticmethod
     def get_trip_data(id):
+        """provides a trip with corresponding posts for sending to clients
+
+        Args:
+            id (int): id of trip instance
+
+        Returns:
+            dict: dict with all properties of the trip
+        """
         trip = Trip.get(id)
         if trip is None:
             return dict()
@@ -192,6 +239,4 @@ class Trip(Model):
             post_dict.append(post.get_dict())
         trip_data = trip.get_dict()
         trip_data["posts"] = post_dict
-        # remove personal data
-        app.logger.info(trip_data)
         return trip_data

@@ -66,35 +66,37 @@ class PostForm extends Component {
                   autosave_interval: "60s",
                   image_title: true,
                   file_picker_types: "image video",
-                  //images_upload_url: 'postAcceptor.php',
-                  //images_upload_base_path: '/blog/images',
 
-                  // file picker
                   images_upload_handler: function (blobInfo, success, failure) {
                     var xhr, formData;
+                  
                     xhr = new XMLHttpRequest();
                     xhr.withCredentials = false;
-                    xhr.open('POST', 'postAcceptor.php');
-                    xhr.onload = function () {
+                    xhr.open('POST', '/uploadImg');
+                  
+                    xhr.onload = function() {
                       var json;
-
-                      if (xhr.status !== 200) {
-                        failure('HTTP Error: ' + xhr.status);
-                        return;
+                  
+                      if (xhr.status < 200 || xhr.status >= 300) {
+                      failure('HTTP Error: ' + xhr.status);
+                      return;
                       }
+                  
                       json = JSON.parse(xhr.responseText);
-
-                      if (!json || typeof json.location !== 'string') {
-                        failure('Invalid JSON: ' + xhr.responseText);
-                        return;
+                  
+                      if (!json || typeof json.location != 'string') {
+                      failure('Invalid JSON: ' + xhr.responseText);
+                      return;
                       }
+                  
                       success(json.location);
                     };
+                  
                     formData = new FormData();
-                    formData.append('gallery', window.event.target.files[0]);
+                    formData.append('postImg', blobInfo.blob(), blobInfo.filename());
+                  
                     xhr.send(formData);
-                  }
-           
+                    }
                 }}
               />
             </div>
