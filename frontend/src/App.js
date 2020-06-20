@@ -6,6 +6,8 @@ import Header from "./components/layout/Header";
 import Register from "./components/pages/Register";
 import Home from "./components/pages/Home";
 import CreatePost from "./components/pages/CreatePost";
+import AddPost from "./components/pages/AddPost";
+import LeafletMap from "./components/LeafletMap"
 
 class App extends Component {
   render() {
@@ -17,6 +19,8 @@ class App extends Component {
             <Route exact path="/" component={Home} />
             <Route exact path="/register" component={Register} />
             <Route exact path="/create" component={CreatePost} />
+            <Route exact path="/add" component={AddPost} />
+            <Route exact path="/map" component={LeafletMap} />
           </Switch>
         </div>
       </Router>

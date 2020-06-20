@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import TripForm from "../TripForm";
 import PostForm from "../PostForm";
 import Row from "react-bootstrap/Row";
@@ -19,7 +20,9 @@ export class CreatePost extends Component {
       country: "",
       description: "",
       caption: "",
-      content: null,
+      //content: null,
+      location: "",
+      locationObject: { label: "" },
       showModal: false,
     };
   }
@@ -28,16 +31,26 @@ export class CreatePost extends Component {
    this.setState({ showModal: !this.state.showModal });
   }; 
 
-  // If editor is changed
-  handleEditorChange = (content, editor) => {
-    this.setState({ content });
-  };
+  // // If editor is changed
+  // handleEditorChange = (content, editor) => {
+  //   this.setState({ content });
+  // };
+  
   // Updates state when form is changed
   handleChange = (event) => {
     let nam = window.event.target.name;
     let val = window.event.target.value;
     this.setState({ [nam]: val });
   };
+
+  // leaflet-geosearch asynchronous API call to get a result{x: longitude, y: latitude, label: adress}
+  handleLocationApi = async (event) => {
+    const provider = new OpenStreetMapProvider();
+    const results = await provider.search({ 'query': this.state.location });
+    if (results.length > 0) {
+      this.setState({ locationObject: results[0] })
+    }
+  }
 
   // updates thumbnail and its url in state when new file is selected
   handleFileSelect = (event) => {
@@ -48,31 +61,39 @@ export class CreatePost extends Component {
     });
   };
 
-  // File Upload as Form Data to DB
-  handleFileUpload = (event) => {
-    const fd = new FormData();
-    fd.append("thumbnail", this.state.thumbnail);
-    axios.post("/upload", fd).then((res) => {
-      console.log(res);
-    });
-    // uploads whole state JSON 
-    // axios.post("/tripUpload", this.state).then((res) => {
-    //   console.log(res);
-    // })
-  };
-
-  //Submitting the Form
+  // submitting a entire trip with a post as callback pipeline
   handleSubmit = (event) => {
-    window.tinymce.activeEditor.uploadImages(function(success) {
-      axios.post('/createTrip', window.tinymce.activeEditor.getContent()).then(() => {
-      console.log("Uploaded images and posted content as an ajax request.");
-      });
-    });
-    
     window.event.preventDefault();
     this.setState({ showModal: false });
-    // this.handleFileUpload()
-    console.log(this.state);
+    const fd = new FormData();
+    fd.append("thumbnail", this.state.thumbnail);
+    // submits the thumbnail
+    axios.post("/uploadImg", fd).then((res) => {
+      let trip = { "title": this.state.title, "country": this.state.country, "description": this.state.description }
+      // submits the trip form
+      axios.post("/createTrip", trip).then((res) => {
+        // calls for each image in editor /uploadImg
+        window.tinymce.activeEditor.uploadImages((success) => {
+          let post = {
+            "trip_id": res.trip_id,
+            "post": {
+              "subtitle": this.state.caption,
+              "location_label": this.state.locationObject.label,
+              "location_longitude": this.state.locationObject.x,
+              "location_latitude": this.state.locationObject.y,
+              "text": window.tinymce.activeEditor.getContent(),
+            }
+          }
+          // submits post with editor content
+          axios.post('/createPost', post).then((res) => {
+              // Todo
+              console.log("Redirect to /profile")
+          });
+        });
+      })
+    });
+    
+    
   };
 
   render() {
@@ -84,10 +105,13 @@ export class CreatePost extends Component {
             handleFileSelect={this.handleFileSelect}
             fileFormLabel={this.state.fileFormLabel}
           />
+          < hr style={hrStyle} />
           <PostForm
             heading="add your first blog entry"
             handleChange={this.handleChange}
             handleEditorChange={this.handleEditorChange}
+            handleLocationApi={this.handleLocationApi}
+            locationObject={this.state.locationObject}
           />
           <div style={previewStyle}>
             <TripImage
@@ -124,7 +148,7 @@ const formStyle = {
 };
 const previewStyle = {
   position: "absolute",
-  top: "10%",
+  top: "5%",
   left: "58%",
 };
 const btnLayout = {
@@ -132,5 +156,8 @@ const btnLayout = {
   textAlign: "right",
   padding: "0px 90px"
 }
+const hrStyle = {
+  margin: "30px 0px",
+};
 
 export default CreatePost;

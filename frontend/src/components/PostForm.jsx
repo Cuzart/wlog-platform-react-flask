@@ -7,19 +7,12 @@ import Col from "react-bootstrap/Col";
 import FormGroup from "react-bootstrap/FormGroup";
 
 class PostForm extends Component {
-  
-  handleEditorSubmit = (event) => {
-    event.preventDefault();
-    alert(this.state.content);
-    document.getElementById("output").innerHTML = this.state.content;
-  };
-
 
   render() {
     return (
       <div className="container">
         <Form>
-          <Col sm={12}>
+          <Col >
             <h3 style={headerStyles}> {this.props.heading}</h3>
             <FormGroup as={Row}>
               <Form.Label column sm={1}>
@@ -29,6 +22,23 @@ class PostForm extends Component {
                 <Form.Control name="caption" onChange={this.props.handleChange} />
               </Col>
             </FormGroup>
+            <FormGroup as={Row}>
+              <Form.Label column sm={1}>
+                Location
+              </Form.Label>
+              <Col sm={5}>
+                <Form.Control name="location" onChange={this.props.handleChange} onBlur={this.props.handleLocationApi}/>
+              </Col>
+            </FormGroup>
+            <FormGroup as={Row}>
+              <Form.Label column sm={1}>
+                Logging
+              </Form.Label>
+              <Col sm={5}>
+                <Form.Control readOnly defaultValue={this.props.locationObject.label} />
+              </Col>
+            </FormGroup>
+
             <div style={paddingStyle}>
               <Editor
                 apiKey="ykdvtcb9mmz6dfe2dnupk22gz7or7ygc59unyeye0x1yr9g8"
@@ -55,7 +65,7 @@ class PostForm extends Component {
                   autosave_ask_before_unload: false,
                   autosave_interval: "60s",
                   image_title: true,
-                  file_picker_types: "image video",
+                  file_picker_types: "image",
 
                   images_upload_handler: function (blobInfo, success, failure) {
                     var xhr, formData;
@@ -100,6 +110,7 @@ class PostForm extends Component {
 const headerStyles = {
   fontFamily: "Libre Baskerville , serif",
   margin: "35px 0px",
+  
 };
 
 const paddingStyle = {

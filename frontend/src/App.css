@@ -5,6 +5,7 @@
 
 .home-bg {
   background-image: url(/images/wlogBG.jpg);
+  z-index: -10;
   height: 100vh;
   background-position: center;
   background-size: cover;
@@ -70,7 +71,7 @@ input {
   transform: translateY(-50%);
   overflow-wrap: break-word;
 }
-
+/* thumbnail description */
 .thumbnail_overlay {
   position: absolute;
   bottom: 0;
@@ -95,4 +96,10 @@ input {
   max-width: 400px;
   max-height: 300px;
   display: table;
+}
+
+
+.leaflet-container {
+  height: 600px;
+  width: 800px;
 }

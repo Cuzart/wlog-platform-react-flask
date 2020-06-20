@@ -1,6 +1,5 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-//import styled from "styled-components";
 import "../../App.css";
 
 function Header() {
@@ -14,15 +13,15 @@ function Header() {
           EXPLORE
         </NavLink>
         <NavLink exact to="/" activeClassName="nav-link-active">
-          <img src="/images/wlogLogo.png" alt="logo"></img>
+          <img src="/images/wlogLogo.svg" alt="Link to wlog home" style={{width: "50%"}}></img>
         </NavLink>
         <NavLink
           exact
           className="nav-link"
           activeClassName="nav-link-active"
-          to="/register"
+          to="/map"
         >
-          REGISTER
+          MAP
         </NavLink>
         <NavLink
           exact

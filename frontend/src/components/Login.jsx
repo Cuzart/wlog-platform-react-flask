@@ -1,6 +1,9 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import FormGroup from "react-bootstrap/FormGroup";
 import axios from "axios";
 
@@ -28,28 +31,48 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div style={loginForm}>
+      <div className="container">
         <div style={captionStyle}>login</div>
         <Form onSubmit={this.handleSubmit}>
-          <FormGroup>
-            <Form.Label>Username</Form.Label>
-            <Form.Control
-              name="username"
-              type="text"
-              onChange={this.handleChange}
-            />
+          <FormGroup as={Row}>
+            <Form.Label column sm={3}>
+              Username
+              </Form.Label>
+              <Col sm={9}>
+              <Form.Control
+                name="username"
+                type="text"
+                onChange={this.handleChange}
+              />
+              </Col>   
           </FormGroup>
-          <FormGroup>
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              name="password"
-              type="password"
-              onChange={this.handleChange}
-            />
+          <FormGroup as={Row}>
+            <Form.Label column sm={3}>
+              Password
+              </Form.Label>
+            <Col sm={9}>
+              <Form.Control
+                name="password"
+                type="password"
+                onChange={this.handleChange}
+              />
+            </Col>
           </FormGroup>
-          <Button variant="dark" type="submit">
-            Login
-          </Button>
+          <div style={btnLayout}>
+            <Button variant="dark" type="submit" size="lg" >
+              Login
+            </Button>
+            <NavLink
+              exact
+              className="nav-link"
+              to="/register"
+              style={{ color: "#4e564b" }}
+            >
+              New here ? Register Now
+        </NavLink>
+          </div>
+         
+          
         </Form>
       </div>
     );
@@ -59,18 +82,15 @@ class Login extends React.Component {
 const captionStyle = {
   fontFamily: "Libre Baskerville , serif",
   padding: "20px",
-  fontSize: "x-large",
+  fontSize: "34px",
   color: "#4e564b",
+  textAlign: "center"
 };
-const loginForm = {
-  position: "absolute",
-  height: "300px",
-  width: "225px",
-  marginTop: "175px",
-  marginLeft: "155px",
-  background: "#9EB091",
-  borderRadius: "8%",
+
+const btnLayout = {
   textAlign: "center",
-};
+  marginBottom : "25px",
+  marginTop : "10px",
+}
 
 export default Login;

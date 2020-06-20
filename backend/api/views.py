@@ -91,11 +91,10 @@ def register():
 @login_required
 def createTrip():
     if request.is_json:
-        app.logger.info(request.get_json())
-        return "hallo"
+
         file_uid = session.get('file_upload_uid')
         trip_data = request.get_json()
-        if img_handler.tmp_image_stored(file_uid):
+        if img_handler.tmp_img_stored(file_uid):
             filename = img_handler.save_image(
                 file_uid, session["id"], 'thumbnail')
             trip_data['user_id'] = session["id"]
@@ -104,6 +103,9 @@ def createTrip():
             trip_id = trip.save()
             del session['file_upload_uid']
             return {'statusCode': 0, 'status': "Trip successfully created", 'tripId': trip_id}
+
+        else:
+            return {'statusCode': 1, 'status': "Trip not successfully created"}
 
     else:
         return "Bad Request", 400
@@ -144,7 +146,7 @@ def upload():
         # for creating a trip, thumbnail upload
         # or for adding a profil picture
         elif 'thumbnail' in files or 'profileImg' in files:
-            file = files[0]
+            file = files['thumbnail']
             if img_handler.allowed_img(file.filename):
                 uid = img_handler.store_tmp_img(file)
                 session['file_upload_uid'] = uid
