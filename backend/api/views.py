@@ -1,35 +1,73 @@
 from api import app
-from flask import url_for, request, redirect, render_template, send_from_directory
+from flask import request, session, send_from_directory
+from functools import wraps
 import os
 import json
-from werkzeug.utils import secure_filename
+# from markupsafe import escape !!! TODO
+
 # own modules
 from api.db.user import User
 from api.db.trip import Trip
 from api.db.post import Post
-from api.helper import allowed_file
+import api.imageHandler as img_handler
 
-ALLOWED_IMAGE_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+
+def login_required(f):
+    """checks if user is logged in
+    """
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            return "Unauthorized", 401
+    return wrap
 
 
 @app.route('/')
 def index():
-    return render_template('home.html')
+    return "Wlog - API"
 
 
 @app.route('/profile/<int:id>')
 def get_user(id):
     return User.get_profile_data(id)
 
+
 @app.route('/trip/<int:id>')
 def get_trip(id):
-    return Trip.get_trip_data(id)    
+    return Trip.get_trip_data(id)
 
 
-@app.route('/register', methods=["GET", "POST"])
+@app.route('/login', methods=["POST"])
+def login():
+    if request.is_json:
+        login_data = request.get_json()
+
+        username = login_data['username']
+        password_candidate = login_data['password']
+        id = User.check_login(username, password_candidate)
+        if type(id) is int:
+            # passed
+            session['logged_in'] = True
+            session['id'] = id
+            session['username'] = username
+            return {'statusCode': 0, 'status': 'successfully logged in'}
+        else:
+            return {'statusCode': 1, 'status': 'invalid username or password'}
+    else:
+        return "Bad Request", 400
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return {'statusCode': 0, 'status': 'successfully logged out'}
+
+
+@app.route('/register', methods=["POST"])
 def register():
-    if request.method == "POST":
-
+    if request.is_json:
         user_data = request.get_json()
         error = User.validate_user_input(user_data)
         if len(error) > 0:
@@ -45,68 +83,81 @@ def register():
         user = User(user_data)
         user.save()
         return {'statusCode': 0, 'status': 'successfully registered'}
-
-    return redirect(url_for("/test"))
+    else:
+        return "Bad Request", 400
 
 
 @app.route('/createTrip', methods=["POST"])
+@login_required
 def createTrip():
-    if request.method == "POST":
-        req_data = request.get_json()
-        user = User.get(req_data.get("userId"))
-        if user is None:
-            return {'statusCode': 1, 'status': "no valid user"}
+    if request.is_json:
 
-        trip = req_data["trip"]
-        trip["user_id"] = user.id
-        post = req_data["post"]
-        user.create_trip(trip, post)
-        return {'statusCode': 0, 'status': "Trip successfully saved"}
+        file_uid = session.get('file_upload_uid')
+        trip_data = request.get_json()
+        if img_handler.tmp_img_stored(file_uid):
+            filename = img_handler.save_image(
+                file_uid, session["id"], 'thumbnail')
+            trip_data['user_id'] = session["id"]
+            trip_data['thumbnail'] = "/img/{}".format(filename)
+            trip = Trip(trip_data)
+            trip_id = trip.save()
+            del session['file_upload_uid']
+            return {'statusCode': 0, 'status': "Trip successfully created", 'tripId': trip_id}
+
+        else:
+            return {'statusCode': 1, 'status': "Trip not successfully created"}
+
+    else:
+        return "Bad Request", 400
 
 
 @app.route('/createPost', methods=["POST"])
+@login_required
 def createPost():
-    if request.method == "POST":
+    if request.is_json:
         req_data = request.get_json()
-        trip = Trip.get(req_data.get("tripId"))
+
+        trip = Trip.get(req_data.get("trip_id"))
         if trip is None:
             return {'statusCode': 1, 'status': "no valid trip"}
 
         post_data = req_data["post"]
         trip.add_post(post_data)
-        return {'statusCode': 0, 'status': "Post successfully saved"}
+        return {'statusCode': 0, 'status': "Post successfully created"}
+    else:
+        return "Bad Request", 400
 
-#
-#
-# Test for uploading images
-@app.route('/upload', methods=["GET", "POST"])
+
+@app.route('/uploadImg', methods=["POST"])
+@login_required
 def upload():
+    if len(request.files) == 1:
+        files = request.files
 
-    # app.logger.info(request.)
-    # return "test"
+        # for post images
+        if 'postImg' in files:
+            if img_handler.allowed_img(files['postImg'].filename):
+                filename = img_handler.save_post_img(
+                    session['id'], files['postImg'])
+                return {'location': "/img/{}".format(filename)}
+            else:
+                return {'statusCode': 2, 'status': "file not allowed"}
 
-    if request.method == 'POST':
-        # check if the post request has the file part
-        if 'thumbnail' not in request.files:
-            app.logger.info("test")
-            return "test"
-            #return redirect(request.url)    
-        file = request.files['thumbnail']
-        # if user does not select file, browser also
-        # submit an empty part without filename
-        app.logger.info(file.filename)
-        if file.filename == '':
-            app.logger.info("test")
-            return 'No selected file'
-        if file and allowed_file(file.filename, ALLOWED_IMAGE_EXTENSIONS):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join("/usr/src/app/images", filename))
-            return redirect(url_for('uploaded_file',
-                                    filename=filename))
-    return {'statusCode': 0}
+        # for creating a trip, thumbnail upload
+        # or for adding a profil picture
+        elif 'thumbnail' in files or 'profileImg' in files:
+            file = files['thumbnail']
+            if img_handler.allowed_img(file.filename):
+                uid = img_handler.store_tmp_img(file)
+                session['file_upload_uid'] = uid
+                return {'statusCode': 0, 'status': "file temporarily saved"}
+            else:
+                return {'statusCode': 2, 'status': "file not allowed"}
+
+    else:
+        return {'statusCode': 1, 'status': "invalid upload"}
 
 
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory("/usr/src/app/images",
-                               filename)
+@app.route('/img/<filename>')
+def get_img(filename):
+    return send_from_directory("/usr/src/app/assets", filename)

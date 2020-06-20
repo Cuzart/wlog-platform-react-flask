@@ -20,7 +20,7 @@ export class CreatePost extends Component {
       country: "",
       description: "",
       caption: "",
-      content: null,
+      //content: null,
       location: "",
       locationObject: { label: "" },
       showModal: false,
@@ -31,10 +31,11 @@ export class CreatePost extends Component {
    this.setState({ showModal: !this.state.showModal });
   }; 
 
-  // If editor is changed
-  handleEditorChange = (content, editor) => {
-    this.setState({ content });
-  };
+  // // If editor is changed
+  // handleEditorChange = (content, editor) => {
+  //   this.setState({ content });
+  // };
+  
   // Updates state when form is changed
   handleChange = (event) => {
     let nam = window.event.target.name;
@@ -60,30 +61,39 @@ export class CreatePost extends Component {
     });
   };
 
-  // File Upload as Form Data to DB
-  handleFileUpload = (event) => {
-    const fd = new FormData();
-    fd.append("thumbnail", this.state.thumbnail);
-    axios.post("/upload", fd).then((res) => {
-      console.log(res);
-    });
-    //uploads whole state JSON 
-    axios.post("/tripUpload", this.state).then((res) => {
-      console.log(res);
-    })
-    // tinymce.activeEditor.uploadImages(function (success) {
-    //   $.post('ajax/post.php', window.tinymce.activeEditor.getContent()).done(function () {
-    //     console.log("Uploaded images and posted content as an ajax request.");
-    //   });
-    // });
-  };
-
-  //Submitting the Form
+  // submitting a entire trip with a post as callback pipeline
   handleSubmit = (event) => {
     window.event.preventDefault();
     this.setState({ showModal: false });
-    //this.handleFileUpload()
-    console.log(this.state.content);
+    const fd = new FormData();
+    fd.append("thumbnail", this.state.thumbnail);
+    // submits the thumbnail
+    axios.post("/uploadImg", fd).then((res) => {
+      let trip = { "title": this.state.title, "country": this.state.country, "description": this.state.description }
+      // submits the trip form
+      axios.post("/createTrip", trip).then((res) => {
+        // calls for each image in editor /uploadImg
+        window.tinymce.activeEditor.uploadImages((success) => {
+          let post = {
+            "trip_id": res.trip_id,
+            "post": {
+              "subtitle": this.state.caption,
+              "location_label": this.state.locationObject.label,
+              "location_longitude": this.state.locationObject.x,
+              "location_latitude": this.state.locationObject.y,
+              "text": window.tinymce.activeEditor.getContent(),
+            }
+          }
+          // submits post with editor content
+          axios.post('/createPost', post).then((res) => {
+              // Todo
+              console.log("Redirect to /profile")
+          });
+        });
+      })
+    });
+    
+    
   };
 
   render() {

@@ -5,32 +5,39 @@ from api import app
 
 
 class Post(Model):
-    """post..."""
+    """
+    Model Class for a post which represents a table row
+    has functions to manipulate and interact with the database  
+    """
 
     __INSERT_SQL = """INSERT INTO posts
-                   (trip_id, subtitle, location_longitude, location_latitude, text, gallery) 
-                   VALUES (%(trip_id)s, %(subtitle)s, %(location_longitude)s, %(location_latitude)s, %(text)s, %(gallery)s)"""
+                   (trip_id, subtitle, location_label, location_longitude, location_latitude, text) 
+                   VALUES (%(trip_id)s, %(subtitle)s, %(location_label)s, %(location_longitude)s, %(location_latitude)s, %(text)s)"""
     __UPDATE_SQL = """UPDATE posts 
-                     SET subtitle = %(subtitle)s, location_longitude = %(location_longitude)s, 
-                         location_latitude = %(location_latitude)s, text = %(text)s, gallery = %(gallery)s 
+                     SET subtitle = %(subtitle)s, location_label = %(location_label)s, 
+                         location_longitude = %(location_longitude)s, location_latitude = %(location_latitude)s, text = %(text)s
                      WHERE id = %(id)s"""
     __SELECT_SQL = "SELECT * FROM posts WHERE id = %(id)s"
     __DELETE_SQL = "DELETE FROM posts WHERE id = %(id)s"
     __SELECT_ALL_TRIP_POSTS_SQL = "SELECT * FROM posts WHERE trip_id = %(trip_id)s"
 
-
-    # gets a dict with the needed tripData an constructs a trip instance
     def __init__(self, post_data):
+        """Constructor of post instance
+
+        Args:
+            post_data (dict): includes all properties of post instance
+        """
         super().__init__(post_data.get("id"), post_data.get("created_at"))
         self._trip_id = post_data.get("trip_id")
         self.subtitle = post_data.get("subtitle")
+        self.location_label = post_data.get("location_label")
         self.location_longitude = post_data.get("location_longitude")
         self.location_latitude = post_data.get("location_latitude")
         self.text = post_data.get("text")
-        self.gallery = post_data.get("gallery")
 
-    ## PROPERTIES ##
-
+    ####################
+    ##   PROPERTIES   ##
+    ####################
     @property
     def trip_id(self):
         return self._trip_id
@@ -42,6 +49,14 @@ class Post(Model):
     @subtitle.setter
     def subtitle(self, subtitle):
         self._subtitle = subtitle
+
+    @property
+    def location_label(self):
+        return self._location_label
+
+    @location_label.setter
+    def location_label(self, location_label):
+        self._location_label = location_label
 
     @property
     def location_longitude(self):
@@ -67,19 +82,19 @@ class Post(Model):
     def text(self, text):
         self._text = text
 
-    @property
-    def gallery(self):
-        return self._gallery
-
-    @gallery.setter
-    def gallery(self, gallery):
-        self._gallery = gallery
-
-    # this method fetches a post out of the database
-    # param: id of post
-    # returns post instance
+    ####################
+    ##   FUNCTIONS    ##
+    ####################
     @staticmethod
     def get(id):
+        """this method fetches a post instance out of the database
+
+        Args:
+            id (int): id of the prefered post instance
+
+        Returns:
+            Post: post instance or None
+        """
         try:
             cursor = Model._db.cursor(dictionary=True)
             cursor.execute(Post.__SELECT_SQL, {'id': id})
@@ -97,22 +112,26 @@ class Post(Model):
         finally:
             cursor.close()
 
-    # returns a dict with all post attributes
     def get_dict(self):
+        """gets a dict with all post properties
+
+        Returns:
+            [dict]: with post properties
+        """
         postData = {}
         for property, value in self.__dict__.items():
             postData[property.lstrip("_")] = value
-
         return postData
 
-    # inserts the post instance
-    # returns post.id
     def insert(self):
+        """method to insert an instance into the DB
+
+        Returns:
+            int: id of post instance
+        """
         try:
             cursor = Model._db.cursor()
-            post_data = self.get_dict()
-            post_data["gallery"] = json.dumps(post_data.get("gallery"))
-            cursor.execute(Post.__INSERT_SQL, post_data)
+            cursor.execute(Post.__INSERT_SQL, self.get_dict())
             Model._db.commit()
             self._id = cursor.lastrowid
             return self.id
@@ -121,9 +140,12 @@ class Post(Model):
         finally:
             cursor.close()
 
-    # updates the post instance
-    # returns post.id
     def update(self):
+        """method to update an instance in the DB
+
+        Returns:
+            int: id of post instance
+        """
         try:
             cursor = Model._db.cursor()
             cursor.execute(Post.__UPDATE_SQL, self.get_dict())
@@ -134,9 +156,12 @@ class Post(Model):
         finally:
             cursor.close()
 
-    # deletes the post in the DB
-    # returns deleted post.id
     def delete(self):
+        """method to delete an instance in the DB
+
+        Returns:
+            int: id of deleted post instance
+        """
         try:
             cursor = Model._db.cursor()
             cursor.execute(Post.__DELETE_SQL, {'id': self.id})
@@ -149,6 +174,14 @@ class Post(Model):
 
     @staticmethod
     def get_all_trip_posts(trip_id):
+        """provides all posts belonging to a trip
+
+        Args:
+            trip_id (int): id of trip
+
+        Returns:
+            list: list of post instances
+        """
         try:
             cursor = Model._db.cursor(dictionary=True)
             cursor.execute(Post.__SELECT_ALL_TRIP_POSTS_SQL,
@@ -167,6 +200,5 @@ class Post(Model):
         except Exception as err:
             app.logger.info("An error occured: {}".format(err))
             raise err
-            # return None
         finally:
-            cursor.close()        
+            cursor.close()

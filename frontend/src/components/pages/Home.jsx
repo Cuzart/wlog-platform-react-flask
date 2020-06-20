@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "../../App.css";
 import Login from "../Login";
-import CreatePost from "./CreatePost"
+
 
 class Home extends Component {
   render() {
@@ -15,12 +15,11 @@ class Home extends Component {
             <div style={textStyle}>
               A home for <br /> your <span style={{ color:"#9EB091"}}> memories </span>
             </div>
-        
           </div>
          
         </div>
         <div style={barStyle}>
-          <img src="/images/bar.svg" />
+          <img src="/images/bar.svg" alt=""/>
         </div>
         <div className="App" height="500px">
            

@@ -1,2 +1,5 @@
 *.pyc
 *__pycache__
+assets/*.png
+assets/*.jpg
+assets/*.jpeg

@@ -3,6 +3,11 @@ from api.db.mariadb import Connector
 
 
 class Model(ABC):
+    """
+    defines a basic abstract Model Class, with to properties.
+    An id and a created_at which each Model needs to implement
+    Other Model Classes should inherit from this 
+    """
 
     _db = Connector.connect()
 
@@ -18,9 +23,15 @@ class Model(ABC):
     def created_at(self):
         return self._id
 
-    # the save functions saves the instance into the database
-    # if it already exists it gets updated otherwise inserted
     def save(self):
+        """
+        the save functions saves the instance into the database 
+        if it already exists it gets updated otherwise inserted
+
+        Returns:
+            int: the id of the saved instance
+        """
+
         if self.id is None:
             return self.insert()
         else:
@@ -28,8 +39,15 @@ class Model(ABC):
 
     @abstractmethod
     def insert(self):
+        """method to insert an instance into the DB"""
         pass
 
     @abstractmethod
     def update(self):
+        """method to update an instance in the DB"""
+        pass
+
+    @abstractmethod
+    def delete(self):
+        """method to delete an instance in the DB"""
         pass
