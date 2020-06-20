@@ -2,6 +2,7 @@ import React from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import FormGroup from "react-bootstrap/FormGroup";
+import axios from "axios";
 
 class Login extends React.Component {
   constructor(props) {
@@ -16,7 +17,7 @@ class Login extends React.Component {
     event.preventDefault();
     let login = this.state;
     console.log(login);
-    //axios.post("/login", login).then((res) => console.log(res));
+    axios.post("/login", login).then((res) => console.log(res));
   };
 
   handleChange = (event) => {
