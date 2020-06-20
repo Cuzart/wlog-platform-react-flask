@@ -9,7 +9,7 @@ class TripImage extends Component {
         rounded
           onClick={this.handleChange}
           className="thumbnail"
-          alt={this.props.title}
+          alt=""
           src={this.props.thumbnailUrl}
         />
         <div className="thumbnail_overlay">{this.props.description}</div>

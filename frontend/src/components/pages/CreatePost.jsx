@@ -71,6 +71,11 @@ export class CreatePost extends Component {
     axios.post("/tripUpload", this.state).then((res) => {
       console.log(res);
     })
+    // tinymce.activeEditor.uploadImages(function (success) {
+    //   $.post('ajax/post.php', window.tinymce.activeEditor.getContent()).done(function () {
+    //     console.log("Uploaded images and posted content as an ajax request.");
+    //   });
+    // });
   };
 
   //Submitting the Form
@@ -78,7 +83,7 @@ export class CreatePost extends Component {
     window.event.preventDefault();
     this.setState({ showModal: false });
     //this.handleFileUpload()
-    console.log(this.state);
+    console.log(this.state.content);
   };
 
   render() {

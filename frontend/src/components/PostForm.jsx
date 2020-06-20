@@ -70,32 +70,31 @@ class PostForm extends Component {
                   //images_upload_base_path: '/blog/images',
 
                   // file picker
-                  file_picker_callback: function (cb, value, meta) {
-                    var input = document.createElement("input");
-                    input.setAttribute("type", "file");
-                    input.setAttribute("accept", "image/png , image/jpg");
+                  images_upload_handler: function (blobInfo, success, failure) {
+                    var xhr, formData;
+                    xhr = new XMLHttpRequest();
+                    xhr.withCredentials = false;
+                    xhr.open('POST', 'postAcceptor.php');
+                    xhr.onload = function () {
+                      var json;
 
-                    input.onchange = function () {
-                      var file = this.files[0];
+                      if (xhr.status !== 200) {
+                        failure('HTTP Error: ' + xhr.status);
+                        return;
+                      }
+                      json = JSON.parse(xhr.responseText);
 
-                      var reader = new FileReader();
-                      reader.onload = function () {
-                        var id = "blobid" + new Date().getTime();
-                        var blobCache =
-                          window.tinymce.activeEditor.editorUpload.blobCache;
-                        var base64 = reader.result.split(",")[1];
-                        var blobInfo = blobCache.create(id, file, base64);
-                        blobCache.add(blobInfo);
-
-                        /* call the callback and populate the Title field with the file name */
-                        cb(blobInfo.blobUri(), { title: file.name });
-                      };
-                      reader.readAsDataURL(file);
-                      console.log(file);
+                      if (!json || typeof json.location !== 'string') {
+                        failure('Invalid JSON: ' + xhr.responseText);
+                        return;
+                      }
+                      success(json.location);
                     };
-
-                    input.click();
-                  },
+                    formData = new FormData();
+                    formData.append('gallery', window.event.target.files[0]);
+                    xhr.send(formData);
+                  }
+           
                 }}
               />
             </div>
@@ -109,6 +108,7 @@ class PostForm extends Component {
 const headerStyles = {
   fontFamily: "Libre Baskerville , serif",
   margin: "35px 0px",
+  
 };
 
 const paddingStyle = {

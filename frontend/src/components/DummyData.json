@@ -1,0 +1,36 @@
+{
+    "trips": [
+        {
+            "tripId": "uuid-7847418",
+            "userId": "uuid-2345435",
+            "title": "Kurzurlaub Süddeutschland",
+            "thumbnail": "/images/sonnenschein.png",
+            "country": "Deutschland",
+            "description": "Kurzurlaub wegen Kurzarbeit"
+        },
+        {
+        "posts": [
+            {
+                "postId": "uuid-123324",
+                "caption": "Tag am Bodensee",
+                "location": {
+                    "latitude": 40.324203,
+                    "longitude": 18.239212,
+                    "label": "Bodensee, Deutschland"
+                },
+                "content": "<h1> Heute war ein guter Tag </h1> <p> Wir waren ... "
+            },
+            {
+                "postId": "uuid-214224",
+                "caption": "Konstanz",
+                "location": {
+                    "latitude": 42.324203,
+                    "longitude": 17.612312,
+                    "label": "Konstanz, Deutschland"
+                },
+                "content": "<h1> Kaffee in Konstanz </h1> <p> Teuer ... "
+            }
+        ]
+        }
+    ]
+}
