@@ -155,7 +155,8 @@ class User(Model):
         self.trips = Trip.get_all_user_trips(self.id)
 
     def insert(self):
-        """method to insert an instance into the DB
+        """method to insert an instance into the DB.
+        Node that 'is_username_available()' should be executed beforehand 
 
         Returns:
             int: id of user instance
@@ -170,9 +171,10 @@ class User(Model):
             return self.id
         except MariaDB.IntegrityError as err:
             app.logger.info("Integrity error while inserting a user: %s" % err)
-            return False
+            return None
         except MariaDB.Error as err:
-            raise err
+            return None
+            # raise err     # for development
         finally:
             cursor.close()
 
@@ -190,7 +192,8 @@ class User(Model):
             Model._db.commit()
             return self.id
         except MariaDB.Error as err:
-            raise err
+            return None
+            # raise err     # for development
         finally:
             cursor.close()
 
@@ -206,7 +209,8 @@ class User(Model):
             Model._db.commit()
             return self.id
         except MariaDB.Error as err:
-            raise err
+            return None
+            # raise err     # for development
         finally:
             cursor.close()
 

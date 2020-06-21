@@ -64,26 +64,31 @@ export class CreatePost extends Component {
   handleFileUpload = (event) => {
     const fd = new FormData();
     fd.append("thumbnail", this.state.thumbnail);
-    axios.post("/upload", fd).then((res) => {
-      console.log(res);
-    });
-    //uploads whole state JSON 
-    axios.post("/tripUpload", this.state).then((res) => {
-      console.log(res);
-    })
-    // tinymce.activeEditor.uploadImages(function (success) {
-    //   $.post('ajax/post.php', window.tinymce.activeEditor.getContent()).done(function () {
-    //     console.log("Uploaded images and posted content as an ajax request.");
-    //   });
-    // });
-  };
-
-  //Submitting the Form
-  handleSubmit = (event) => {
-    window.tinymce.activeEditor.uploadImages(function(success) {
-      axios.post('/createTrip', window.tinymce.activeEditor.getContent()).then(() => {
-      console.log("Uploaded images and posted content as an ajax request.");
-      });
+    // submits the thumbnail
+    axios.post("/uploadImg", fd).then((res) => {
+      let trip = { "title": this.state.title, "country": this.state.country, "description": this.state.description }
+      // submits the trip form
+      axios.post("/createTrip", trip).then((res) => {
+        // calls for each image in editor /uploadImg
+        let tripId = res.data.trip_id
+        window.tinymce.activeEditor.uploadImages((success) => {
+          let post = {
+            "trip_id": tripId,
+            "post": {
+              "subtitle": this.state.caption,
+              "location_label": this.state.locationObject.label,
+              "location_longitude": this.state.locationObject.x,
+              "location_latitude": this.state.locationObject.y,
+              "text": window.tinymce.activeEditor.getContent(),
+            }
+          }
+          // submits post with editor content
+          axios.post('/createPost', post).then((res) => {
+              // Todo
+              console.log("Redirect to /profile")
+          });
+        });
+      })
     });
     
     window.event.preventDefault();
