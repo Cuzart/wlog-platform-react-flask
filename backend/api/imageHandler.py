@@ -68,6 +68,7 @@ def save_image(uid, user_id, filetype):
                 "{}/{}".format(IMG_PATH, new_filename))
 
     del tmp_files[uid]
+    return new_filename
 
 # def remove_tmp_images(uid):
 #     for img in tmp_files[uid]:
@@ -101,3 +102,13 @@ def tmp_img_stored(uid):
     if uid in tmp_files:
         return True
     return False
+
+
+def remove_image(filename):
+    """remove a saved image
+
+    Args:
+        filename (string): saved image in DB
+    """
+    filename = filename.replace("img/", "")
+    os.remove("{}/{}".format(IMG_PATH, filename))
