@@ -1,5 +1,10 @@
 import React from "react";
 import axios from "axios";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import FormGroup from "react-bootstrap/FormGroup";
 import "../../App.css";
 
 const emailRegex = RegExp(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/);
@@ -112,87 +117,112 @@ class Register extends React.Component {
   render() {
     const { formErrors } = this.state;
     return (
-      <div style={registerForm}>
+      <div className="container" style={registerForm}>
         <div style={captionStyle}>Register</div>
-        <form onSubmit={this.handleSubmit}>
-          <div>
-            <input
+        <Form onSubmit={this.handleSubmit} >
+          <FormGroup as={Row} >
+            <Col sm={12}>
+            <Form.Control
               className={formErrors.username.length > 0 ? "error" : null}
               type="text"
               placeholder="username"
               name="username"
               onChange={this.handleChange}
             />
-            <div style={errorMessage}>{formErrors.username.length > 0 && (<span >{formErrors.username}</span>)}</div>
-            
-          </div>
-          <div>
-            <input
+            </Col>
+          
+            <div>
+              {formErrors.username.length > 0 && (
+                <span style={errorMessage}>{formErrors.username}</span>
+              )}
+            </div>
+          
+          </FormGroup>
+          <FormGroup as={Row}>
+            <Col sm={12}>
+              <Form.Control
               className={formErrors.email.length > 0 ? "error" : null}
               type="text"
               placeholder="e-mail"
               name="email"
               onChange={this.handleChange}
-            />
+              />
+            </Col>
             <div>
               {formErrors.email.length > 0 && (
                 <span style={errorMessage}>{formErrors.email}</span>
               )}
             </div>
-          </div>
-          <div>
-            <input
+          </FormGroup>
+          <FormGroup as={Row}>
+            <Col sm={12}>
+              <Form.Control
               className={formErrors.password.length > 0 ? "error" : null}
               type="password"
               placeholder="password"
               name="password"
               onChange={this.handleChange}
-            />
+              />
+            </Col>
             <div>
               {formErrors.password.length > 0 && (
                 <span style={errorMessage}>{formErrors.password}</span>
               )}
             </div>
-          </div>
-          <div>
-            <input
+          </FormGroup>
+          <FormGroup as={Row}>
+            <Col sm={12}>
+              <Form.Control
               className={formErrors.password2.length > 0 ? "error" : null}
               type="password"
               placeholder="Password"
               name="password2"
               onChange={this.handleChange}
-              
-            />
-            <div>{formErrors.password2.length > 0 && (<span style={errorMessage}>{formErrors.password2}</span>)}</div>
-          </div>
-          <div>
-            <input
+              />
+            </Col>
+            <div>
+              {formErrors.password2.length > 0 && (
+                <span style={errorMessage}>{formErrors.password2}</span>
+              )}
+            </div>
+          </FormGroup>
+          <FormGroup as={Row}>
+            <Col sm={12}>
+              <Form.Control
               className={formErrors.name.length > 0 ? "error" : null}
               type="text"
               placeholder="name"
               name="name"
               onChange={this.handleChange}
-            />
+              />
+            </Col>
             <div>
               {formErrors.name.length > 0 && (
                 <span style={errorMessage}>{formErrors.name}</span>
               )}
             </div>
-          </div>
-          <div>
-            <input
+          </FormGroup>
+          <FormGroup as={Row}>
+            <Col sm={12}>
+              <Form.Control
               className={formErrors.surname.length > 0 ? "error" : null}
               type="text"
               placeholder="surname"
               name="surname"
               onChange={this.handleChange}
-            />
-            <div>{formErrors.surname.length > 0 && (<span style={errorMessage}>{formErrors.surname}</span>)}</div>
-         </div> <br/>
+              />
+            </Col>
+            <div>
+              {formErrors.surname.length > 0 && (
+                <span style={errorMessage}>{formErrors.surname}</span>
+              )}
+            </div>
+          </FormGroup>
           <div>
-            <button type="submit"> Register</button>
+            <Button variant="dark" type="submit" size="lg">Register
+            </Button>
           </div>
-        </form>
+        </Form>  
       </div>
     );
   }
@@ -200,17 +230,17 @@ class Register extends React.Component {
 
 const registerForm = {
   position: "fixed",
-  height: "440px",
+  height: "460px",
   width: "275px",
   top: "50%",
   left: "50%",
   // half the height and width to center
-  marginTop: "-180px",
-  marginLeft: "-138px",
+  marginTop: "-175px",
+  marginLeft: "-160px",
   background: "#9EB091",
   borderRadius: "8%",
   textAlign: "center",
-};
+}; 
 const captionStyle = {
   fontFamily: "Libre Baskerville , serif",
   padding: "20px",
@@ -223,6 +253,7 @@ const errorMessage = {
   fontFamily: "Segoe UI , serif",
   fontWeight: "bold",
   fontSize: "0.7em",
+  marginLeft: "35px"
   //display: "relative"
 }
 
