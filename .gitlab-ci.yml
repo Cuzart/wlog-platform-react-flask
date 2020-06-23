@@ -26,6 +26,7 @@ Test-Backend-to-Wlog:
         - pip run flask-lint
     only: 
         - branches
+    allow_failure: true
 #Deploy-Backend-to-Wlog:
 f_install:
     before_script:
@@ -64,6 +65,7 @@ f_linting:
         - cd src
         - eslint App.js # Add path to files where linter have to run
         - eslint index.js # Add path to files where linter have to run
+    allow_failure: true
 
 #f_test:e2e: auskomentiere wenn ein extra test selber gebaut ist
 #    before_script:
