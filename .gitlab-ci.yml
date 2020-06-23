@@ -60,7 +60,6 @@ f_linting:
     image: node:latest
     stage: test
     script:
-        - npm i -g eslint
         - eslint --init
         - cd src
         - eslint App.js # Add path to files where linter have to run
