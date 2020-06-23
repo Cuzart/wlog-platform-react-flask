@@ -142,7 +142,8 @@ class Trip(Model):
             self._id = cursor.lastrowid
             return self.id
         except MariaDB.Error as err:
-            raise err
+            return None
+            # raise err     # for development
         finally:
             cursor.close()
 
@@ -158,7 +159,8 @@ class Trip(Model):
             Model._db.commit()
             return self.id
         except MariaDB.Error as err:
-            raise err
+            return None
+            # raise err     # for development
         finally:
             cursor.close()
 
@@ -174,7 +176,8 @@ class Trip(Model):
             Model._db.commit()
             return self.id
         except MariaDB.Error as err:
-            raise err
+            return None
+            # raise err     # for development
         finally:
             cursor.close()
 
@@ -183,10 +186,15 @@ class Trip(Model):
 
         Args:
             post_data (dict): dict with all needed properties for a post
+
+        Returns:
+            bool: True if successfully saved else False
         """
         post_data["trip_id"] = self.id
         post = Post(post_data)
-        post.save()
+        if post.save() is None:
+            return False
+        return True
 
     @staticmethod
     def get_all_user_trips(user_id):

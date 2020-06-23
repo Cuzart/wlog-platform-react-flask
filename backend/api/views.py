@@ -3,7 +3,6 @@ from flask import request, session, send_from_directory
 from functools import wraps
 import os
 import json
-# from markupsafe import escape !!! TODO
 
 # own modules
 from api.db.user import User
@@ -41,6 +40,12 @@ def get_trip(id):
 
 @app.route('/login', methods=["POST"])
 def login():
+    """Endpoint to login. User can login with his credentials. 
+    Some important variables get stored in the session
+
+    Returns:
+        json: status message
+    """
     if request.is_json:
         login_data = request.get_json()
 
@@ -67,6 +72,13 @@ def logout():
 
 @app.route('/register', methods=["POST"])
 def register():
+    """Endpoint to register a new user. 
+    User input gets validated. Checks if username is still available. 
+    If request is valid new user gets saved to DB (registered)
+
+    Returns:
+        json: status message
+    """
     if request.is_json:
         user_data = request.get_json()
         error = User.validate_user_input(user_data)
@@ -89,11 +101,20 @@ def register():
 
 @app.route('/createTrip', methods=["POST"])
 @login_required
-def createTrip():
-    if request.is_json:
+def create_trip():
+    """Endpoint to create a new trip. Beforehand, a thumbnail needs to be sended to /upload.
+    Checks if request is valid. Stores corresponding image and saves new trip to DB.
 
-        file_uid = session.get('file_upload_uid')
+    Returns:
+        json: status message
+    """
+    if request.is_json:
         trip_data = request.get_json()
+        req_att = ("title", "country", "description")
+        if not all(key in trip_data for key in req_att):
+            return {'statusCode': 1, 'status': "invalid request, attributes missing"}
+       
+        file_uid = session.get('file_upload_uid')
         if img_handler.tmp_img_stored(file_uid):
             filename = img_handler.save_image(
                 file_uid, session["id"], 'thumbnail')
@@ -102,35 +123,55 @@ def createTrip():
             trip = Trip(trip_data)
             trip_id = trip.save()
             del session['file_upload_uid']
-            return {'statusCode': 0, 'status': "Trip successfully created", 'tripId': trip_id}
-
+            if trip_id is None:     # in case trip can't be saved to db remove stored thumbnail
+                img_handler.remove_image(trip_data['thumbnail'])
+                return {'statusCode': 3, 'status': "could not save trip"}
+            return {'statusCode': 0, 'status': "trip successfully created", 'trip_id': trip_id}
         else:
-            return {'statusCode': 1, 'status': "Trip not successfully created"}
-
+            return {'statusCode': 2, 'status': "thumbnail missing"}
     else:
         return "Bad Request", 400
 
 
 @app.route('/createPost', methods=["POST"])
 @login_required
-def createPost():
+def create_post():
+    """Endpoint to create a new Post. Beforehand, post images need to be sended to /upload.
+    Checks if request is valid. Saves new post to DB.
+
+    Returns:
+        json: status message
+    """
     if request.is_json:
         req_data = request.get_json()
-
+        if not all(key in req_data for key in ("trip_id", "post")):
+            return {'statusCode': 1, 'status': "invalid request, attributes missing"}
         trip = Trip.get(req_data.get("trip_id"))
         if trip is None:
-            return {'statusCode': 1, 'status': "no valid trip"}
+            return {'statusCode': 2, 'status': "no valid trip found"}
 
         post_data = req_data["post"]
-        trip.add_post(post_data)
-        return {'statusCode': 0, 'status': "Post successfully created"}
+        req_att = ("subtitle", "location_label", "location_longitude", "location_latitude", "text")
+        if not all(key in post_data for key in req_att):
+            return {'statusCode': 1, 'status': "invalid request, attributes missing"}
+
+        if not trip.add_post(post_data):
+            # delete images in a way
+            return {'statusCode': 3, 'status': "could not save post"}
+        return {'statusCode': 0, 'status': "post successfully created"}
     else:
         return "Bad Request", 400
 
 
 @app.route('/uploadImg', methods=["POST"])
 @login_required
-def upload():
+def upload_img():
+    """Endpoint to upload an image. It is possible to upload an "postImg", "thumbnail", or "profileImg"
+    In case of the last two the client gets a uid to refer to the image in the next request. 
+
+    Returns:
+        json: status message
+    """
     if len(request.files) == 1:
         files = request.files
 
@@ -144,9 +185,9 @@ def upload():
                 return {'statusCode': 2, 'status': "file not allowed"}
 
         # for creating a trip, thumbnail upload
-        # or for adding a profil picture
+        # or for adding a profile picture
         elif 'thumbnail' in files or 'profileImg' in files:
-            file = files['thumbnail']
+            file = files["thumbnail" if ('thumbnail' in files) else "profileImg"]
             if img_handler.allowed_img(file.filename):
                 uid = img_handler.store_tmp_img(file)
                 session['file_upload_uid'] = uid
@@ -158,6 +199,14 @@ def upload():
         return {'statusCode': 1, 'status': "invalid upload"}
 
 
-@app.route('/img/<filename>')
+@app.route('/img/<string:filename>')
 def get_img(filename):
+    """Endpoint to get a requested image
+
+    Args:
+        filename (string): requested image
+
+    Returns:
+        file: image
+    """
     return send_from_directory("/usr/src/app/assets", filename)

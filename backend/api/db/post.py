@@ -136,7 +136,8 @@ class Post(Model):
             self._id = cursor.lastrowid
             return self.id
         except MariaDB.Error as err:
-            raise err
+            return None
+            # raise err     # for development
         finally:
             cursor.close()
 
@@ -152,7 +153,8 @@ class Post(Model):
             Model._db.commit()
             return self.id
         except MariaDB.Error as err:
-            raise err
+            return None
+            # raise err     # for development
         finally:
             cursor.close()
 
@@ -168,7 +170,8 @@ class Post(Model):
             Model._db.commit()
             return self.id
         except MariaDB.Error as err:
-            raise err
+            return None
+            # raise err     # for development
         finally:
             cursor.close()
 
