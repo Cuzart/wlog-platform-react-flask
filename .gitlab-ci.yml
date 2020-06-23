@@ -61,21 +61,23 @@ f_linting:
     stage: test
     script:
         - npm i eslint
-        - node_modules/eslint/eslint.js
-f_test:e2e:
-    before_script:
-        - cd frontend
-    stage: test
-    image: cypress/browsers:chrome69
-    dependencies:
-        - f_install
-        - f_build
-    script:
-        - npm run e2e:ci
-    artifacts:
-        paths:
-            - cypress/screenshots
-            - cypres/videos
-        expire_in: 1 day
+        - ./node_modules/.bin/eslint
+        - ./node_modules/.bin/eslint ./frontend/scr/App.js
+        - ./node_modules/.bin/eslint ./frontend/scr/index.js
+#f_test:e2e:
+#    before_script:
+#        - cd frontend
+#    stage: test
+#    image: cypress/browsers:chrome69
+#    dependencies:
+#        - f_install
+#        - f_build
+#    script:
+#        - npm run e2e:ci
+#    artifacts:
+#        paths:
+#            - cypress/screenshots
+#            - cypres/videos
+#        expire_in: 1 day
 #Test-Frontend-to-Wlog:
 #Deploy-Frontend-to-Wlog:
