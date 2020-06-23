@@ -62,8 +62,8 @@ f_linting:
     script:
         - npm i eslint
         - ./node_modules/.bin/eslint
-        - ./node_modules/.bin/eslint ./frontend/scr/App.js
-        - ./node_modules/.bin/eslint ./frontend/scr/index.js
+        - ./node_modules/.bin/eslint ./frontend/src/App.js
+        - ./node_modules/.bin/eslint ./frontend/src/index.js
 #f_test:e2e:
 #    before_script:
 #        - cd frontend
