@@ -60,11 +60,12 @@ f_linting:
     image: node:latest
     stage: test
     script:
-        - npm i eslint
-        - ./node_modules/.bin/eslint
-        - ./node_modules/.bin/eslint ./frontend/src/App.js
-        - ./node_modules/.bin/eslint ./frontend/src/index.js
-#f_test:e2e:
+        - npm i -g eslint
+        - eslint --init
+        - eslint App.js # Add path to files where linter have to run
+        - eslint index.js # Add path to files where linter have to run
+
+#f_test:e2e: auskomentiere wenn ein extra test selber gebaut ist
 #    before_script:
 #        - cd frontend
 #    stage: test
