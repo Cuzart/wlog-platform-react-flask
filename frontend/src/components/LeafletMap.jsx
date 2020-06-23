@@ -12,8 +12,8 @@ const pin = new Icon({
 class LeafletMap extends Component {
   render() {
     const position = [
-      this.props.activePost.location_longitude,
       this.props.activePost.location_latitude,
+      this.props.activePost.location_longitude,
     ];
     const { isLoading, tripData } = this.props;
 
@@ -45,7 +45,7 @@ class LeafletMap extends Component {
                   ></Polyline>
                   <Marker
                     key={id}
-                    position={[location_longitude, location_latitude]}
+                    position={[location_latitude, location_longitude]}
                     icon={pin}
                     onClick={() => {
                       this.props.handleActiveMarker(post);

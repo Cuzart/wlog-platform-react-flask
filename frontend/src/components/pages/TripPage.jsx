@@ -38,7 +38,7 @@ export class TripPage extends Component {
         // creating a array of every post location point
         res.data.posts.map((point) => {
           const { location_latitude, location_longitude } = point;
-          polyline.push([location_longitude, location_latitude]);
+          polyline.push([location_latitude, location_longitude]);
           return 0;
         });
       })
