@@ -62,6 +62,7 @@ f_linting:
     script:
         - npm i -g eslint
         - eslint --init
+        - cd src
         - eslint App.js # Add path to files where linter have to run
         - eslint index.js # Add path to files where linter have to run
 
