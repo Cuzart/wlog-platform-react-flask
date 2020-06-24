@@ -7,7 +7,7 @@ Build-Backend-to-Wlog:
     stage: build
     script:
         - echo "Building"
-        - pip install -r backend/api/requirements.txt -t api/
+        - pip install -r backend/requirements.txt -t backend/api/
     artifacts:
         paths:
             - api/
