@@ -21,7 +21,14 @@ Test-Backend-to-Wlog:
         - pip install nose2
         - nose2 -v 
         - pip install flake8
-        - flake8 api/app.py
+        - flake8 backend/api/views.py
+        - flake8 backend/api/__init__.py
+        - flake8 backend/api/imageHandler.py
+        - flake8 backend/api/db/mariadb.py
+        - flake8 backend/api/db/model.py
+        - flake8 backend/api/db/post.py
+        - flake8 backend/api/db/trip.py
+        - flake8 backend/api/db/user.py
         - pip install flask-lint
         - pip run flask-lint
     only: 
