@@ -17,7 +17,7 @@ Test-Backend-to-Wlog:
     stage: test
     script:
         - echo "Testing"
-        - pip install -r backend/api/requirements.txt
+        - pip install -r backend/requirements.txt
         - pip install nose2
         - nose2 -v 
         - pip install flake8
