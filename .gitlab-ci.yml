@@ -7,7 +7,7 @@ Build-Backend-to-Wlog:
     stage: build
     script:
         - echo "Building"
-        - pip install -r api/requirements.txt -t api/
+        - pip install -r backend/api/requirements.txt -t api/
     artifacts:
         paths:
             - api/
@@ -17,7 +17,7 @@ Test-Backend-to-Wlog:
     stage: test
     script:
         - echo "Testing"
-        - pip install -r api/requirements.txt
+        - pip install -r backend/api/requirements.txt
         - pip install nose2
         - nose2 -v 
         - pip install flake8
