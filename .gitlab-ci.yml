@@ -68,10 +68,11 @@ f_linting:
     image: node:latest
     stage: test
     script:
+        - npm install
         - eslint --init
         - cd src
-        - eslint App.js # Add path to files where linter have to run
-        - eslint index.js # Add path to files where linter have to run
+        - npm run lint App.js # Add path to files where linter have to run
+        - npm run lint index.js # Add path to files where linter have to run
     allow_failure: true
 
 #f_test:e2e: auskomentiere wenn ein extra test selber gebaut ist
