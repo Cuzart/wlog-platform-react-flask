@@ -1,20 +1,18 @@
 stages:
     - build
     - test 
-Build-Backend-to-Wlog:
+
+backend_build:
     image: python:3.7
     stage: build
     script:
         - echo "Building"
         - pip install -r backend/requirements.txt -t backend/api/
-    artifacts:
-        paths:
-            - api/
-            - test_b/
-Test-Backend-to-Wlog:
+
+backend_linting:
     image: python:3.7
     stage: test
-    needs: [Build-Backend-to-Wlog]
+    needs: [backend_build]
     script:
         - echo "Testing"
         - pip install -r backend/requirements.txt
@@ -34,33 +32,25 @@ Test-Backend-to-Wlog:
     only: 
         - branches
     allow_failure: true
-#Deploy-Backend-to-Wlog:
-f_build:
-    before_script:
-        - cd frontend
+
+frontend_build:
     image: node:latest
     stage: build
     script:
-        - npm install
-    artifacts:
-        name: "artifacts"
-        untracked: true
-        expire_in: 30 mins
-        paths:
-            - .npm/
-            - frontend/node_modules/
-f_linting:
-    before_script:
         - cd frontend
+        - npm install
+    
+frontend_linting:
+    
     image: node:latest
     stage: test
-    needs: [f_build]
+    needs: [frontend_build]
     script:
-        - npm install
-        - eslint --init
+        - npm install eslint 
+        - npx eslint --init
         - cd src
-        - npm run lint App.js # Add path to files where linter have to run
-        - npm run lint index.js # Add path to files where linter have to run
+        - npx eslint App.js # Add path to files where linter have to run
+        - npx eslint index.js # Add path to files where linter have to run
     allow_failure: true
 
 #f_test:e2e: auskomentiere wenn ein extra test selber gebaut ist
