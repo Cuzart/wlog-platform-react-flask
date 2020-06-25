@@ -1,26 +1,35 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, withRouter } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import FormGroup from "react-bootstrap/FormGroup";
+import Alert from "react-bootstrap/Alert";
 import axios from "axios";
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoggedIn: false,
       username: "",
       password: "",
+      toggleAlert: false,
     };
   }
-  handleSubmit = (event) => {
+  handleLogin = (event) => {
     event.preventDefault();
     let login = this.state;
-    console.log(login);
-    axios.post("/login", login).then((res) => console.log(res));
+    axios.post("/login", login).then((res) => {
+      if (res.data.statusCode === 0) {
+        sessionStorage.setItem("authenticated", true);
+        sessionStorage.setItem("user", login.username);
+        this.props.history.push("/profile");
+        window.location.reload();
+      } else {
+        this.setState({ toggleAlert: true });
+      }
+    });
   };
 
   handleChange = (event) => {
@@ -33,23 +42,23 @@ class Login extends React.Component {
     return (
       <div className="container">
         <div style={captionStyle}>login</div>
-        <Form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this.handleLogin}>
           <FormGroup as={Row}>
             <Form.Label column sm={3}>
               Username
-              </Form.Label>
-              <Col sm={9}>
+            </Form.Label>
+            <Col sm={9}>
               <Form.Control
                 name="username"
                 type="text"
                 onChange={this.handleChange}
               />
-              </Col>   
+            </Col>
           </FormGroup>
           <FormGroup as={Row}>
             <Form.Label column sm={3}>
               Password
-              </Form.Label>
+            </Form.Label>
             <Col sm={9}>
               <Form.Control
                 name="password"
@@ -58,21 +67,24 @@ class Login extends React.Component {
               />
             </Col>
           </FormGroup>
+          {this.state.toggleAlert ? (
+            <Alert variant="danger">username or password not correct.</Alert>
+          ) : (
+            <div />
+          )}
           <div style={btnLayout}>
-            <Button variant="dark" type="submit" size="lg" >
+            <Button variant="dark" type="submit" size="lg">
               Login
             </Button>
             <NavLink
               exact
               className="nav-link"
               to="/register"
-              style={{ color: "#4e564b" }}
+              style={{ color: "#4e564b", fontWeight: "bold" }}
             >
               New here ? Register Now
-        </NavLink>
+            </NavLink>
           </div>
-         
-          
         </Form>
       </div>
     );
@@ -84,13 +96,13 @@ const captionStyle = {
   padding: "20px",
   fontSize: "34px",
   color: "#4e564b",
-  textAlign: "center"
+  textAlign: "center",
 };
 
 const btnLayout = {
   textAlign: "center",
-  marginBottom : "25px",
-  marginTop : "10px",
-}
+  marginBottom: "25px",
+  marginTop: "10px",
+};
 
-export default Login;
+export default withRouter(Login);
