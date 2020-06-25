@@ -46,6 +46,7 @@ frontend_linting:
     stage: test
     needs: [frontend_build]
     script:
+        - cd frontend
         - npm install eslint 
         - npx eslint --init
         - cd src
