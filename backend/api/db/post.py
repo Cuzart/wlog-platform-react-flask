@@ -85,33 +85,6 @@ class Post(Model):
     ####################
     ##   FUNCTIONS    ##
     ####################
-    @staticmethod
-    def get(id):
-        """this method fetches a post instance out of the database
-
-        Args:
-            id (int): id of the prefered post instance
-
-        Returns:
-            Post: post instance or None
-        """
-        try:
-            cursor = Model._db.cursor(dictionary=True)
-            cursor.execute(Post.__SELECT_SQL, {'id': id})
-            result = cursor.fetchone()
-            if result is None:
-                return None
-            post = post(result)
-            return post
-        except MariaDB.Error as err:
-            app.logger.info("Something went wrong: {}".format(err))
-            raise err
-        except Exception as err:
-            app.logger.info("An error occured: {}".format(err))
-            raise err
-        finally:
-            cursor.close()
-
     def get_dict(self):
         """gets a dict with all post properties
 
@@ -172,6 +145,36 @@ class Post(Model):
         except MariaDB.Error as err:
             return None
             # raise err     # for development
+        finally:
+            cursor.close()
+
+    ###########################
+    ##   STATIC FUNCTIONS    ##
+    ###########################
+    @staticmethod
+    def get(id):
+        """this method fetches a post instance out of the database
+
+        Args:
+            id (int): id of the prefered post instance
+
+        Returns:
+            Post: post instance or None
+        """
+        try:
+            cursor = Model._db.cursor(dictionary=True)
+            cursor.execute(Post.__SELECT_SQL, {'id': id})
+            result = cursor.fetchone()
+            if result is None:
+                return None
+            post = post(result)
+            return post
+        except MariaDB.Error as err:
+            app.logger.info("Something went wrong: {}".format(err))
+            raise err
+        except Exception as err:
+            app.logger.info("An error occured: {}".format(err))
+            raise err
         finally:
             cursor.close()
 

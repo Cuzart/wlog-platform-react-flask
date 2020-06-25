@@ -84,33 +84,6 @@ class Trip(Model):
     ####################
     ##   FUNCTIONS    ##
     ####################
-    @staticmethod
-    def get(id):
-        """this method fetches a trip instance out of the database
-
-        Args:
-            id (int): id of the prefered trip instance
-
-        Returns:
-            Trip: trip instance or None
-        """
-        try:
-            cursor = Model._db.cursor(dictionary=True)
-            cursor.execute(Trip.__SELECT_SQL, {'id': id})
-            result = cursor.fetchone()
-            if result is None:
-                return None
-            trip = Trip(result)
-            return trip
-        except MariaDB.Error as err:
-            app.logger.info("Something went wrong: {}".format(err))
-            raise err
-        except Exception as err:
-            app.logger.info("An error occured: {}".format(err))
-            raise err
-        finally:
-            cursor.close()
-
     def get_dict(self):
         """gets a dict with all trip properties
 
@@ -195,6 +168,36 @@ class Trip(Model):
         if post.save() is None:
             return False
         return True
+
+    ###########################
+    ##   STATIC FUNCTIONS    ##
+    ###########################
+    @staticmethod
+    def get(id):
+        """this method fetches a trip instance out of the database
+
+        Args:
+            id (int): id of the prefered trip instance
+
+        Returns:
+            Trip: trip instance or None
+        """
+        try:
+            cursor = Model._db.cursor(dictionary=True)
+            cursor.execute(Trip.__SELECT_SQL, {'id': id})
+            result = cursor.fetchone()
+            if result is None:
+                return None
+            trip = Trip(result)
+            return trip
+        except MariaDB.Error as err:
+            app.logger.info("Something went wrong: {}".format(err))
+            raise err
+        except Exception as err:
+            app.logger.info("An error occured: {}".format(err))
+            raise err
+        finally:
+            cursor.close()
 
     @staticmethod
     def get_all_user_trips(user_id):

@@ -1,3 +1,8 @@
+DROP TABLE posts;
+DROP TABLE trips;
+DROP TABLE users;
+
+
 -- phpMyAdmin SQL Dump
 -- version 5.0.2
 -- https://www.phpmyadmin.net/
@@ -83,7 +88,7 @@ CREATE TABLE `users` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `surname` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `description` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `profilpicture` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `profilepicture` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -91,7 +96,7 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `name`, `surname`, `description`, `profilpicture`, `created_at`) VALUES
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `name`, `surname`, `description`, `profilepicture`, `created_at`) VALUES
 (1, 'traveljunkie', 'user@mail.com', '$5$rounds=535000$aPu2yUWXEUMXXPMV$u8x5FqO7Lt7LwHbn7nl6Qlnm3DrVZ4IQYfCFxdm3oK.', 'Max', 'Mustermann', NULL, NULL, '2020-05-29 14:40:13');
 --
 -- Indexes for dumped tables
