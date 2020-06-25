@@ -156,7 +156,7 @@ def edit_trip():
 
 @app.route('/deleteTrip')
 @login_required
-def edit_trip():
+def delete_trip():
     # TODO
     pass
 
@@ -197,14 +197,14 @@ def create_post():
 
 @app.route('/editPost', methods=["POST"])
 @login_required
-def edit_trip():
+def edit_post():
     # TODO
     pass
 
 
 @app.route('/deletePost')
 @login_required
-def edit_trip():
+def delete_post():
     # TODO
     pass
 
