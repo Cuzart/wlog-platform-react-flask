@@ -13,7 +13,11 @@ function Header() {
           EXPLORE
         </NavLink>
         <NavLink exact to="/" activeClassName="nav-link-active">
-          <img src="/images/wlogLogo.svg" alt="Link to wlog home" style={{width: "50%"}}></img>
+          <img
+            src="/images/wlogLogo.svg"
+            alt="Link to wlog home"
+            style={{ width: "50%" }}
+          ></img>
         </NavLink>
         <NavLink
           exact
@@ -23,14 +27,25 @@ function Header() {
         >
           MAP
         </NavLink>
-        <NavLink
-          exact
-          className="nav-link"
-          activeClassName="nav-link-active"
-          to="/profile"
-        >
-          PROFILE
-        </NavLink>
+        {!sessionStorage.getItem("isLoggedIn") ? (
+          <NavLink
+            exact
+            className="nav-link"
+            activeClassName="nav-link-active"
+            to="/register"
+          >
+            REGISTER
+          </NavLink>
+        ) : (
+          <NavLink
+            exact
+            className="nav-link"
+            activeClassName="nav-link-active"
+            to="/profile"
+          >
+            PROFILE
+          </NavLink>
+        )}
       </header>
       <footer style={footerStyle}></footer>
     </div>

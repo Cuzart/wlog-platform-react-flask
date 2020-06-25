@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import { OpenStreetMapProvider } from "leaflet-geosearch";
+import { withRouter } from "react-router-dom";
 import TripForm from "../TripForm";
 import PostForm from "../PostForm";
 import Row from "react-bootstrap/Row";
@@ -20,7 +21,6 @@ export class CreatePost extends Component {
       country: "",
       description: "",
       caption: "",
-      //content: null,
       location: "",
       locationObject: { label: "" },
       showModal: false,
@@ -28,14 +28,9 @@ export class CreatePost extends Component {
   }
   // show Modal
   toggleModal = () => {
-   this.setState({ showModal: !this.state.showModal });
-  }; 
+    this.setState({ showModal: !this.state.showModal });
+  };
 
-  // // If editor is changed
-  // handleEditorChange = (content, editor) => {
-  //   this.setState({ content });
-  // };
-  
   // Updates state when form is changed
   handleChange = (event) => {
     let nam = window.event.target.name;
@@ -46,11 +41,11 @@ export class CreatePost extends Component {
   // leaflet-geosearch asynchronous API call to get a result{x: longitude, y: latitude, label: adress}
   handleLocationApi = async (event) => {
     const provider = new OpenStreetMapProvider();
-    const results = await provider.search({ 'query': this.state.location });
+    const results = await provider.search({ query: this.state.location });
     if (results.length > 0) {
-      this.setState({ locationObject: results[0] })
+      this.setState({ locationObject: results[0] });
     }
-  }
+  };
 
   // updates thumbnail and its url in state when new file is selected
   handleFileSelect = (event) => {
@@ -69,32 +64,33 @@ export class CreatePost extends Component {
     fd.append("thumbnail", this.state.thumbnail);
     // submits the thumbnail
     axios.post("/uploadImg", fd).then((res) => {
-      let trip = { "title": this.state.title, "country": this.state.country, "description": this.state.description }
+      let trip = {
+        title: this.state.title,
+        country: this.state.country,
+        description: this.state.description,
+      };
       // submits the trip form
       axios.post("/createTrip", trip).then((res) => {
         // calls for each image in editor /uploadImg
-        let tripId = res.data.trip_id
+        let tripId = res.data.trip_id;
         window.tinymce.activeEditor.uploadImages((success) => {
           let post = {
-            "trip_id": tripId,
-            "post": {
-              "subtitle": this.state.caption,
-              "location_label": this.state.locationObject.label,
-              "location_longitude": this.state.locationObject.x,
-              "location_latitude": this.state.locationObject.y,
-              "text": window.tinymce.activeEditor.getContent(),
-            }
-          }
+            trip_id: tripId,
+            post: {
+              subtitle: this.state.caption,
+              location_label: this.state.locationObject.label,
+              location_longitude: this.state.locationObject.x,
+              location_latitude: this.state.locationObject.y,
+              text: window.tinymce.activeEditor.getContent(),
+            },
+          };
           // submits post with editor content
-          axios.post('/createPost', post).then((res) => {
-              // Todo
-              console.log("Redirect to /profile")
+          axios.post("/createPost", post).then((res) => {
+            this.props.history.push("/profile");
           });
         });
-      })
+      });
     });
-    
-    
   };
 
   render() {
@@ -106,7 +102,7 @@ export class CreatePost extends Component {
             handleFileSelect={this.handleFileSelect}
             fileFormLabel={this.state.fileFormLabel}
           />
-          < hr style={hrStyle} />
+          <hr style={hrStyle} />
           <PostForm
             heading="add your first blog entry"
             handleChange={this.handleChange}
@@ -123,9 +119,14 @@ export class CreatePost extends Component {
             />
           </div>
           <div style={btnLayout}>
-            <Button variant="dark" type="submit" onClick={this.toggleModal} size="lg">
+            <Button
+              variant="dark"
+              type="submit"
+              onClick={this.toggleModal}
+              size="lg"
+            >
               Done
-          </Button>
+            </Button>
           </div>
         </Col>
         <div>
@@ -155,10 +156,10 @@ const previewStyle = {
 const btnLayout = {
   marginTop: "50px",
   textAlign: "right",
-  padding: "0px 90px"
-}
+  padding: "0px 90px",
+};
 const hrStyle = {
   margin: "30px 0px",
 };
 
-export default CreatePost;
+export default withRouter(CreatePost);

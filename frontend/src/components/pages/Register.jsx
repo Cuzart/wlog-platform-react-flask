@@ -1,42 +1,28 @@
 import React from "react";
+import { withRouter } from "react-router-dom";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import FormGroup from "react-bootstrap/FormGroup";
+import Alert from "react-bootstrap/Alert";
 import "../../App.css";
 
 const emailRegex = RegExp(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/);
 const usernameRegex = RegExp(/[a-zA-Z0-9.\-_]{3,20}/);
 
-//tests if a form is valid
-const formValid = ({ formErrors, ...rest }) => {
-  let valid = true;
-
-  //validate form errors being empty
-  Object.values(formErrors).forEach((val) => {
-    val.length > 0 && (valid = false);
-  });
-
-  //validate if form is filled out
-  //make sure no empty can be send if button is pushed
-  Object.values(rest).forEach((val) => {
-    val.length === 0 && (valid = false);
-  });
-
-  return valid;
-};
-
 class Register extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: "",
-      email: "",
-      password: "",
-      name: "",
-      surname: "",
+      user: {
+        username: "",
+        email: "",
+        password: "",
+        name: "",
+        surname: "",
+      },
       formErrors: {
         username: "",
         email: "",
@@ -45,23 +31,60 @@ class Register extends React.Component {
         name: "",
         surname: "",
       },
+
+      toggleAlert: false,
+      alertContent: "",
     };
   }
+
+  //tests if a form is valid
+  validateForm = () => {
+    console.log(this.state.user);
+    console.log(this.state.formErrors);
+    let valid = true;
+
+    //validate form errors being empty
+    Object.values(this.state.formErrors).forEach((val) => {
+      val.length > 0 && (valid = false);
+    });
+
+    //validate if form is filled out
+    //make sure no empty can be send if button is pushed
+    Object.values(this.state.user).forEach((val) => {
+      val.length === 0 && (valid = false);
+    });
+    return valid;
+  };
 
   // sends state object to REST API
   //if one form is invalid nothing will be send
   handleSubmit = (event) => {
     event.preventDefault();
-
-    //this.state.formErrors
-    if (formValid(this.state)) {
-      let user = this.state;
-      //console.log(`${this.state.username}`);
-      console.log("test");
-      console.log(user);
-      axios.post("/register", user).then((res) => console.log(res));
+    if (this.validateForm()) {
+      let user = this.state.user;
+      axios.post("/register", user).then((res) => {
+        switch (res.data.statusCode) {
+          case 0:
+            this.props.history.push("/");
+            break;
+          case 1:
+            this.setState({
+              toggleAlert: true,
+              alertContent: "Username is not available",
+            });
+            break;
+          default:
+            this.setState({
+              toggleAlert: true,
+              alertContent: "An error occured",
+            });
+        }
+      });
     } else {
-      console.error("form invalid");
+      this.setState({
+        toggleAlert: true,
+        alertContent: "Form is invalid",
+      });
     }
   };
 
@@ -70,7 +93,8 @@ class Register extends React.Component {
   handleChange = (event) => {
     let nam = event.target.name;
     let val = event.target.value;
-    this.setState({ [nam]: val });
+    const user = { ...this.state.user, [nam]: val };
+    this.setState(() => ({ user }));
 
     let formErrors = this.state.formErrors;
 
@@ -88,12 +112,12 @@ class Register extends React.Component {
 
       case "password":
         formErrors.password =
-          val.length > 6 ? "" : "passwords needs 6 characters minimum";
+          val.length >= 6 ? "" : "passwords needs 6 characters minimum";
         break;
 
       case "password2":
         formErrors.password2 =
-          this.state.password === val ? "" : "passwords need to be equal";
+          this.state.user.password === val ? "" : "passwords need to be equal";
         break;
 
       case "name":
@@ -108,7 +132,9 @@ class Register extends React.Component {
       default:
         break;
     }
-    this.setState({ formErrors, [nam]: val }, () => console.log(this.state));
+    // this.setState({ formErrors, [nam]: val });
+    const test = { ...this.state.formErrors, [nam]: val };
+    this.setState(() => ({ test }));
   };
 
   // register form
@@ -117,33 +143,32 @@ class Register extends React.Component {
     return (
       <div className="container" style={registerForm}>
         <div style={captionStyle}>Register</div>
-        <Form onSubmit={this.handleSubmit} >
-          <FormGroup as={Row} >
+        <Form onSubmit={this.handleSubmit}>
+          <FormGroup as={Row}>
             <Col sm={12}>
-            <Form.Control
-              className={formErrors.username.length > 0 ? "error" : null}
-              type="text"
-              placeholder="username"
-              name="username"
-              onChange={this.handleChange}
-            />
+              <Form.Control
+                className={formErrors.username.length > 0 ? "error" : null}
+                type="text"
+                placeholder="username"
+                name="username"
+                onChange={this.handleChange}
+              />
             </Col>
-          
+
             <div>
               {formErrors.username.length > 0 && (
                 <span style={errorMessage}>{formErrors.username}</span>
               )}
             </div>
-          
           </FormGroup>
           <FormGroup as={Row}>
             <Col sm={12}>
               <Form.Control
-              className={formErrors.email.length > 0 ? "error" : null}
-              type="text"
-              placeholder="e-mail"
-              name="email"
-              onChange={this.handleChange}
+                className={formErrors.email.length > 0 ? "error" : null}
+                type="text"
+                placeholder="e-mail"
+                name="email"
+                onChange={this.handleChange}
               />
             </Col>
             <div>
@@ -155,11 +180,11 @@ class Register extends React.Component {
           <FormGroup as={Row}>
             <Col sm={12}>
               <Form.Control
-              className={formErrors.password.length > 0 ? "error" : null}
-              type="password"
-              placeholder="password"
-              name="password"
-              onChange={this.handleChange}
+                className={formErrors.password.length > 0 ? "error" : null}
+                type="password"
+                placeholder="password"
+                name="password"
+                onChange={this.handleChange}
               />
             </Col>
             <div>
@@ -171,11 +196,11 @@ class Register extends React.Component {
           <FormGroup as={Row}>
             <Col sm={12}>
               <Form.Control
-              className={formErrors.password2.length > 0 ? "error" : null}
-              type="password"
-              placeholder="Password"
-              name="password2"
-              onChange={this.handleChange}
+                className={formErrors.password2.length > 0 ? "error" : null}
+                type="password"
+                placeholder="Password"
+                name="password2"
+                onChange={this.handleChange}
               />
             </Col>
             <div>
@@ -187,11 +212,11 @@ class Register extends React.Component {
           <FormGroup as={Row}>
             <Col sm={12}>
               <Form.Control
-              className={formErrors.name.length > 0 ? "error" : null}
-              type="text"
-              placeholder="name"
-              name="name"
-              onChange={this.handleChange}
+                className={formErrors.name.length > 0 ? "error" : null}
+                type="text"
+                placeholder="name"
+                name="name"
+                onChange={this.handleChange}
               />
             </Col>
             <div>
@@ -203,11 +228,11 @@ class Register extends React.Component {
           <FormGroup as={Row}>
             <Col sm={12}>
               <Form.Control
-              className={formErrors.surname.length > 0 ? "error" : null}
-              type="text"
-              placeholder="surname"
-              name="surname"
-              onChange={this.handleChange}
+                className={formErrors.surname.length > 0 ? "error" : null}
+                type="text"
+                placeholder="surname"
+                name="surname"
+                onChange={this.handleChange}
               />
             </Col>
             <div>
@@ -217,10 +242,18 @@ class Register extends React.Component {
             </div>
           </FormGroup>
           <div>
-            <Button variant="dark" type="submit" size="lg">Register
-            </Button>
+            {this.state.toggleAlert ? (
+              <Alert variant="danger">{this.state.alertContent}</Alert>
+            ) : (
+              <div />
+            )}
+            <div>
+              <Button variant="dark" type="submit" size="lg">
+                Register
+              </Button>
+            </div>
           </div>
-        </Form>  
+        </Form>
       </div>
     );
   }
@@ -228,21 +261,24 @@ class Register extends React.Component {
 
 const registerForm = {
   position: "fixed",
-  height: "460px",
+  minHeight: "475px",
+  height: "auto",
   width: "275px",
   top: "50%",
   left: "50%",
+  padding: "30px",
   // half the height and width to center
   marginTop: "-175px",
   marginLeft: "-160px",
   background: "#9EB091",
-  borderRadius: "8%",
+  borderRadius: "15px",
   textAlign: "center",
-}; 
+  marginBottom: "10%",
+};
 const captionStyle = {
   fontFamily: "Libre Baskerville , serif",
-  padding: "20px",
-  fontSize: "x-large",
+  paddingBottom: "20px",
+  fontSize: "34px",
   color: "#4e564b",
 };
 
@@ -251,8 +287,7 @@ const errorMessage = {
   fontFamily: "Segoe UI , serif",
   fontWeight: "bold",
   fontSize: "0.7em",
-  marginLeft: "35px"
-  //display: "relative"
+  marginLeft: "35px",
 };
 
-export default Register;
+export default withRouter(Register);

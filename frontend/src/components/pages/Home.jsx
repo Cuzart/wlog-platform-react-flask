@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import "../../App.css";
 import Login from "../Login";
 
-
 class Home extends Component {
   render() {
     return (
@@ -10,21 +9,22 @@ class Home extends Component {
         <div className="home-bg">
           <div className="container">
             <div style={loginForm}>
-              <Login />
+              {!sessionStorage.getItem("isLoggedIn") ? <Login /> : <div />}
             </div>
             <div style={textStyle}>
-              A home for <br /> your <span style={{ color:"#9EB091"}}> memories </span>
+              A home for <br /> your{" "}
+              <span style={{ color: "#9EB091" }}> memories </span>
             </div>
           </div>
-         
         </div>
         <div style={barStyle}>
-          <img src="/images/bar.svg" alt=""/>
+          <img src="/images/bar.svg" alt="" />
         </div>
         <div className="App" height="500px">
-           
+          <button
+            onClick={() => console.log(sessionStorage.getItem("user"))}
+          ></button>
         </div>
-        
       </div>
     );
   }
@@ -48,14 +48,14 @@ const textStyle = {
   fontFamily: "Libre Baskerville , serif",
   padding: "20px",
   fontSize: "50pt",
-  color:"white",
+  color: "white",
   textShadow: "2px 2px #000000c0",
-}
+};
 
 const barStyle = {
   position: "grid",
   marginTop: "-300px",
   bottom: "-200px",
-}
+};
 
 export default Home;
