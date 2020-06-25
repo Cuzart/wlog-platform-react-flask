@@ -1,0 +1,82 @@
+stages:
+    - build
+    - test 
+Build-Backend-to-Wlog:
+    image: python:3.7
+    stage: build
+    script:
+        - echo "Building"
+        - pip install -r backend/requirements.txt -t backend/api/
+    artifacts:
+        paths:
+            - api/
+            - test_b/
+Test-Backend-to-Wlog:
+    image: python:3.7
+    stage: test
+    needs: [Build-Backend-to-Wlog]
+    script:
+        - echo "Testing"
+        - pip install -r backend/requirements.txt
+        - pip install nose2
+        - nose2 -v 
+        - pip install flake8
+        - flake8 backend/api/views.py
+        - flake8 backend/api/__init__.py
+        - flake8 backend/api/imageHandler.py
+        - flake8 backend/api/db/mariadb.py
+        - flake8 backend/api/db/model.py
+        - flake8 backend/api/db/post.py
+        - flake8 backend/api/db/trip.py
+        - flake8 backend/api/db/user.py
+        - pip install flask-lint
+        - pip run flask-lint
+    only: 
+        - branches
+    allow_failure: true
+#Deploy-Backend-to-Wlog:
+f_build:
+    before_script:
+        - cd frontend
+    image: node:latest
+    stage: build
+    script:
+        - npm install
+    artifacts:
+        name: "artifacts"
+        untracked: true
+        expire_in: 30 mins
+        paths:
+            - .npm/
+            - frontend/node_modules/
+f_linting:
+    before_script:
+        - cd frontend
+    image: node:latest
+    stage: test
+    needs: [f_build]
+    script:
+        - npm install
+        - eslint --init
+        - cd src
+        - npm run lint App.js # Add path to files where linter have to run
+        - npm run lint index.js # Add path to files where linter have to run
+    allow_failure: true
+
+#f_test:e2e: auskomentiere wenn ein extra test selber gebaut ist
+#    before_script:
+#        - cd frontend
+#    stage: test
+#    image: cypress/browsers:chrome69
+#    dependencies:
+#        - f_install
+#        - f_build
+#    script:
+#        - npm run e2e:ci
+#    artifacts:
+#        paths:
+#            - cypress/screenshots
+#            - cypres/videos
+#        expire_in: 1 day
+#Test-Frontend-to-Wlog:
+#Deploy-Frontend-to-Wlog:
