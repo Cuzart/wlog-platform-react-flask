@@ -42,7 +42,8 @@ frontend_linting:
         - cd frontend
         - npm install eslint 
         - npx eslint --init
-        - npx eslint --ext .js --ext .jsx src # Add path to files where linter have to run
+        - npx eslint src/**/*.js
+        - npx eslint src/**/*.jsx # Add path to files where linter have to run
     allow_failure: true
 
 #f_test:e2e: auskomentiere wenn ein extra test selber gebaut ist
