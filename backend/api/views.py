@@ -28,6 +28,9 @@ def index():
     return "Wlog - API"
 
 
+#######################
+#   GETTER REQUESTS   #
+#######################
 @app.route('/profile/<int:id>')
 def get_user(id):
     return User.get_profile_data(id)
@@ -38,6 +41,14 @@ def get_trip(id):
     return Trip.get_trip_data(id)
 
 
+@app.route('/img/<string:filename>')
+def get_img(filename):
+    return send_from_directory("/usr/src/app/assets", filename)
+
+
+##################################
+#   LOGIN, LOGOUT AND REGISTER   #
+##################################
 @app.route('/login', methods=["POST"])
 def login():
     """Endpoint to login. User can login with his credentials. 
@@ -99,6 +110,9 @@ def register():
         return "Bad Request", 400
 
 
+#######################
+#    TRIP FUNCTIONS   #
+#######################
 @app.route('/createTrip', methods=["POST"])
 @login_required
 def create_trip():
@@ -113,7 +127,7 @@ def create_trip():
         req_att = ("title", "country", "description")
         if not all(key in trip_data for key in req_att):
             return {'statusCode': 1, 'status': "invalid request, attributes missing"}
-       
+
         file_uid = session.get('file_upload_uid')
         if img_handler.tmp_img_stored(file_uid):
             filename = img_handler.save_image(
@@ -133,6 +147,23 @@ def create_trip():
         return "Bad Request", 400
 
 
+@app.route('/editTrip', methods=["POST"])
+@login_required
+def edit_trip():
+    # TODO
+    pass
+
+
+@app.route('/deleteTrip')
+@login_required
+def edit_trip():
+    # TODO
+    pass
+
+
+#######################
+#    POST FUNCTIONS   #
+#######################
 @app.route('/createPost', methods=["POST"])
 @login_required
 def create_post():
@@ -151,7 +182,8 @@ def create_post():
             return {'statusCode': 2, 'status': "no valid trip found"}
 
         post_data = req_data["post"]
-        req_att = ("subtitle", "location_label", "location_longitude", "location_latitude", "text")
+        req_att = ("subtitle", "location_label",
+                   "location_longitude", "location_latitude", "text")
         if not all(key in post_data for key in req_att):
             return {'statusCode': 1, 'status': "invalid request, attributes missing"}
 
@@ -163,18 +195,60 @@ def create_post():
         return "Bad Request", 400
 
 
+@app.route('/editPost', methods=["POST"])
+@login_required
+def edit_trip():
+    # TODO
+    pass
+
+
+@app.route('/deletePost')
+@login_required
+def edit_trip():
+    # TODO
+    pass
+
+
+###########################
+#    PROFILE FUNCTIONS    #
+###########################
+@app.route('/editProfile', methods=["POST"])
+@login_required
+def edit_profile():
+    """Endpoint to update a users profile. 
+
+    Returns:
+        json: status message
+    """
+    if request.is_json:
+        user_data = request.get_json()
+        req_att = ("name", "surname", "description")
+        if not all(key in user_data for key in req_att):
+            return {'statusCode': 1, 'status': "invalid request, attributes missing"}
+        if User.edit_profile(session["id"], user_data):
+            return {'statusCode': 0, 'status': "user profile successfully updated"}
+        else:
+            return {'statusCode': 2, 'status': "could not update user profile"}
+    else:
+        return "Bad Request", 400
+
+
+
+######################
+#    IMAGE UPLOAD    #
+######################
 @app.route('/uploadImg', methods=["POST"])
 @login_required
 def upload_img():
     """Endpoint to upload an image. It is possible to upload an "postImg", "thumbnail", or "profileImg"
-    In case of the last two the client gets a uid to refer to the image in the next request. 
+    In case of the "thumbnail", the client gets a uid to refer to the image in the next request. 
+    In case of the "profileImg" the old image gets removed and the new one saved.
 
     Returns:
         json: status message
     """
     if len(request.files) == 1:
         files = request.files
-
         # for post images
         if 'postImg' in files:
             if img_handler.allowed_img(files['postImg'].filename):
@@ -183,30 +257,30 @@ def upload_img():
                 return {'location': "/img/{}".format(filename)}
             else:
                 return {'statusCode': 2, 'status': "file not allowed"}
-
         # for creating a trip, thumbnail upload
         # or for adding a profile picture
-        elif 'thumbnail' in files or 'profileImg' in files:
-            file = files["thumbnail" if ('thumbnail' in files) else "profileImg"]
+        elif 'thumbnail' in files:
+            file = files["thumbnail"]
             if img_handler.allowed_img(file.filename):
                 uid = img_handler.store_tmp_img(file)
                 session['file_upload_uid'] = uid
                 return {'statusCode': 0, 'status': "file temporarily saved"}
             else:
                 return {'statusCode': 2, 'status': "file not allowed"}
+        elif 'profileImg' in files:
+            file = files["profileImg"]
+            if img_handler.allowed_img(file.filename):
+                uid = img_handler.store_tmp_img(file)
+                user = User.get(session["id"])
+                if user.profilepicture is not None:  # remove old profile picture
+                    img_handler.remove_image(user.profilepicture)
+                filename = img_handler.save_image(
+                    uid, session["id"], 'profileImg')
+                user.profilepicture = "/img/{}".format(filename)
+                user.save()
+                return {'statusCode': 3, 'status': "profileImg successfully saved"}
+            else:
+                return {'statusCode': 2, 'status': "file not allowed"}
 
     else:
         return {'statusCode': 1, 'status': "invalid upload"}
-
-
-@app.route('/img/<string:filename>')
-def get_img(filename):
-    """Endpoint to get a requested image
-
-    Args:
-        filename (string): requested image
-
-    Returns:
-        file: image
-    """
-    return send_from_directory("/usr/src/app/assets", filename)
