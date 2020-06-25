@@ -9,7 +9,7 @@ class Home extends Component {
         <div className="home-bg">
           <div className="container">
             <div style={loginForm}>
-              {!sessionStorage.getItem("isLoggedIn") ? <Login /> : <div />}
+              {!sessionStorage.getItem("authenticated") ? <Login /> : <div />}
             </div>
             <div style={textStyle}>
               A home for <br /> your{" "}

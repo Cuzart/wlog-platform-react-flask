@@ -27,7 +27,7 @@ function Header() {
         >
           MAP
         </NavLink>
-        {!sessionStorage.getItem("isLoggedIn") ? (
+        {!sessionStorage.getItem("authenticated") ? (
           <NavLink
             exact
             className="nav-link"
