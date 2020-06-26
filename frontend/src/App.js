@@ -8,6 +8,7 @@ import Home from "./components/pages/Home";
 import CreatePost from "./components/pages/CreatePost";
 import AddPost from "./components/pages/AddPost";
 import TripPage from "./components/pages/TripPage";
+import TripGrid from "./components/TripGrid";
 
 class App extends Component {
   render() {
@@ -21,6 +22,7 @@ class App extends Component {
             <Route exact path="/create" component={CreatePost} />
             <Route exact path="/add" component={AddPost} />
             <Route exact path="/map" component={TripPage} />
+            <Route exact path="/test" component={TripGrid} />
           </Switch>
         </div>
       </Router>

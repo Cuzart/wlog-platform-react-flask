@@ -52,7 +52,7 @@ function Header() {
   );
 }
 
-const footerStyle = {
+let footerStyle = {
   visibility: "hidden",
   position: "fixed",
   left: "0",

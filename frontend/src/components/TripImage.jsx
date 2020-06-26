@@ -1,13 +1,17 @@
 import React, { Component } from "react";
-import Image from 'react-bootstrap/Image'
+import { withRouter } from "react-router-dom";
+import Image from "react-bootstrap/Image";
 class TripImage extends Component {
   render() {
     return (
-      <div className="thumbnail_container" position="relative">
+      <div
+        className="thumbnail_container"
+        position="relative"
+        onClick={() => this.props.history.push("/trip/" + this.props.tripId)}
+      >
         <div className="thumbnail_title">{this.props.title}</div>
         <Image
-        rounded
-          onClick={this.handleChange}
+          rounded
           className="thumbnail"
           alt=""
           src={this.props.thumbnailUrl}
@@ -18,4 +22,4 @@ class TripImage extends Component {
   }
 }
 
-export default TripImage;
+export default withRouter(TripImage);
