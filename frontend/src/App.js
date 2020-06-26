@@ -20,7 +20,8 @@ class App extends Component {
             <Route exact path="/register" component={Register} />
             <Route exact path="/create" component={CreatePost} />
             <Route exact path="/add" component={AddPost} />
-            <Route exact path="/map" component={TripPage} />
+            <Route exact path="/trip/:id" component={TripPage} />
+            {/* <Route exact path="/profile/:id" component={ProfilePage} /> */}
           </Switch>
         </div>
       </Router>

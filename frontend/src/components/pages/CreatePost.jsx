@@ -86,6 +86,8 @@ export class CreatePost extends Component {
           };
           // submits post with editor content
           axios.post("/createPost", post).then((res) => {
+            //check if successfully created
+            console.log(res.data);
             this.props.history.push("/profile");
           });
         });

@@ -12,6 +12,7 @@ export class TripPage extends Component {
     super(props);
 
     this.state = {
+      tripId: this.props.match.params.id,
       activePost: { text: "", location_longitude: 0, location_latitude: 0 },
       tripData: [],
       isLoading: true,
@@ -27,7 +28,7 @@ export class TripPage extends Component {
   // fetching the data from the API
   getTripData() {
     axios
-      .get("/trip/1")
+      .get(`/trip/${this.state.tripId}`)
       .then((res) => {
         this.setState({
           tripData: res.data,
@@ -85,7 +86,7 @@ export class TripPage extends Component {
                       <p>{location_label}</p>
                     </Accordion.Toggle>
                     <Accordion.Collapse eventKey={id}>
-                      <Card.Body>{text}</Card.Body>
+                      <Card.Body dangerouslySetInnerHTML={{__html: text}}/>
                     </Accordion.Collapse>
                   </Card>
                 );

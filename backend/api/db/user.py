@@ -140,15 +140,15 @@ class User(Model):
             cursor.execute(User.__INSERT_SQL, user_data)
             Model._db.commit()
             self._id = cursor.lastrowid
+            app.logger.info("Added a new user with id: {}".format(self.id))
             return self.id
         except MariaDB.IntegrityError as err:
-            app.logger.info("Integrity error while inserting a user: %s" % err)
+            app.logger.warning(
+                "Integrity error while inserting a user: %s" % err)
             return None
         except MariaDB.Error as err:
+            app.logger.error("An error occured: {}".format(err))
             return None
-            # raise err     # for development
-        finally:
-            cursor.close()
 
     def update(self):
         """method to update an instance in the DB
@@ -164,10 +164,8 @@ class User(Model):
             Model._db.commit()
             return self.id
         except MariaDB.Error as err:
+            app.logger.error("An error occured: {}".format(err))
             return None
-            # raise err     # for development
-        finally:
-            cursor.close()
 
     def delete(self):
         """method to delete an instance in the DB
@@ -179,12 +177,11 @@ class User(Model):
             cursor = Model._db.cursor()
             cursor.execute(User.__DELETE_SQL, {'id': self.id})
             Model._db.commit()
+            app.logger.info("User with id {} deleted".format(self.id))
             return self.id
         except MariaDB.Error as err:
+            app.logger.error("An error occured: {}".format(err))
             return None
-            # raise err     # for development
-        finally:
-            cursor.close()
 
     ###########################
     ##   STATIC FUNCTIONS    ##
@@ -208,14 +205,8 @@ class User(Model):
             user = User(result)
             return user
         except MariaDB.Error as err:
-            app.logger.info("Something went wrong: {}".format(err))
-            raise err
-        except Exception as err:
-            app.logger.info("An error occured: {}".format(err))
-            raise err
+            app.logger.error("An error occured: {}".format(err))
             return None
-        finally:
-            cursor.close()
 
     @staticmethod
     def validate_user_input(user_data):
@@ -263,11 +254,9 @@ class User(Model):
             if len(data) > 0:
                 return False
             return True
-
         except MariaDB.Error as err:
-            raise err
-        finally:
-            cursor.close()
+            app.logger.error("An error occured: {}".format(err))
+            return False
 
     @staticmethod
     def check_login(username, password_candidate):
@@ -284,20 +273,16 @@ class User(Model):
             cursor = Model._db.cursor(dictionary=True)
             cursor.execute(User.__CHECK_LOGIN_SQL, {'username': username})
             result = cursor.fetchone()
-
             if result is None:
                 return False
-
             password = result["password"]
             if sha256_crypt.verify(password_candidate, password):
                 return result["id"]
             else:
                 return False
-
         except MariaDB.Error as err:
-            raise err
-        finally:
-            cursor.close()
+            app.logger.error("An error occured: {}".format(err))
+            raise False
 
     @staticmethod
     def get_profile_data(id):
