@@ -1,6 +1,7 @@
 from api.db.mariadb import Connector, MariaDB
 from api.db.model import Model
 import json
+import html
 from api import app
 
 
@@ -76,7 +77,8 @@ class Post(Model):
 
     @property
     def text(self):
-        return self._text
+        # unsecape to display html
+        return html.unescape(self._text) 
 
     @text.setter
     def text(self, text):
@@ -85,33 +87,6 @@ class Post(Model):
     ####################
     ##   FUNCTIONS    ##
     ####################
-    @staticmethod
-    def get(id):
-        """this method fetches a post instance out of the database
-
-        Args:
-            id (int): id of the prefered post instance
-
-        Returns:
-            Post: post instance or None
-        """
-        try:
-            cursor = Model._db.cursor(dictionary=True)
-            cursor.execute(Post.__SELECT_SQL, {'id': id})
-            result = cursor.fetchone()
-            if result is None:
-                return None
-            post = post(result)
-            return post
-        except MariaDB.Error as err:
-            app.logger.info("Something went wrong: {}".format(err))
-            raise err
-        except Exception as err:
-            app.logger.info("An error occured: {}".format(err))
-            raise err
-        finally:
-            cursor.close()
-
     def get_dict(self):
         """gets a dict with all post properties
 
@@ -134,12 +109,11 @@ class Post(Model):
             cursor.execute(Post.__INSERT_SQL, self.get_dict())
             Model._db.commit()
             self._id = cursor.lastrowid
+            app.logger.debug("Added a new post with id: {}".format(self.id))
             return self.id
         except MariaDB.Error as err:
+            app.logger.error("An error occured: {}".format(err))
             return None
-            # raise err     # for development
-        finally:
-            cursor.close()
 
     def update(self):
         """method to update an instance in the DB
@@ -153,10 +127,8 @@ class Post(Model):
             Model._db.commit()
             return self.id
         except MariaDB.Error as err:
+            app.logger.error("An error occured: {}".format(err))
             return None
-            # raise err     # for development
-        finally:
-            cursor.close()
 
     def delete(self):
         """method to delete an instance in the DB
@@ -168,12 +140,39 @@ class Post(Model):
             cursor = Model._db.cursor()
             cursor.execute(Post.__DELETE_SQL, {'id': self.id})
             Model._db.commit()
+            app.logger.debug("Post {} deleted".format(self.id))
             return self.id
         except MariaDB.Error as err:
+            app.logger.error("An error occured: {}".format(err))
             return None
-            # raise err     # for development
-        finally:
-            cursor.close()
+
+    ###########################
+    ##   STATIC FUNCTIONS    ##
+    ###########################
+    @staticmethod
+    def get(id):
+        """this method fetches a post instance out of the database
+
+        Args:
+            id (int): id of the prefered post instance
+
+        Returns:
+            Post: post instance or None
+        """
+        try:
+            cursor = Model._db.cursor(dictionary=True)
+            cursor.execute(Post.__SELECT_SQL, {'id': id})
+            result = cursor.fetchone()
+            if result is None:
+                return None
+            post = post(result)
+            return post
+        except MariaDB.Error as err:
+            app.logger.error("Something went wrong: {}".format(err))
+            return None
+        except Exception as err:
+            app.logger.error("An error occured: {}".format(err))
+            return None
 
     @staticmethod
     def get_all_trip_posts(trip_id):
@@ -198,10 +197,5 @@ class Post(Model):
                     posts.append(Post(post_data))
                 return posts
         except MariaDB.Error as err:
-            app.logger.info("Something went wrong: {}".format(err))
-            raise err
-        except Exception as err:
-            app.logger.info("An error occured: {}".format(err))
-            raise err
-        finally:
-            cursor.close()
+            app.logger.error("An error occured: {}".format(err))
+            return []

@@ -44,7 +44,7 @@ class PostForm extends Component {
                 apiKey="ykdvtcb9mmz6dfe2dnupk22gz7or7ygc59unyeye0x1yr9g8"
                 id="uuid"
                 outputFormat="html"
-                initialValue="<h3>Tell your story now...🏕</h3>"
+                initialValue="<h3>Tell your story now...</h3>"
                 onEditorChange={this.props.handleEditorChange}
                 init={{
                   automatic_uploads: false,
@@ -52,11 +52,11 @@ class PostForm extends Component {
                   menubar: true,
                   plugins: [
                     "advlist lists link image imagetools charmap print preview  help",
-                    "searchreplace visualblocks emoticons autoresize autosave",
+                    "searchreplace visualblocks autoresize autosave",
                     "insertdatetime media table paste wordcount fullscreen",
                   ],
                   toolbar:
-                    "undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | image  link table forecolor backcolor charmap emoticons | save restoredraft help fullscreen",
+                    "undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | image  link table forecolor backcolor | save restoredraft help fullscreen",
 
                   contextmenu_never_use_native: true,
                   statusbar: false,

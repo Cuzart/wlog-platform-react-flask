@@ -110,5 +110,5 @@ def remove_image(filename):
     Args:
         filename (string): saved image in DB
     """
-    filename = filename.replace("img/", "")
+    filename = filename.replace("/img/", "")
     os.remove("{}/{}".format(IMG_PATH, filename))

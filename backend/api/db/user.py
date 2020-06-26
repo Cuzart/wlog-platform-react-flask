@@ -17,7 +17,7 @@ class User(Model):
                    VALUES (%(username)s, %(email)s, %(password)s, %(name)s, %(surname)s)"""
     __UPDATE_SQL = """UPDATE users 
                      SET username = %(username)s, email = %(email)s, password = %(password)s, name = %(name)s,
-                     surname = %(surname)s, description = %(description)s, profilpicture = %(profilpicture)s 
+                     surname = %(surname)s, description = %(description)s, profilepicture = %(profilepicture)s 
                      WHERE id = %(id)s"""
     __SELECT_SQL = "SELECT * FROM users WHERE id = %(id)s"
     __DELETE_SQL = "DELETE FROM users WHERE id = %(id)s"
@@ -37,7 +37,7 @@ class User(Model):
         self.name = user_data.get("name")
         self.surname = user_data.get("surname")
         self.description = user_data.get("description")
-        self.profilpicture = user_data.get("profilpicture")
+        self.profilepicture = user_data.get("profilepicture")
         self.trips = []
 
     ####################
@@ -92,12 +92,12 @@ class User(Model):
         self._description = description
 
     @property
-    def profilpicture(self):
-        return self._profilpicture
+    def profilepicture(self):
+        return self._profilepicture
 
-    @profilpicture.setter
-    def profilpicture(self, profilpicture):
-        self._profilpicture = profilpicture
+    @profilepicture.setter
+    def profilepicture(self, profilepicture):
+        self._profilepicture = profilepicture
 
     @property
     def trips(self):
@@ -110,34 +110,6 @@ class User(Model):
     ####################
     ##   FUNCTIONS    ##
     ####################
-    @staticmethod
-    def get(id):
-        """this method fetches a user instance out of the database
-
-        Args:
-            id (int): id of the prefered user instance
-
-        Returns:
-            User: user instance or None
-        """
-        try:
-            cursor = Model._db.cursor(dictionary=True)
-            cursor.execute(User.__SELECT_SQL, {'id': id})
-            result = cursor.fetchone()
-            if result is None:
-                return None
-            user = User(result)
-            return user
-        except MariaDB.Error as err:
-            app.logger.info("Something went wrong: {}".format(err))
-            raise err
-        except Exception as err:
-            app.logger.info("An error occured: {}".format(err))
-            raise err
-            return None
-        finally:
-            cursor.close()
-
     def get_dict(self):
         """gets a dict with all user properties
 
@@ -168,15 +140,15 @@ class User(Model):
             cursor.execute(User.__INSERT_SQL, user_data)
             Model._db.commit()
             self._id = cursor.lastrowid
+            app.logger.info("Added a new user with id: {}".format(self.id))
             return self.id
         except MariaDB.IntegrityError as err:
-            app.logger.info("Integrity error while inserting a user: %s" % err)
+            app.logger.warning(
+                "Integrity error while inserting a user: %s" % err)
             return None
         except MariaDB.Error as err:
+            app.logger.error("An error occured: {}".format(err))
             return None
-            # raise err     # for development
-        finally:
-            cursor.close()
 
     def update(self):
         """method to update an instance in the DB
@@ -192,10 +164,8 @@ class User(Model):
             Model._db.commit()
             return self.id
         except MariaDB.Error as err:
+            app.logger.error("An error occured: {}".format(err))
             return None
-            # raise err     # for development
-        finally:
-            cursor.close()
 
     def delete(self):
         """method to delete an instance in the DB
@@ -207,12 +177,36 @@ class User(Model):
             cursor = Model._db.cursor()
             cursor.execute(User.__DELETE_SQL, {'id': self.id})
             Model._db.commit()
+            app.logger.info("User with id {} deleted".format(self.id))
             return self.id
         except MariaDB.Error as err:
+            app.logger.error("An error occured: {}".format(err))
             return None
-            # raise err     # for development
-        finally:
-            cursor.close()
+
+    ###########################
+    ##   STATIC FUNCTIONS    ##
+    ###########################
+    @staticmethod
+    def get(id):
+        """this method fetches a user instance out of the database
+
+        Args:
+            id (int): id of the prefered user instance
+
+        Returns:
+            User: user instance or None
+        """
+        try:
+            cursor = Model._db.cursor(dictionary=True)
+            cursor.execute(User.__SELECT_SQL, {'id': id})
+            result = cursor.fetchone()
+            if result is None:
+                return None
+            user = User(result)
+            return user
+        except MariaDB.Error as err:
+            app.logger.error("An error occured: {}".format(err))
+            return None
 
     @staticmethod
     def validate_user_input(user_data):
@@ -260,11 +254,9 @@ class User(Model):
             if len(data) > 0:
                 return False
             return True
-
         except MariaDB.Error as err:
-            raise err
-        finally:
-            cursor.close()
+            app.logger.error("An error occured: {}".format(err))
+            return False
 
     @staticmethod
     def check_login(username, password_candidate):
@@ -281,20 +273,16 @@ class User(Model):
             cursor = Model._db.cursor(dictionary=True)
             cursor.execute(User.__CHECK_LOGIN_SQL, {'username': username})
             result = cursor.fetchone()
-
             if result is None:
                 return False
-
             password = result["password"]
             if sha256_crypt.verify(password_candidate, password):
                 return result["id"]
             else:
                 return False
-
         except MariaDB.Error as err:
-            raise err
-        finally:
-            cursor.close()
+            app.logger.error("An error occured: {}".format(err))
+            raise False
 
     @staticmethod
     def get_profile_data(id):
@@ -321,3 +309,13 @@ class User(Model):
         profile_data.pop("password")
         profile_data.pop("created_at")
         return profile_data
+
+    @staticmethod
+    def edit_profile(id, new_data):
+        user = User.get(id)
+        user.name = new_data["name"]
+        user.surname = new_data["surname"]
+        user.description = new_data["description"]
+        if user.save() is None:
+            return False
+        return True

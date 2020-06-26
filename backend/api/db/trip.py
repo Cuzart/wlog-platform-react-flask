@@ -84,33 +84,6 @@ class Trip(Model):
     ####################
     ##   FUNCTIONS    ##
     ####################
-    @staticmethod
-    def get(id):
-        """this method fetches a trip instance out of the database
-
-        Args:
-            id (int): id of the prefered trip instance
-
-        Returns:
-            Trip: trip instance or None
-        """
-        try:
-            cursor = Model._db.cursor(dictionary=True)
-            cursor.execute(Trip.__SELECT_SQL, {'id': id})
-            result = cursor.fetchone()
-            if result is None:
-                return None
-            trip = Trip(result)
-            return trip
-        except MariaDB.Error as err:
-            app.logger.info("Something went wrong: {}".format(err))
-            raise err
-        except Exception as err:
-            app.logger.info("An error occured: {}".format(err))
-            raise err
-        finally:
-            cursor.close()
-
     def get_dict(self):
         """gets a dict with all trip properties
 
@@ -140,12 +113,11 @@ class Trip(Model):
             cursor.execute(Trip.__INSERT_SQL, trip_data)
             Model._db.commit()
             self._id = cursor.lastrowid
+            app.logger.debug("Added a new trip with id: {}".format(self.id))
             return self.id
         except MariaDB.Error as err:
+            app.logger.error("An error occured: {}".format(err))
             return None
-            # raise err     # for development
-        finally:
-            cursor.close()
 
     def update(self):
         """method to update an instance in the DB
@@ -159,10 +131,8 @@ class Trip(Model):
             Model._db.commit()
             return self.id
         except MariaDB.Error as err:
+            app.logger.error("An error occured: {}".format(err))
             return None
-            # raise err     # for development
-        finally:
-            cursor.close()
 
     def delete(self):
         """method to delete an instance in the DB
@@ -174,12 +144,11 @@ class Trip(Model):
             cursor = Model._db.cursor()
             cursor.execute(Trip.__DELETE_SQL, {'id': self.id})
             Model._db.commit()
+            app.logger.debug("Trip {} deleted".format(self.id))
             return self.id
         except MariaDB.Error as err:
+            app.logger.error("An error occured: {}".format(err))
             return None
-            # raise err     # for development
-        finally:
-            cursor.close()
 
     def add_post(self, post_data):
         """add a new post to the trip
@@ -195,6 +164,31 @@ class Trip(Model):
         if post.save() is None:
             return False
         return True
+
+    ###########################
+    ##   STATIC FUNCTIONS    ##
+    ###########################
+    @staticmethod
+    def get(id):
+        """this method fetches a trip instance out of the database
+
+        Args:
+            id (int): id of the prefered trip instance
+
+        Returns:
+            Trip: trip instance or None
+        """
+        try:
+            cursor = Model._db.cursor(dictionary=True)
+            cursor.execute(Trip.__SELECT_SQL, {'id': id})
+            result = cursor.fetchone()
+            if result is None:
+                return None
+            trip = Trip(result)
+            return trip
+        except MariaDB.Error as err:
+            app.logger.error("An error occured: {}".format(err))
+            return None
 
     @staticmethod
     def get_all_user_trips(user_id):
@@ -219,13 +213,8 @@ class Trip(Model):
                     trips.append(Trip(trip_data))
                 return trips
         except MariaDB.Error as err:
-            app.logger.info("Something went wrong: {}".format(err))
-            raise err
-        except Exception as err:
-            app.logger.info("An error occured: {}".format(err))
-            raise err
-        finally:
-            cursor.close()
+            app.logger.error("An error occured: {}".format(err))
+            return []
 
     @staticmethod
     def get_trip_data(id):
@@ -242,9 +231,11 @@ class Trip(Model):
             return dict()
         trip.load_posts()
         # convert posts to Dict
-        post_dict = []
+        posts_dict = []
         for post in trip.posts:
-            post_dict.append(post.get_dict())
+            post_dict = post.get_dict()
+            post_dict["text"] = post.text
+            posts_dict.append(post_dict)
         trip_data = trip.get_dict()
-        trip_data["posts"] = post_dict
+        trip_data["posts"] = posts_dict
         return trip_data
