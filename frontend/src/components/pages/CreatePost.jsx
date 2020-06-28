@@ -71,7 +71,7 @@ export class CreatePost extends Component {
       };
       // submits the trip form
       axios.post("/createTrip", trip).then((res) => {
-        // calls for each image in editor /uploadImg
+        // calls for each image in active editor /uploadImg
         let tripId = res.data.trip_id;
         window.tinymce.activeEditor.uploadImages((success) => {
           let post = {
