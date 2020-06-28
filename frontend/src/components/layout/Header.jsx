@@ -6,13 +6,27 @@ function Header() {
   return (
     <div>
       <header id="navbar">
-        <NavLink exact to="/" activeClassName="nav-link-active">
+        <NavLink
+          exact
+          to="/"
+          className="nav-link"
+          activeClassName="nav-link-active"
+        >
           HOME
         </NavLink>
-        <NavLink to="/feed" activeClassName="nav-link-active">
+        <NavLink
+          to="/explore"
+          className="nav-link"
+          activeClassName="nav-link-active"
+        >
           EXPLORE
         </NavLink>
-        <NavLink exact to="/" activeClassName="nav-link-active">
+        <NavLink
+          exact
+          to="/"
+          className="nav-link"
+          activeClassName="nav-link-active"
+        >
           <img
             src="/images/wlogLogo.svg"
             alt="Link to wlog home"
@@ -23,9 +37,9 @@ function Header() {
           exact
           className="nav-link"
           activeClassName="nav-link-active"
-          to="/map"
+          to="/create"
         >
-          MAP
+          CREATE
         </NavLink>
         {!sessionStorage.getItem("authenticated") ? (
           <NavLink
@@ -52,7 +66,7 @@ function Header() {
   );
 }
 
-const footerStyle = {
+let footerStyle = {
   visibility: "hidden",
   position: "fixed",
   left: "0",

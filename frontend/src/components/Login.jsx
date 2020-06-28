@@ -7,6 +7,7 @@ import Col from "react-bootstrap/Col";
 import FormGroup from "react-bootstrap/FormGroup";
 import Alert from "react-bootstrap/Alert";
 import axios from "axios";
+import "./../App.css";
 
 class Login extends React.Component {
   constructor(props) {
@@ -76,12 +77,8 @@ class Login extends React.Component {
             <Button variant="dark" type="submit" size="lg">
               Login
             </Button>
-            <NavLink
-              exact
-              className="nav-link"
-              to="/register"
-              style={{ color: "#4e564b", fontWeight: "bold" }}
-            >
+            <br />
+            <NavLink exact id="logRegLink" className="nav-link" to="/register">
               New here ? Register Now
             </NavLink>
           </div>

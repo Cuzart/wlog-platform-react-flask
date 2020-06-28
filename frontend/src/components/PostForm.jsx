@@ -7,19 +7,21 @@ import Col from "react-bootstrap/Col";
 import FormGroup from "react-bootstrap/FormGroup";
 
 class PostForm extends Component {
-
   render() {
     return (
       <div className="container">
         <Form>
-          <Col >
+          <Col>
             <h3 style={headerStyles}> {this.props.heading}</h3>
             <FormGroup as={Row}>
               <Form.Label column sm={1}>
                 Caption
               </Form.Label>
               <Col sm={5}>
-                <Form.Control name="caption" onChange={this.props.handleChange} />
+                <Form.Control
+                  name="caption"
+                  onChange={this.props.handleChange}
+                />
               </Col>
             </FormGroup>
             <FormGroup as={Row}>
@@ -27,7 +29,11 @@ class PostForm extends Component {
                 Location
               </Form.Label>
               <Col sm={5}>
-                <Form.Control name="location" onChange={this.props.handleChange} onBlur={this.props.handleLocationApi}/>
+                <Form.Control
+                  name="location"
+                  onChange={this.props.handleChange}
+                  onBlur={this.props.handleLocationApi}
+                />
               </Col>
             </FormGroup>
             <FormGroup as={Row}>
@@ -35,9 +41,33 @@ class PostForm extends Component {
                 Logging
               </Form.Label>
               <Col sm={5}>
-                <Form.Control readOnly defaultValue={this.props.locationObject.label} />
+                <Form.Control
+                  readOnly
+                  defaultValue={this.props.locationObject.label}
+                />
               </Col>
             </FormGroup>
+            {this.props.trips ? (
+              <FormGroup as={Row}>
+                <Form.Label column sm={1}>
+                  Add to
+                </Form.Label>
+                <Col sm={5}>
+                  <Form.Control
+                    custom
+                    as="select"
+                    name="addToTrip"
+                    onChange={this.props.handleChange}
+                  >
+                    {this.props.trips.map((trip) => {
+                      return <option value={trip.id}>{trip.title}</option>;
+                    })}
+                  </Form.Control>
+                </Col>
+              </FormGroup>
+            ) : (
+              ""
+            )}
 
             <div style={paddingStyle}>
               <Editor
@@ -66,37 +96,43 @@ class PostForm extends Component {
                   autosave_interval: "60s",
                   image_title: true,
                   file_picker_types: "image",
+                  convert_urls: false,
 
                   images_upload_handler: function (blobInfo, success, failure) {
                     var xhr, formData;
-                  
+
                     xhr = new XMLHttpRequest();
                     xhr.withCredentials = false;
-                    xhr.open('POST', '/uploadImg');
-                  
-                    xhr.onload = function() {
+                    xhr.open("POST", "/uploadImg");
+
+                    xhr.onload = function () {
                       var json;
-                  
+
                       if (xhr.status < 200 || xhr.status >= 300) {
-                      failure('HTTP Error: ' + xhr.status);
-                      return;
+                        failure("HTTP Error: " + xhr.status);
+                        return;
                       }
-                  
+
                       json = JSON.parse(xhr.responseText);
-                  
-                      if (!json || typeof json.location != 'string') {
-                      failure('Invalid JSON: ' + xhr.responseText);
-                      return;
+
+                      if (!json || typeof json.location != "string") {
+                        failure("Invalid JSON: " + xhr.responseText);
+                        return;
                       }
-                  
+
+                      console.log(json.location);
                       success(json.location);
                     };
-                  
+
                     formData = new FormData();
-                    formData.append('postImg', blobInfo.blob(), blobInfo.filename());
-                  
+                    formData.append(
+                      "postImg",
+                      blobInfo.blob(),
+                      blobInfo.filename()
+                    );
+
                     xhr.send(formData);
-                    }
+                  },
                 }}
               />
             </div>
@@ -110,11 +146,10 @@ class PostForm extends Component {
 const headerStyles = {
   fontFamily: "Libre Baskerville , serif",
   margin: "35px 0px",
-  
 };
 
 const paddingStyle = {
-  padding: "40px 0px"
+  padding: "40px 0px",
 };
 
 export default PostForm;
