@@ -9,6 +9,7 @@ import CreatePost from "./components/pages/CreatePost";
 import AddPost from "./components/pages/AddPost";
 import TripPage from "./components/pages/TripPage";
 import TripGrid from "./components/TripGrid";
+import Explore from "./components/pages/Explore";
 
 class App extends Component {
   render() {
@@ -22,8 +23,8 @@ class App extends Component {
             <Route exact path="/create" component={CreatePost} />
             <Route exact path="/add" component={AddPost} />
             <Route exact path="/trip/:id" component={TripPage} />
-            <Route exact path="/test" component={TripGrid} />
-            {/* <Route exact path="/profile/:id" component={ProfilePage} /> */}
+            <Route exact path="/profile/:id" component={TripGrid} />
+            <Route exact path="/explore" component={Explore} />
           </Switch>
         </div>
       </Router>

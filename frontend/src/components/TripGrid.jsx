@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import axios from "axios";
 import TripImage from "./TripImage";
-import Spinner from "react-bootstrap/Spinner";
+import Spinner from "./Spinner";
 
 class TripGrid extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      profileId: this.props.match.params.id,
       tripData: [],
       isLoading: true,
     };
@@ -15,7 +16,7 @@ class TripGrid extends Component {
   // fetching the data from the API
   getTripData() {
     axios
-      .get("/profile/1")
+      .get("/profile/" + this.state.profileId)
       .then((res) => {
         this.setState({
           tripData: res.data.trips,
@@ -32,14 +33,13 @@ class TripGrid extends Component {
   render() {
     return (
       <div className="container" style={gridStyle}>
-        <h1> Trips </h1>
-        <div className="row">
+        <div className="row ">
           {!this.state.isLoading ? (
             <React.Fragment>
               {this.state.tripData.map((trip) => {
                 const { id, title, description, thumbnail, country } = trip;
                 return (
-                  <div className="col-md-6">
+                  <div className="col-6 my-4 d-flex justify-content-center">
                     <TripImage
                       title={title}
                       description={description}
@@ -52,7 +52,7 @@ class TripGrid extends Component {
               })}
             </React.Fragment>
           ) : (
-            <Spinner className="spinner" animation="border" size="lg" />
+            <Spinner />
           )}
         </div>
       </div>
@@ -62,6 +62,9 @@ class TripGrid extends Component {
 
 const gridStyle = {
   marginTop: "100px",
+  backgroundColor: "white",
+  padding: "40px",
+  borderRadius: "20px",
 };
 
 export default TripGrid;

@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import "../../App.css";
 import LeafletMap from "../LeafletMap";
+import Spinner from "../Spinner";
 import Accordion from "react-bootstrap/Accordion";
-import Spinner from "react-bootstrap/Spinner";
+import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import axios from "axios";
 let polyline = [];
@@ -16,6 +17,8 @@ export class TripPage extends Component {
       activePost: { text: "", location_longitude: 0, location_latitude: 0 },
       tripData: [],
       isLoading: true,
+      liked: false,
+      likedMessage: "Clap 👏🏼",
     };
   }
 
@@ -25,10 +28,24 @@ export class TripPage extends Component {
     this.setState({ activePost: post });
   };
 
+  handleLike = () => {
+    if (!this.state.liked) {
+      this.setState({
+        liked: true,
+        likedMessage: "Thank you!",
+      });
+    } else {
+      this.setState({
+        liked: false,
+        likedMessage: "Clap 👏🏼",
+      });
+    }
+  };
+
   // fetching the data from the API
   getTripData() {
     axios
-      .get(`/trip/${this.state.tripId}`)
+      .get("/trip/" + this.state.tripId)
       .then((res) => {
         this.setState({
           tripData: res.data,
@@ -54,10 +71,20 @@ export class TripPage extends Component {
   render() {
     return (
       <div className="container" style={containerStyle}>
-        <h1 style={headerStyle}>{this.state.tripData.title}</h1>
-        <h5 style={{ fontStyle: "italic" }}>{this.state.tripData.country}</h5>
+        <div className="d-flex justify-content-between w-100" style={rowStyle}>
+          <h1 style={headerStyle}>{this.state.tripData.title}</h1>
+          <div>
+            <Button
+              active={this.state.liked}
+              variant="outline-success"
+              onClick={() => this.handleLike()}
+            >
+              {this.state.likedMessage}
+            </Button>
+          </div>
+        </div>
+        <h5 style={{ fontStyle: "italic" }}>{this.state.tripData.country}</h5>{" "}
         <div style={descriptionStyle}>{this.state.tripData.description}</div>
-
         {!this.state.isLoading ? (
           <React.Fragment>
             <LeafletMap
@@ -86,7 +113,7 @@ export class TripPage extends Component {
                       <p>{location_label}</p>
                     </Accordion.Toggle>
                     <Accordion.Collapse eventKey={id}>
-                      <Card.Body dangerouslySetInnerHTML={{__html: text}}/>
+                      <Card.Body dangerouslySetInnerHTML={{ __html: text }} />
                     </Accordion.Collapse>
                   </Card>
                 );
@@ -94,12 +121,17 @@ export class TripPage extends Component {
             </Accordion>
           </React.Fragment>
         ) : (
-          <Spinner className="spinner" animation="border" size="lg" />
+          <Spinner />
         )}
       </div>
     );
   }
 }
+
+const rowStyle = {
+  alignItems: "center",
+  paddingRight: "50px",
+};
 
 const containerStyle = {
   margin: "50px 150px",

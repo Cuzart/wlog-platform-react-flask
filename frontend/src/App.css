@@ -33,6 +33,7 @@ header > a {
   color: #e2e2e2;
   cursor: pointer;
 }
+
 .nav-link-active {
   color: #ffffff;
 }
@@ -114,4 +115,22 @@ input {
   top: 50%;
   margin-left: -4em;
   margin-bottom: -4em;
+}
+#spinner {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-top: -40px;
+  margin-left: -40px;
+  font-size: 80px;
+  color: #4e564b;
+}
+
+#logRegLink {
+  color: #4e564b;
+  font-weight: bold;
+}
+#logRegLink:hover {
+  color: #000000;
+  text-decoration: wavy;
 }
