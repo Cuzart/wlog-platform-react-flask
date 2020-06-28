@@ -68,7 +68,7 @@ def login():
             session['logged_in'] = True
             session['id'] = id
             session['username'] = username
-            return {'statusCode': 0, 'status': 'successfully logged in'}
+            return {'statusCode': 0, 'status': 'successfully logged in', 'user_id': id}
         else:
             return {'statusCode': 1, 'status': 'invalid username or password'}
     else:
