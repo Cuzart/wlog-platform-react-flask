@@ -1,6 +1,18 @@
 from flask import Flask
+import mysql.connector.pooling
+from api.config import config
+
 
 app = Flask(__name__)
+conn_pool = mysql.connector.pooling.MySQLConnectionPool(
+            pool_name="pool", 
+            pool_size= 3,
+            host=config['MARIADB']['HOST'],
+            user=config['MARIADB']['USER'],
+            passwd=config['MARIADB']['PASSWORD'],
+            database=config['MARIADB']['DATABASE']
+        )
+
 app.secret_key = '#h23/mSsJVam^9@#2n($'  # for encrypting session cookies
 app.config['MAX_CONTENT_LENGTH'] = 8 * 1024 * 1024  # 8 MB
 

@@ -1,6 +1,7 @@
 from flask import request
 from flask import session
 from flask import Blueprint
+from flask import current_app
 from functools import wraps
 from api.db.user import User
 
@@ -67,8 +68,8 @@ def register():
             else:
                 # should normally not happen because Fronted validates aswell
                 error_msg = ', '.join(error)
-                # app.logger.warning(
-                #     "Invalid register post. JSON was not validated: {}".format(error_msg))
+                current_app.logger.warning(
+                    "Invalid register post. JSON was not validated: {}".format(error_msg))
                 return {'statusCode': 2, 'status': 'other error', 'error': error_msg}
 
         user = User(user_data)

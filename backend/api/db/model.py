@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from api.db.mariadb import Connector
 
 
 class Model(ABC):
@@ -8,8 +7,6 @@ class Model(ABC):
     An id and a created_at which each Model needs to implement
     Other Model Classes should inherit from this 
     """
-
-    _db = Connector.connect()
 
     def __init__(self, id, created_at):
         self._id = id
