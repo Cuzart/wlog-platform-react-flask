@@ -57,6 +57,7 @@ class PostForm extends Component {
                     as="select"
                     name="tripId"
                     onChange={this.props.handleChange}
+                    required
                   >
                     {this.props.trips.map((trip) => {
                       return <option value={trip.id}>{trip.title}</option>;
@@ -102,7 +103,7 @@ class PostForm extends Component {
 
                     xhr = new XMLHttpRequest();
                     xhr.withCredentials = false;
-                    xhr.open("POST", "/uploadImg");
+                    xhr.open("POST", "/images");
 
                     xhr.onload = function () {
                       var json;

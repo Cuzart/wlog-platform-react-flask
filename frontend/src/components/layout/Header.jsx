@@ -55,7 +55,7 @@ function Header() {
             exact
             className="nav-link"
             activeClassName="nav-link-active"
-            to="/profile"
+            to={"/users/" + sessionStorage.getItem("user")}
           >
             PROFILE
           </NavLink>

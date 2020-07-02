@@ -63,14 +63,14 @@ export class CreatePost extends Component {
     const fd = new FormData();
     fd.append("thumbnail", this.state.thumbnail);
     // submits the thumbnail
-    axios.post("/uploadImg", fd).then((res) => {
+    axios.post("/images", fd).then((res) => {
       let trip = {
         title: this.state.title,
         country: this.state.country,
         description: this.state.description,
       };
       // submits the trip form
-      axios.post("/createTrip", trip).then((res) => {
+      axios.post("/trips", trip).then((res) => {
         // calls for each image in active editor /uploadImg
         let tripId = res.data.trip_id;
         window.tinymce.activeEditor.uploadImages((success) => {
@@ -85,10 +85,10 @@ export class CreatePost extends Component {
             },
           };
           // submits post with editor content
-          axios.post("/createPost", post).then((res) => {
+          axios.post("/posts", post).then((res) => {
             //check if successfully created
             console.log(res.data);
-            this.props.history.push("/profile");
+            this.props.history.push("/trips/" + tripId);
           });
         });
       });

@@ -27,8 +27,8 @@ class Login extends React.Component {
       // if yes a session storage is set and user will be redirected
       if (res.data.statusCode === 0) {
         sessionStorage.setItem("authenticated", true);
-        sessionStorage.setItem("user", login.id);
-        this.props.history.push("/profile");
+        sessionStorage.setItem("user", res.data.user_id);
+        this.props.history.push("/users/" + res.data.user_id);
         window.location.reload();
         //otherwise there will be an error message
       } else {

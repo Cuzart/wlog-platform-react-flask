@@ -17,7 +17,7 @@ class TripGrid extends Component {
   // fetching the data from the API
   getTripData() {
     axios
-      .get("/profile/" + this.state.profileId)
+      .get("/users/" + this.state.profileId)
       .then((res) => {
         this.setState({
           tripData: res.data.trips,

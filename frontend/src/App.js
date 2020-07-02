@@ -12,21 +12,6 @@ import TripGrid from "./components/TripGrid";
 import Explore from "./components/pages/Explore";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-const Authentification = {
-  isAuthenticated: false,
-  authenticate(id) {
-    this.isAuthenticated = true;
-    sessionStorage.setItem("authenticated", true);
-    sessionStorage.setItem("user", id);
-  },
-  signout() {
-    sessionStorage.removeItem("authenticated");
-  },
-  getAuth() {
-    return sessionStorage.getItem("authenticated");
-  },
-};
-
 class App extends Component {
   render() {
     return (
@@ -38,8 +23,8 @@ class App extends Component {
             <Route path="/register" component={Register} />
             <ProtectedRoute path="/create" component={CreatePost} />
             <ProtectedRoute path="/add" component={AddPost} />
-            <Route path="/trip/:id" component={TripPage} />
-            <Route path="/profile/:id" component={TripGrid} />
+            <Route path="/trips/:id" component={TripPage} />
+            <Route path="/users/:id" component={TripGrid} />
             <Route path="/explore" component={Explore} />
           </Switch>
         </div>

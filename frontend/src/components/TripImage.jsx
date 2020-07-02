@@ -7,7 +7,7 @@ class TripImage extends Component {
       <div
         className="thumbnail_container"
         position="relative"
-        onClick={() => this.props.history.push("/trip/" + this.props.tripId)}
+        onClick={() => this.props.history.push("/trips/" + this.props.tripId)}
       >
         <div className="thumbnail_title">{this.props.title}</div>
         <Image

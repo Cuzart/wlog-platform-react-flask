@@ -47,7 +47,7 @@ export class TripPage extends Component {
   // fetching the data from the API
   getTripData() {
     axios
-      .get("/trip/" + this.state.tripId)
+      .get("/trips/" + this.state.tripId)
       .then((res) => {
         this.setState({
           tripData: res.data,
@@ -57,7 +57,7 @@ export class TripPage extends Component {
         });
         // then get the username by the user id
         axios
-          .get("/profile/" + res.data.user_id)
+          .get("/users/" + res.data.user_id)
           .then((res) => this.setState({ user: res.data.username }));
 
         polyline = [];
@@ -97,7 +97,7 @@ export class TripPage extends Component {
           <div style={author}>
             <Button
               onClick={() =>
-                this.props.history.push("/profile/" + this.state.userId)
+                this.props.history.push("/users/" + this.state.userId)
               }
               variant="light"
             >

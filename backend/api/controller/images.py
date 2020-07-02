@@ -1,6 +1,7 @@
 from flask import request
 from flask import session
 from flask import Blueprint
+from flask import send_from_directory
 from api.db.user import User
 from api.controller.auth import login_required
 import api.helper.imageHandler as img_handler
@@ -31,7 +32,7 @@ def upload_img():
             if img_handler.allowed_img(files['postImg'].filename):
                 filename = img_handler.save_post_img(
                     session['id'], files['postImg'])
-                return {'location': "/img/{}".format(filename)}
+                return {'location': "/images/{}".format(filename)}
             else:
                 return {'statusCode': 2, 'status': "file not allowed"}
         # for creating a trip, thumbnail upload
@@ -53,7 +54,7 @@ def upload_img():
                     img_handler.remove_image(user.profilepicture)
                 filename = img_handler.save_image(
                     uid, session["id"], 'profileImg')
-                user.profilepicture = "/img/{}".format(filename)
+                user.profilepicture = "/images/{}".format(filename)
                 user.save()
                 return {'statusCode': 3, 'status': "profileImg successfully saved"}
             else:

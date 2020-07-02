@@ -16,7 +16,7 @@ export class CreatePost extends Component {
       caption: "",
       location: "",
       locationObject: { label: "" },
-      tripId: "1",
+      tripId: "",
       showModal: false,
       trips: [],
       isLoading: true,
@@ -26,11 +26,12 @@ export class CreatePost extends Component {
   // fetching all trips of current user
   getTripData() {
     axios
-      .get("/profile/1")
+      .get("/users/" + sessionStorage.getItem("user"))
       .then((res) => {
         this.setState({
           trips: res.data.trips,
           isLoading: false,
+          tripId: res.data.trips[0].id,
         });
       })
 
@@ -72,12 +73,11 @@ export class CreatePost extends Component {
           text: window.tinymce.activeEditor.getContent(),
         },
       };
-      console.log(post);
       // sending to API and give feedback
-      axios.post("/createPost", post).then((res) => {
+      axios.post("/posts", post).then((res) => {
         //check if successfully created
         console.log(res.data);
-        this.props.history.push("/profile");
+        this.props.history.push("/users/" + sessionStorage.getItem("user"));
       });
     });
   };
