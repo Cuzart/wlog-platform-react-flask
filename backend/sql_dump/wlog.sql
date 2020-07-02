@@ -97,7 +97,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `name`, `surname`, `description`, `profilepicture`, `created_at`) VALUES
-(1, 'traveljunkie', 'user@mail.com', '$5$rounds=535000$aPu2yUWXEUMXXPMV$u8x5FqO7Lt7LwHbn7nl6Qlnm3DrVZ4IQYfCFxdm3oK.', 'Max', 'Mustermann', NULL, NULL, '2020-05-29 14:40:13');
+(1, 'traveljunkie', 'user@mail.com', '$pbkdf2-sha256$29000$h1CKEcK4t1aqVeod4zwnxA$TkqOSbiekO5SUEFmquG9zSrTUOHaVzAn29/7h02ktUM', 'Max', 'Mustermann', NULL, NULL, '2020-05-29 14:40:13');
 --
 -- Indexes for dumped tables
 --

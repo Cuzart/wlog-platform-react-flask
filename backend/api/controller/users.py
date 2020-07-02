@@ -1,6 +1,7 @@
 from flask import request
 from flask import session
 from flask import Blueprint
+from flask import jsonify
 from api.db.user import User
 from api.controller.auth import login_required
 
@@ -34,3 +35,19 @@ def edit_profile(id):
             return {'statusCode': 2, 'status': "could not update user profile"}
     else:
         return "Bad Request", 400
+
+
+@bp.route('/users/search', methods=["GET"])
+def search_users():
+    """Endpoint to search users 
+
+    Returns:
+        json: a list of matching users with id and username. else status message
+    """
+    pattern = request.args.get('pattern')
+    if pattern is None:
+        return {'statusCode': 2, 'status': "argument 'pattern' missing"}
+    if len(pattern) < 3:
+        return {'statusCode': 1, 'status': "pattern needs at least 3 characters"}
+
+    return jsonify(User.search(pattern))
