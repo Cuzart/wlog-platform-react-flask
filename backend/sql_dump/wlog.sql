@@ -1,6 +1,6 @@
-DROP TABLE posts;
-DROP TABLE trips;
-DROP TABLE users;
+DROP TABLE IF EXISTS `posts`;
+DROP TABLE IF EXISTS `trips`;
+DROP TABLE IF EXISTS `users`;
 
 
 -- phpMyAdmin SQL Dump
