@@ -16,7 +16,7 @@ export class CreatePost extends Component {
       caption: "",
       location: "",
       locationObject: { label: "" },
-      addToTrip: "",
+      tripId: "1",
       showModal: false,
       trips: [],
       isLoading: true,
@@ -26,7 +26,7 @@ export class CreatePost extends Component {
   // fetching all trips of current user
   getTripData() {
     axios
-      .get("/profile/")
+      .get("/profile/1")
       .then((res) => {
         this.setState({
           trips: res.data.trips,
@@ -63,7 +63,7 @@ export class CreatePost extends Component {
     // calls for each image in active editor /uploadImg
     window.tinymce.activeEditor.uploadImages((success) => {
       let post = {
-        trip_id: this.state.addToTrip,
+        trip_id: this.state.tripId,
         post: {
           subtitle: this.state.caption,
           location_label: this.state.locationObject.label,
@@ -72,6 +72,7 @@ export class CreatePost extends Component {
           text: window.tinymce.activeEditor.getContent(),
         },
       };
+      console.log(post);
       // sending to API and give feedback
       axios.post("/createPost", post).then((res) => {
         //check if successfully created

@@ -30,7 +30,7 @@ function Header() {
           <img
             src="/images/wlogLogo.svg"
             alt="Link to wlog home"
-            style={{ width: "50%" }}
+            style={{ width: "126px" }}
           ></img>
         </NavLink>
         <NavLink

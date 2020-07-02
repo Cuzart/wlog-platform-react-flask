@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import "../../App.css";
 import LeafletMap from "../LeafletMap";
 import Spinner from "../Spinner";
@@ -13,6 +14,7 @@ export class TripPage extends Component {
     super(props);
 
     this.state = {
+      user: "",
       tripId: this.props.match.params.id,
       activePost: { text: "", location_longitude: 0, location_latitude: 0 },
       tripData: [],
@@ -51,7 +53,13 @@ export class TripPage extends Component {
           tripData: res.data,
           isLoading: false,
           activePost: res.data.posts[0],
+          userId: res.data.user_id,
         });
+        // then get the username by the user id
+        axios
+          .get("/profile/" + res.data.user_id)
+          .then((res) => this.setState({ user: res.data.username }));
+
         polyline = [];
         // creating a array of every post location point
         res.data.posts.map((point) => {
@@ -84,9 +92,24 @@ export class TripPage extends Component {
           </div>
         </div>
         <h5 style={{ fontStyle: "italic" }}>{this.state.tripData.country}</h5>{" "}
-        <div style={descriptionStyle}>{this.state.tripData.description}</div>
+        <div style={descriptionStyle}>
+          {this.state.tripData.description}
+          <div style={author}>
+            <Button
+              onClick={() =>
+                this.props.history.push("/profile/" + this.state.userId)
+              }
+              variant="light"
+            >
+              by {this.state.user}
+            </Button>
+          </div>
+        </div>
+        {/* render after data is loaded */}
         {!this.state.isLoading ? (
           <React.Fragment>
+            <h2 style={headerStyle}>Posts</h2>
+
             <LeafletMap
               activePost={this.state.activePost}
               tripData={this.state.tripData}
@@ -142,16 +165,25 @@ const headerStyle = {
   margin: "20px 0px",
 };
 
+const author = {
+  position: "absolute",
+  bottom: "0",
+  right: "0",
+  padding: "20px",
+};
+
 const descriptionStyle = {
+  position: "relative",
   height: "auto",
   minHeight: "200px",
   maxHeight: "400px",
   width: "400px",
   marginTop: "25px",
   padding: "20px",
+  paddingBottom: "70px",
   marginBottom: "20%",
   backgroundColor: "white",
   borderRadius: "8px",
 };
 
-export default TripPage;
+export default withRouter(TripPage);

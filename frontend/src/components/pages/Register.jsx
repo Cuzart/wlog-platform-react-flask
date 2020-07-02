@@ -263,7 +263,7 @@ class Register extends React.Component {
 }
 
 const registerForm = {
-  position: "fixed",
+  position: "absolute",
   minHeight: "550px",
   height: "auto",
   width: "600px",

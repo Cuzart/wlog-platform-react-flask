@@ -54,9 +54,8 @@ class PostForm extends Component {
                 </Form.Label>
                 <Col sm={5}>
                   <Form.Control
-                    custom
                     as="select"
-                    name="addToTrip"
+                    name="tripId"
                     onChange={this.props.handleChange}
                   >
                     {this.props.trips.map((trip) => {

@@ -18,15 +18,19 @@ class Login extends React.Component {
       toggleAlert: false,
     };
   }
+
+  // requests if credentials are registered
   handleLogin = (event) => {
     event.preventDefault();
     let login = this.state;
     axios.post("/login", login).then((res) => {
+      // if yes a session storage is set and user will be redirected
       if (res.data.statusCode === 0) {
         sessionStorage.setItem("authenticated", true);
-        sessionStorage.setItem("user", login.username);
+        sessionStorage.setItem("user", login.id);
         this.props.history.push("/profile");
         window.location.reload();
+        //otherwise there will be an error message
       } else {
         this.setState({ toggleAlert: true });
       }
@@ -69,7 +73,7 @@ class Login extends React.Component {
             </Col>
           </FormGroup>
           {this.state.toggleAlert ? (
-            <Alert variant="danger">username or password not correct.</Alert>
+            <Alert variant="danger">Check your username or password.</Alert>
           ) : (
             <div />
           )}
