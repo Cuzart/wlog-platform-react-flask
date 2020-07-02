@@ -140,130 +140,135 @@ class Register extends React.Component {
   render() {
     const { formErrors } = this.state;
     return (
-      <div className="container" style={registerForm}>
-        <div style={captionStyle}>Create an account</div>
-        <Form onSubmit={this.handleSubmit}>
-          <Form.Row>
-            <FormGroup as={Col} sm="6">
-              <Form.Label>Username</Form.Label>
-              <Form.Control
-                className={formErrors.username.length > 0 ? "error" : null}
-                type="text"
-                name="username"
-                onChange={this.handleChange}
-              />
-              <div>
-                {formErrors.username.length > 0 && (
-                  <span style={errorMessage}>{formErrors.username}</span>
-                )}
-              </div>
-            </FormGroup>
-            <FormGroup as={Col} sm="6">
-              <Form.Label>E-Mail</Form.Label>
-              <Form.Control
-                className={formErrors.email.length > 0 ? "error" : null}
-                type="text"
-                name="email"
-                onChange={this.handleChange}
-              />
-              <div>
-                {formErrors.email.length > 0 && (
-                  <span style={errorMessage}>{formErrors.email}</span>
-                )}
-              </div>
-            </FormGroup>
-          </Form.Row>
-          <Form.Row>
-            <FormGroup as={Col} sm="6">
-              <Form.Label>Password</Form.Label>
+      <div style={bg}>
+        <div className="container" style={registerForm}>
+          <div style={captionStyle}>Create an account</div>
+          <Form onSubmit={this.handleSubmit}>
+            <Form.Row>
+              <FormGroup as={Col} sm="6">
+                <Form.Label>Username</Form.Label>
+                <Form.Control
+                  className={formErrors.username.length > 0 ? "error" : null}
+                  type="text"
+                  name="username"
+                  onChange={this.handleChange}
+                />
+                <div>
+                  {formErrors.username.length > 0 && (
+                    <span style={errorMessage}>{formErrors.username}</span>
+                  )}
+                </div>
+              </FormGroup>
+              <FormGroup as={Col} sm="6">
+                <Form.Label>E-Mail</Form.Label>
+                <Form.Control
+                  className={formErrors.email.length > 0 ? "error" : null}
+                  type="text"
+                  name="email"
+                  onChange={this.handleChange}
+                />
+                <div>
+                  {formErrors.email.length > 0 && (
+                    <span style={errorMessage}>{formErrors.email}</span>
+                  )}
+                </div>
+              </FormGroup>
+            </Form.Row>
+            <Form.Row>
+              <FormGroup as={Col} sm="6">
+                <Form.Label>Password</Form.Label>
 
-              <Form.Control
-                className={formErrors.password.length > 0 ? "error" : null}
-                type="password"
-                name="password"
-                onChange={this.handleChange}
-              />
+                <Form.Control
+                  className={formErrors.password.length > 0 ? "error" : null}
+                  type="password"
+                  name="password"
+                  onChange={this.handleChange}
+                />
 
-              <div>
-                {formErrors.password.length > 0 && (
-                  <span style={errorMessage}>{formErrors.password}</span>
-                )}
-              </div>
-            </FormGroup>
-            <FormGroup as={Col} sm="6">
-              <Form.Label>Confirm Password</Form.Label>
-              <Form.Control
-                className={formErrors.password2.length > 0 ? "error" : null}
-                type="password"
-                name="password2"
-                onChange={this.handleChange}
+                <div>
+                  {formErrors.password.length > 0 && (
+                    <span style={errorMessage}>{formErrors.password}</span>
+                  )}
+                </div>
+              </FormGroup>
+              <FormGroup as={Col} sm="6">
+                <Form.Label>Confirm Password</Form.Label>
+                <Form.Control
+                  className={formErrors.password2.length > 0 ? "error" : null}
+                  type="password"
+                  name="password2"
+                  onChange={this.handleChange}
+                />
+                <div>
+                  {formErrors.password2.length > 0 && (
+                    <span style={errorMessage}>{formErrors.password2}</span>
+                  )}
+                </div>
+              </FormGroup>
+            </Form.Row>
+            <Form.Row>
+              <FormGroup as={Col} sm="6">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  className={formErrors.name.length > 0 ? "error" : null}
+                  type="text"
+                  name="name"
+                  onChange={this.handleChange}
+                />
+                <div>
+                  {formErrors.name.length > 0 && (
+                    <span style={errorMessage}>{formErrors.name}</span>
+                  )}
+                </div>
+              </FormGroup>
+              <FormGroup as={Col} sm="6">
+                <Form.Label>Surname</Form.Label>
+                <Form.Control
+                  className={formErrors.surname.length > 0 ? "error" : null}
+                  type="text"
+                  name="surname"
+                  onChange={this.handleChange}
+                />
+                <div>
+                  {formErrors.surname.length > 0 && (
+                    <span style={errorMessage}>{formErrors.surname}</span>
+                  )}
+                </div>
+              </FormGroup>
+            </Form.Row>
+            <Form.Group>
+              <Form.Check
+                required
+                label="I agree to the Terms And Conditions"
               />
-              <div>
-                {formErrors.password2.length > 0 && (
-                  <span style={errorMessage}>{formErrors.password2}</span>
-                )}
+            </Form.Group>
+            <div>
+              {this.state.toggleAlert ? (
+                <Alert variant="danger">{this.state.alertContent}</Alert>
+              ) : (
+                <div />
+              )}
+              <div
+                className="col py-3 justify-content-between w-100"
+                style={{ textAlign: "center" }}
+              >
+                <Button variant="dark" type="submit" size="lg">
+                  Register
+                </Button>
+                <NavLink exact id="logRegLink" className="nav-link" to="/">
+                  Already have a Account ? Follow me!
+                </NavLink>
               </div>
-            </FormGroup>
-          </Form.Row>
-          <Form.Row>
-            <FormGroup as={Col} sm="6">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                className={formErrors.name.length > 0 ? "error" : null}
-                type="text"
-                name="name"
-                onChange={this.handleChange}
-              />
-              <div>
-                {formErrors.name.length > 0 && (
-                  <span style={errorMessage}>{formErrors.name}</span>
-                )}
-              </div>
-            </FormGroup>
-            <FormGroup as={Col} sm="6">
-              <Form.Label>Surname</Form.Label>
-              <Form.Control
-                className={formErrors.surname.length > 0 ? "error" : null}
-                type="text"
-                name="surname"
-                onChange={this.handleChange}
-              />
-              <div>
-                {formErrors.surname.length > 0 && (
-                  <span style={errorMessage}>{formErrors.surname}</span>
-                )}
-              </div>
-            </FormGroup>
-          </Form.Row>
-          <Form.Group>
-            <Form.Check required label="I agree to the Terms And Conditions" />
-          </Form.Group>
-          <div>
-            {this.state.toggleAlert ? (
-              <Alert variant="danger">{this.state.alertContent}</Alert>
-            ) : (
-              <div />
-            )}
-            <div
-              className="col py-3 justify-content-between w-100"
-              style={{ textAlign: "center" }}
-            >
-              <Button variant="dark" type="submit" size="lg">
-                Register
-              </Button>
-              <NavLink exact id="logRegLink" className="nav-link" to="/">
-                Already have a Account ? Follow me!
-              </NavLink>
             </div>
-          </div>
-        </Form>
+          </Form>
+        </div>
       </div>
     );
   }
 }
 
 const registerForm = {
-  position: "fixed",
+  position: "absolute",
   minHeight: "550px",
   height: "auto",
   width: "600px",
@@ -289,6 +294,13 @@ const errorMessage = {
   textAlign: "right",
   fontWeight: "bold",
   fontSize: "0.7em",
+};
+
+const bg = {
+  backgroundImage: " url(/images/bg3.png)",
+  backgroundPosition: "center",
+  backgroundSize: "cover",
+  height: "100vh",
 };
 
 export default withRouter(Register);

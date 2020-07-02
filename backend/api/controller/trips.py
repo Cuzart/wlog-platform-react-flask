@@ -35,7 +35,7 @@ def create_trip():
             filename = img_handler.save_image(
                 file_uid, session["id"], 'thumbnail')
             trip_data['user_id'] = session["id"]
-            trip_data['thumbnail'] = "/img/{}".format(filename)
+            trip_data['thumbnail'] = "/images/{}".format(filename)
             trip = Trip(trip_data)
             trip_id = trip.save()
             del session['file_upload_uid']

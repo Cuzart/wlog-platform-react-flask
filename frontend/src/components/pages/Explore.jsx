@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import SearchBar from "../SearchBar";
+import axios from "axios";
 
 export class Explore extends Component {
   constructor(props) {
     super(props);
     this.state = {
       search: "",
+      result: [],
     };
   }
 
@@ -14,8 +16,13 @@ export class Explore extends Component {
     let val = window.event.target.value;
     this.setState({ [nam]: val });
   };
+
+  // sends search to API to get array of matching users
   handleSearch = () => {
-    console.log(this.state.search);
+    let searchTerm = this.state.search;
+    axios.get("/users/search", searchTerm).then((res) => {
+      console.log(res);
+    });
   };
 
   render() {
