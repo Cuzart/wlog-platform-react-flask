@@ -1,7 +1,8 @@
-from api.db.mariadb import Connector, MariaDB
+from flask import current_app
 from api.db.model import Model
 from api.db.post import Post
-from api import app
+from api import conn_pool
+import mysql.connector
 
 
 class Trip(Model):
@@ -107,17 +108,20 @@ class Trip(Model):
             int: id of trip instance
         """
         try:
-            cursor = Model._db.cursor()
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor()
             trip_data = self.get_dict()
             trip_data.pop("posts")
             cursor.execute(Trip.__INSERT_SQL, trip_data)
-            Model._db.commit()
+            cnx.commit()
             self._id = cursor.lastrowid
-            app.logger.debug("Added a new trip with id: {}".format(self.id))
+            current_app.logger.debug("Added a new trip with id: {}".format(self.id))
             return self.id
-        except MariaDB.Error as err:
-            app.logger.error("An error occured: {}".format(err))
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
             return None
+        finally:
+            cnx.close()
 
     def update(self):
         """method to update an instance in the DB
@@ -126,13 +130,16 @@ class Trip(Model):
             int: id of trip instance
         """
         try:
-            cursor = Model._db.cursor()
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor()
             cursor.execute(Trip.__UPDATE_SQL, self.get_dict())
-            Model._db.commit()
+            cnx.commit()
             return self.id
-        except MariaDB.Error as err:
-            app.logger.error("An error occured: {}".format(err))
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
             return None
+        finally:
+            cnx.close()
 
     def delete(self):
         """method to delete an instance in the DB
@@ -141,14 +148,17 @@ class Trip(Model):
             int: id of deleted trip instance
         """
         try:
-            cursor = Model._db.cursor()
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor()
             cursor.execute(Trip.__DELETE_SQL, {'id': self.id})
-            Model._db.commit()
-            app.logger.debug("Trip {} deleted".format(self.id))
+            cnx.commit()
+            current_app.logger.debug("Trip {} deleted".format(self.id))
             return self.id
-        except MariaDB.Error as err:
-            app.logger.error("An error occured: {}".format(err))
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
             return None
+        finally:
+            cnx.close()
 
     def add_post(self, post_data):
         """add a new post to the trip
@@ -179,16 +189,19 @@ class Trip(Model):
             Trip: trip instance or None
         """
         try:
-            cursor = Model._db.cursor(dictionary=True)
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor(dictionary=True)
             cursor.execute(Trip.__SELECT_SQL, {'id': id})
             result = cursor.fetchone()
             if result is None:
                 return None
             trip = Trip(result)
             return trip
-        except MariaDB.Error as err:
-            app.logger.error("An error occured: {}".format(err))
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
             return None
+        finally:
+            cnx.close()
 
     @staticmethod
     def get_all_user_trips(user_id):
@@ -201,7 +214,8 @@ class Trip(Model):
             list: list of trip instances
         """
         try:
-            cursor = Model._db.cursor(dictionary=True)
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor(dictionary=True)
             cursor.execute(Trip.__SELECT_ALL_USER_TRIPS_SQL,
                            {'user_id': user_id})
             result = cursor.fetchall()
@@ -212,9 +226,11 @@ class Trip(Model):
                 for trip_data in result:
                     trips.append(Trip(trip_data))
                 return trips
-        except MariaDB.Error as err:
-            app.logger.error("An error occured: {}".format(err))
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
             return []
+        finally:
+            cnx.close()
 
     @staticmethod
     def get_trip_data(id):

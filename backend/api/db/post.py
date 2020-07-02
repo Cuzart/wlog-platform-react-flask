@@ -1,8 +1,9 @@
-from api.db.mariadb import Connector, MariaDB
+from flask import current_app
 from api.db.model import Model
+from api import conn_pool
+import mysql.connector
 import json
 import html
-from api import app
 
 
 class Post(Model):
@@ -78,7 +79,7 @@ class Post(Model):
     @property
     def text(self):
         # unsecape to display html
-        return html.unescape(self._text) 
+        return html.unescape(self._text)
 
     @text.setter
     def text(self, text):
@@ -105,15 +106,19 @@ class Post(Model):
             int: id of post instance
         """
         try:
-            cursor = Model._db.cursor()
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor()
             cursor.execute(Post.__INSERT_SQL, self.get_dict())
-            Model._db.commit()
+            cnx.commit()
             self._id = cursor.lastrowid
-            app.logger.debug("Added a new post with id: {}".format(self.id))
+            current_app.logger.debug(
+                "Added a new post with id: {}".format(self.id))
             return self.id
-        except MariaDB.Error as err:
-            app.logger.error("An error occured: {}".format(err))
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
             return None
+        finally:
+            cnx.close()
 
     def update(self):
         """method to update an instance in the DB
@@ -122,13 +127,16 @@ class Post(Model):
             int: id of post instance
         """
         try:
-            cursor = Model._db.cursor()
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor()
             cursor.execute(Post.__UPDATE_SQL, self.get_dict())
-            Model._db.commit()
+            cnx.commit()
             return self.id
-        except MariaDB.Error as err:
-            app.logger.error("An error occured: {}".format(err))
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
             return None
+        finally:
+            cnx.close()
 
     def delete(self):
         """method to delete an instance in the DB
@@ -137,14 +145,17 @@ class Post(Model):
             int: id of deleted post instance
         """
         try:
-            cursor = Model._db.cursor()
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor()
             cursor.execute(Post.__DELETE_SQL, {'id': self.id})
-            Model._db.commit()
-            app.logger.debug("Post {} deleted".format(self.id))
+            cnx.commit()
+            current_app.logger.debug("Post {} deleted".format(self.id))
             return self.id
-        except MariaDB.Error as err:
-            app.logger.error("An error occured: {}".format(err))
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
             return None
+        finally:
+            cnx.close()
 
     ###########################
     ##   STATIC FUNCTIONS    ##
@@ -160,19 +171,22 @@ class Post(Model):
             Post: post instance or None
         """
         try:
-            cursor = Model._db.cursor(dictionary=True)
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor(dictionary=True)
             cursor.execute(Post.__SELECT_SQL, {'id': id})
             result = cursor.fetchone()
             if result is None:
                 return None
             post = post(result)
             return post
-        except MariaDB.Error as err:
-            app.logger.error("Something went wrong: {}".format(err))
+        except mysql.connector.Error as err:
+            current_app.logger.error("Something went wrong: {}".format(err))
             return None
         except Exception as err:
-            app.logger.error("An error occured: {}".format(err))
+            current_app.logger.error("An error occured: {}".format(err))
             return None
+        finally:
+            cnx.close()
 
     @staticmethod
     def get_all_trip_posts(trip_id):
@@ -185,7 +199,8 @@ class Post(Model):
             list: list of post instances
         """
         try:
-            cursor = Model._db.cursor(dictionary=True)
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor(dictionary=True)
             cursor.execute(Post.__SELECT_ALL_TRIP_POSTS_SQL,
                            {'trip_id': trip_id})
             result = cursor.fetchall()
@@ -196,6 +211,8 @@ class Post(Model):
                 for post_data in result:
                     posts.append(Post(post_data))
                 return posts
-        except MariaDB.Error as err:
-            app.logger.error("An error occured: {}".format(err))
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
             return []
+        finally:
+            cnx.close()
