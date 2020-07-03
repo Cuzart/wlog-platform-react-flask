@@ -3,7 +3,7 @@ from flask import current_app
 from api.db.model import Model
 from api.db.trip import Trip
 import re
-from passlib.hash import sha256_crypt
+from passlib.hash import pbkdf2_sha256
 from api.config import config
 from api import conn_pool
 
@@ -25,6 +25,7 @@ class User(Model):
     __DELETE_SQL = "DELETE FROM users WHERE id = %(id)s"
     __USERNAME_AVAILABLE_SQL = "SELECT * FROM users WHERE username = %(username)s"
     __CHECK_LOGIN_SQL = "SELECT id, username, password FROM users WHERE username = %(username)s"
+    __SEARCH_SQL = "SELECT `id`, `username` FROM `users` WHERE `username` LIKE %(pattern)s LIMIT 100"
 
     def __init__(self, user_data):
         """Constructor of user instance
@@ -67,7 +68,7 @@ class User(Model):
 
     @password.setter
     def password(self, password):
-        self._password = sha256_crypt.encrypt(str(password))
+        self._password = pbkdf2_sha256.hash(str(password))
 
     @property
     def name(self):
@@ -294,7 +295,7 @@ class User(Model):
             if result is None:
                 return False
             password = result["password"]
-            if sha256_crypt.verify(password_candidate, password):
+            if pbkdf2_sha256.verify(password_candidate, password):
                 return result["id"]
             else:
                 return False
@@ -332,6 +333,15 @@ class User(Model):
 
     @staticmethod
     def edit_profile(id, new_data):
+        """to edit additional attributes of a user
+
+        Args:
+            id (int): users id
+            new_data (dict): the properties to change
+
+        Returns:
+            [type]: [description]
+        """
         user = User.get(id)
         user.name = new_data["name"]
         user.surname = new_data["surname"]
@@ -339,3 +349,27 @@ class User(Model):
         if user.save() is None:
             return False
         return True
+
+    @staticmethod
+    def search(pattern):
+        """enables to search through the users with a specific pattern
+
+        Args:
+            pattern (str): pattern to match with username
+
+        Returns:
+            list: with id and matched username of user
+        """
+        try:
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor(dictionary=True)
+            cursor.execute(User.__SEARCH_SQL, {'pattern': '%{}%'.format(pattern)})
+            result = cursor.fetchall()
+            if result is None:
+                return []
+            return result
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
+            return []
+        finally:
+            cnx.close()
