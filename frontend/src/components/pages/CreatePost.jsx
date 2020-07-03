@@ -9,6 +9,8 @@ import SaveChangesModal from "../layout/SaveChangesModal";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
 import TripImage from "../TripImage";
+import Alert from 'react-bootstrap/Alert';
+
 
 export class CreatePost extends Component {
   constructor(props) {
@@ -24,6 +26,10 @@ export class CreatePost extends Component {
       location: "",
       locationObject: { label: "" },
       showModal: false,
+      variant: "",
+      note: "",
+      alertContent: "",
+      visible: false,
     };
   }
   // show Modal
@@ -56,22 +62,48 @@ export class CreatePost extends Component {
     });
   };
 
+  // shows success alert and dismisses it after 3 seconds, then forwards to profile 
+  onShowAlert = ()=>{
+    this.setState({visible:true},()=>{
+      window.setTimeout(()=>{
+        this.setState({visible:false});
+        this.props.history.push("/profile");
+      },3000)
+    });
+  }
+  
+
   // submitting a entire trip with a post as callback pipeline
   handleSubmit = (event) => {
     window.event.preventDefault();
     this.setState({ showModal: false });
     const fd = new FormData();
+    if(this.state.title.length>0 &&
+       this.state.country.length>0 &&
+       this.state.description.length>0 &&
+       this.state.caption.length>0 &&
+       this.state.location.length>0 
+      ){
     fd.append("thumbnail", this.state.thumbnail);
     // submits the thumbnail
     axios.post("/uploadImg", fd).then((res) => {
+      console.log(res);
       let trip = {
         title: this.state.title,
         country: this.state.country,
         description: this.state.description,
       };
+      if (res.data.statusCode  !== 0){
+        this.setState({
+          note: "Error",
+          alertContent: "Please add a valid thumbnail.",
+          variant: "danger"
+        });
+      }else {
       // submits the trip form
       axios.post("/createTrip", trip).then((res) => {
         // calls for each image in active editor /uploadImg
+        console.log(res);
         let tripId = res.data.trip_id;
         window.tinymce.activeEditor.uploadImages((success) => {
           let post = {
@@ -84,64 +116,155 @@ export class CreatePost extends Component {
               text: window.tinymce.activeEditor.getContent(),
             },
           };
+          switch(res.data.statusCode) {
+            case 0:
+              this.setState({
+                note: "Success",
+                alertContent: "You created a Trip! Congrats. You'll be forwarded to your profile.",
+                variant: "success"
+              });
+              window.scrollTo(0, 0);
+              this.onShowAlert();
+              break;
+              case 1:
+              this.setState({
+                note: "Error",
+                alertContent: "Did you miss some attributes?",
+                variant: "danger"
+              });
+              window.scrollTo(0, 0);
+              break;
+              case 2:
+              this.setState({
+                note: "Error",
+                alertContent: "Please add a thumbnail.",
+                variant: "danger"
+              });
+              window.scrollTo(0, 0);
+              break;
+              case 3:
+              this.setState({
+                note: "Success",
+                alertContent: "Something went wrong. Could not save trip. Sorry!",
+                variant: "danger"
+              });
+              window.scrollTo(0, 0);
+              break;
+              default:
+              break;
+            }
           // submits post with editor content
           axios.post("/createPost", post).then((res) => {
             //check if successfully created
             console.log(res.data);
-            this.props.history.push("/profile");
+            switch(res.data.statusCode) {
+              case 0:
+                this.setState({
+                  note: "Success",
+                  alertContent: "You created a post! Congrats. You'll be forwarded to your profile.",
+                  variant: "success"
+                });
+                window.scrollTo(0, 0);
+                this.onShowAlert();
+                break;
+                case 1:
+                this.setState({
+                  note: "Error",
+                  alertContent: "Did you miss some attributes?",
+                  variant: "danger"
+                });
+                window.scrollTo(0, 0);
+                break;
+                case 2:
+                this.setState({
+                  note: "Error",
+                  alertContent: "No valid trip found.",
+                  variant: "danger"
+                });
+                window.scrollTo(0, 0);
+                break;
+                case 3:
+                this.setState({
+                  note: "Success",
+                  alertContent: "Something went wrong. Could not save post. Sorry!",
+                  variant: "danger"
+                });
+                window.scrollTo(0, 0);
+                break;
+                default:
+                break;
+            }
+            //this.props.history.push("/profile");
           });
         });
       });
+    }
     });
+  }else{
+    console.log("something went wrong")
+    this.setState({
+      note: "Error",
+      alertContent: "Did you miss some attributes?",
+      variant: "danger"
+    });
+    console.log(this.state)
+  }
   };
 
   render() {
     return (
-      <div as={Row} className="container" style={formStyle}>
-        <Col>
-          <TripForm
-            handleChange={this.handleChange}
-            handleFileSelect={this.handleFileSelect}
-            fileFormLabel={this.state.fileFormLabel}
-          />
-          <hr style={hrStyle} />
-          <PostForm
-            heading="add your first blog entry"
-            handleChange={this.handleChange}
-            handleEditorChange={this.handleEditorChange}
-            handleLocationApi={this.handleLocationApi}
-            locationObject={this.state.locationObject}
-          />
-          <div style={previewStyle}>
-            <TripImage
-              title={this.state.title}
-              description={this.state.description}
-              thumbnailUrl={this.state.thumbnailUrl}
-              country={this.state.country}
+      <div>
+        <Alert variant={this.state.variant} style={alertStyle}>
+          <Alert.Heading>{this.state.note}</Alert.Heading>
+          {this.state.alertContent}
+        </Alert>
+        <div as={Row} className="container" style={formStyle}>
+          <Col>
+            <TripForm
+              handleChange={this.handleChange}
+              handleFileSelect={this.handleFileSelect}
+              fileFormLabel={this.state.fileFormLabel}
+            />
+            <hr style={hrStyle} />
+            <PostForm
+              heading="add your first blog entry"
+              handleChange={this.handleChange}
+              handleEditorChange={this.handleEditorChange}
+              handleLocationApi={this.handleLocationApi}
+              locationObject={this.state.locationObject}
+            />
+            <div style={previewStyle}>
+              <TripImage
+                title={this.state.title}
+                description={this.state.description}
+                thumbnailUrl={this.state.thumbnailUrl}
+                country={this.state.country}
+              />
+            </div>
+            <div style={btnLayout}>
+              <Button
+                variant="dark"
+                type="submit"
+                onClick={this.toggleModal}
+                size="lg"
+              >
+                Done
+              </Button>
+            </div>
+          </Col>
+          <div>
+            <SaveChangesModal
+              show={this.state.showModal}
+              onHide={() => this.setState({ showModal: false })}
+              onSubmit={() => this.handleSubmit()}
+              heading={"Are you sure you are done?"}
+              content={
+                "If you are happy with your blog entry you can press save otherwise just go back and keep on editing"
+              }
             />
           </div>
-          <div style={btnLayout}>
-            <Button
-              variant="dark"
-              type="submit"
-              onClick={this.toggleModal}
-              size="lg"
-            >
-              Done
-            </Button>
-          </div>
-        </Col>
-        <div>
-          <SaveChangesModal
-            show={this.state.showModal}
-            onHide={() => this.setState({ showModal: false })}
-            onSubmit={() => this.handleSubmit()}
-            heading={"Are you sure you are done?"}
-            content={
-              "If you are happy with your blog entry you can press save otherwise just go back and keep on editing"
-            }
-          />
         </div>
+        
       </div>
     );
   }
@@ -164,4 +287,8 @@ const hrStyle = {
   margin: "30px 0px",
 };
 
+const alertStyle = {
+  textAlign: "center",
+  fontWeight: "bold",
+}
 export default withRouter(CreatePost);

@@ -16,17 +16,32 @@ class Login extends React.Component {
       username: "",
       password: "",
       toggleAlert: false,
+      visibleSuccessAlert: false
     };
   }
+
+  //shows success alert and dismisses it after 3 seconds, then sends to login 
+  onShowAlert = ()=>{
+    this.setState({visibleSuccessAlert:true},()=>{
+      window.setTimeout(()=>{
+        this.setState({visibleSuccessAlert:false});
+        this.props.history.push("/profile");
+        window.location.reload();
+      },3000)
+    });
+  }
+
   handleLogin = (event) => {
     event.preventDefault();
     let login = this.state;
     axios.post("/login", login).then((res) => {
       if (res.data.statusCode === 0) {
+        this.setState({ toggleAlert: false });
         sessionStorage.setItem("authenticated", true);
         sessionStorage.setItem("user", login.username);
-        this.props.history.push("/profile");
-        window.location.reload();
+        //this.props.history.push("/profile");
+        //window.location.reload();
+        this.onShowAlert();
       } else {
         this.setState({ toggleAlert: true });
       }
@@ -41,51 +56,56 @@ class Login extends React.Component {
 
   render() {
     return (
-      <div className="container">
-        <div style={captionStyle}>login</div>
-        <Form onSubmit={this.handleLogin}>
-          <FormGroup as={Row}>
-            <Form.Label column sm={3}>
-              Username
-            </Form.Label>
-            <Col sm={9}>
-              <Form.Control
-                name="username"
-                type="text"
-                onChange={this.handleChange}
-              />
-            </Col>
-          </FormGroup>
-          <FormGroup as={Row}>
-            <Form.Label column sm={3}>
-              Password
-            </Form.Label>
-            <Col sm={9}>
-              <Form.Control
-                name="password"
-                type="password"
-                onChange={this.handleChange}
-              />
-            </Col>
-          </FormGroup>
-          {this.state.toggleAlert ? (
-            <Alert variant="danger">username or password not correct.</Alert>
-          ) : (
-            <div />
-          )}
-          <div style={btnLayout}>
-            <Button variant="dark" type="submit" size="lg">
-              Login
-            </Button>
-            <br />
-            <NavLink exact id="logRegLink" className="nav-link" to="/register">
-              New here ? Register Now
-            </NavLink>
-          </div>
-        </Form>
+      <div className="base-container">
+        <div className="container">
+          <div style={captionStyle}>login</div>
+          <Form onSubmit={this.handleLogin}>
+            <FormGroup as={Row}>
+              <Form.Label column sm={3}>
+                Username
+              </Form.Label>
+              <Col sm={9}>
+                <Form.Control
+                  name="username"
+                  type="text"
+                  onChange={this.handleChange}
+                />
+              </Col>
+            </FormGroup>
+            <FormGroup as={Row}>
+              <Form.Label column sm={3}>
+                Password
+              </Form.Label>
+              <Col sm={9}>
+                <Form.Control
+                  name="password"
+                  type="password"
+                  onChange={this.handleChange}
+                />
+              </Col>
+            </FormGroup>
+            {this.state.toggleAlert ? (
+              <Alert variant="danger">username or password not correct.</Alert>
+            ) : (
+              <div />
+            )}
+            <div style={btnLayout}>
+              <Button variant="dark" type="submit" size="lg">
+                Login
+              </Button>
+              <br />
+              <NavLink exact id="logRegLink" className="nav-link" to="/register">
+                New here ? Register Now
+              </NavLink>
+            </div>
+          </Form>
+        </div>
+        <Alert variant="success" style={successAlertStyle}
+        show={this.state.visibleSuccessAlert}>You're logged in. Welcome! You'll be forwarded.
+        </Alert>
       </div>
-    );
-  }
+      );
+    }
 }
 
 const captionStyle = {
@@ -101,5 +121,14 @@ const btnLayout = {
   marginBottom: "25px",
   marginTop: "10px",
 };
+
+const successAlertStyle = {
+  textAlign: "center",
+  fontWeight: "bold",
+  position: "absolute",
+  width: "450%",
+  top: "-64%",
+  left:"-60%"
+}
 
 export default withRouter(Login);
