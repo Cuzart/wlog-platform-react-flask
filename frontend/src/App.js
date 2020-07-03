@@ -8,9 +8,9 @@ import Home from "./components/pages/Home";
 import CreatePost from "./components/pages/CreatePost";
 import AddPost from "./components/pages/AddPost";
 import TripPage from "./components/pages/TripPage";
-import TripGrid from "./components/TripGrid";
 import Explore from "./components/pages/Explore";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ProfilePage from "./components/pages/ProfilePage";
 
 class App extends Component {
   render() {
@@ -20,12 +20,12 @@ class App extends Component {
           <Header />
           <Switch>
             <Route exact path="/" component={Home} />
+            <Route path="/explore" component={Explore} />
             <Route path="/register" component={Register} />
             <ProtectedRoute path="/create" component={CreatePost} />
             <ProtectedRoute path="/add" component={AddPost} />
             <Route path="/trips/:id" component={TripPage} />
-            <Route path="/users/:id" component={TripGrid} />
-            <Route path="/explore" component={Explore} />
+            <Route path="/users/:id" component={ProfilePage} />
           </Switch>
         </div>
       </Router>

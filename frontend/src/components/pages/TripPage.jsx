@@ -133,7 +133,7 @@ export class TripPage extends Component {
                       }}
                     >
                       <h4>{subtitle}</h4>
-                      <p>{location_label}</p>
+                      <p style={{ fontStyle: "italic" }}>{location_label}</p>
                     </Accordion.Toggle>
                     <Accordion.Collapse eventKey={id}>
                       <Card.Body dangerouslySetInnerHTML={{ __html: text }} />
@@ -157,7 +157,7 @@ const rowStyle = {
 };
 
 const containerStyle = {
-  margin: "50px 150px",
+  margin: "0px 150px",
 };
 
 const headerStyle = {

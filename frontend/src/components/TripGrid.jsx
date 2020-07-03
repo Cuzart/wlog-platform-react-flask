@@ -2,22 +2,21 @@ import React, { Component } from "react";
 import axios from "axios";
 import TripImage from "./TripImage";
 import Spinner from "./Spinner";
-import Button from "react-bootstrap/Button";
 
 class TripGrid extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      profileId: this.props.match.params.id,
       tripData: [],
       isLoading: true,
     };
   }
-  // fetching the data from the API
+
+  // fetching user trips from the API
   getTripData() {
     axios
-      .get("/users/" + this.state.profileId)
+      .get("/users/" + this.props.userId)
       .then((res) => {
         this.setState({
           tripData: res.data.trips,
@@ -31,24 +30,10 @@ class TripGrid extends Component {
     this.getTripData();
   }
 
-  // requests sign out, clears session storage and redirect
-  handleSignOut = () => {
-    axios.get("/logout").then((res) => {
-      sessionStorage.clear();
-      if (res.data.statusCode === 0) {
-        this.props.history.push("/");
-        //success TODO
-      }
-    });
-  };
-
   render() {
     return (
       <div className="container" style={gridStyle}>
-        <Button variant="dark" onClick={() => this.handleSignOut()}>
-          {" "}
-          Sign Out{" "}
-        </Button>
+        <h1>Trips</h1>
         <div className="row ">
           {!this.state.isLoading ? (
             <React.Fragment>
@@ -57,6 +42,7 @@ class TripGrid extends Component {
                 return (
                   <div className="col-6 my-4 d-flex justify-content-center">
                     <TripImage
+                      key={id}
                       title={title}
                       description={description}
                       thumbnailUrl={thumbnail}
@@ -77,7 +63,7 @@ class TripGrid extends Component {
 }
 
 const gridStyle = {
-  marginTop: "100px",
+  margin: "80px 0px",
   backgroundColor: "white",
   padding: "40px",
   borderRadius: "20px",
