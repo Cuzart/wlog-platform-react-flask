@@ -1,6 +1,7 @@
 from flask import request
 from flask import session
 from flask import Blueprint
+from flask import jsonify
 from api.db.user import User
 from api.db.trip import Trip
 from api.controller.auth import login_required
@@ -9,6 +10,10 @@ import api.helper.imageHandler as img_handler
 
 bp = Blueprint("trips", __name__)
 
+
+@bp.route('/trips', methods=["GET"])
+def get_new_trips():
+    return jsonify(Trip.get_new_trips())
 
 @bp.route('/trips/<int:id>', methods=["GET"])
 def get_trip(id):
