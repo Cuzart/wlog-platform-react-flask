@@ -5,8 +5,8 @@ from api import conn_pool
 
 TEST_DB_CONFIG = {
         'database': "test_wlog",
-        'user': "root",
-        'password': "iamroot",
+        # 'user': "root",
+        # 'password': "iamroot",
 }
 
 @pytest.fixture
@@ -17,7 +17,7 @@ def client():
     with app.test_client() as client:
         with app.app_context():
             conn_pool.set_config(**TEST_DB_CONFIG)
-            cnx = init_test_db()
+            init_test_db()
         yield client
 
 
