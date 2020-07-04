@@ -7,7 +7,38 @@ import Col from "react-bootstrap/Col";
 import FormGroup from "react-bootstrap/FormGroup";
 
 class PostForm extends Component {
+  constructor(props){
+  super(props);
+  this.state={
+      data: {
+        caption: "",
+        location: "",
+      },
+      postErrors: {
+        captionError: "",
+        locationError: "",
+      }
+    };
+  }
+  validateInput = (event) => {
+    let nam = window.event.target.name;
+    let val = window.event.target.value;
+    const data = { ...this.state.data, [nam]: val };
+    this.setState(() => ({ data }));
+    let postErrors = this.state.postErrors;
+    switch(nam) {
+      case "caption":
+        postErrors.captionError = val.length >0 ? "" : "required";
+        break;
+        case "location":
+          postErrors.locationError = val.length >0 ? "" : "required";
+        break;
+        default:
+        break;
+    }
+  }   
   render() {
+    const { postErrors } = this.state;
     return (
       <div className="container">
         <Form>
@@ -19,8 +50,10 @@ class PostForm extends Component {
               </Form.Label>
               <Col sm={5}>
                 <Form.Control
+                  className={postErrors.captionError.length >0 ? "error" : null}
                   name="caption"
-                  onChange={this.props.handleChange}
+                  //onChange={this.props.handleChange}
+                  onChange={e => {this.props.handleChange(e); this.validateInput()}}
                 />
               </Col>
             </FormGroup>
@@ -30,8 +63,10 @@ class PostForm extends Component {
               </Form.Label>
               <Col sm={5}>
                 <Form.Control
+                className={postErrors.locationError.length >0 ? "error" : null}
                   name="location"
-                  onChange={this.props.handleChange}
+                  //onChange={this.props.handleChange}
+                  onChange={e => {this.props.handleChange(e); this.validateInput()}}
                   onBlur={this.props.handleLocationApi}
                 />
               </Col>
