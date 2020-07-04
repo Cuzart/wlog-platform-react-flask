@@ -21,11 +21,12 @@ class Login extends React.Component {
   }
 
   //shows success alert and dismisses it after 3 seconds, then sends to login 
-  onShowAlert = ()=>{
+  onShowAlert = (res)=>{
     this.setState({visibleSuccessAlert:true},()=>{
       window.setTimeout(()=>{
         this.setState({visibleSuccessAlert:false});
-        this.props.history.push("/profile");
+        //this.props.history.push("/profile");
+        this.props.history.push("/users/" + res.data.user_id);
         window.location.reload();
       },3000)
     });
@@ -35,13 +36,24 @@ class Login extends React.Component {
     event.preventDefault();
     let login = this.state;
     axios.post("/login", login).then((res) => {
+      // if yes a session storage is set and user will be redirected
       if (res.data.statusCode === 0) {
         this.setState({ toggleAlert: false });
         sessionStorage.setItem("authenticated", true);
-        sessionStorage.setItem("user", login.username);
-        //this.props.history.push("/profile");
+        //sessionStorage.setItem("user", login.username);
+        sessionStorage.setItem("user", res.data.user_id);
+        /*this.setState({visibleSuccessAlert:true},()=>{
+          window.setTimeout(()=>{
+            this.setState({visibleSuccessAlert:false});
+            //this.props.history.push("/profile");
+            this.props.history.push("/users/" + res.data.user_id);
+            window.location.reload();
+          },3000)
+        });*/
+        this.onShowAlert(res);
+        //this.props.history.push("/users/" + res.data.user_id);
         //window.location.reload();
-        this.onShowAlert();
+        //otherwise there will be an error message
       } else {
         this.setState({ toggleAlert: true });
       }
@@ -85,7 +97,7 @@ class Login extends React.Component {
               </Col>
             </FormGroup>
             {this.state.toggleAlert ? (
-              <Alert variant="danger">username or password not correct.</Alert>
+              <Alert variant="danger">Check your username or password.</Alert>
             ) : (
               <div />
             )}

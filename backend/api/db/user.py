@@ -1,9 +1,11 @@
-from api.db.mariadb import MariaDB
-from api import app
+import mysql.connector
+from flask import current_app
 from api.db.model import Model
 from api.db.trip import Trip
 import re
-from passlib.hash import sha256_crypt
+from passlib.hash import pbkdf2_sha256
+from api.config import config
+from api import conn_pool
 
 
 class User(Model):
@@ -23,6 +25,7 @@ class User(Model):
     __DELETE_SQL = "DELETE FROM users WHERE id = %(id)s"
     __USERNAME_AVAILABLE_SQL = "SELECT * FROM users WHERE username = %(username)s"
     __CHECK_LOGIN_SQL = "SELECT id, username, password FROM users WHERE username = %(username)s"
+    __SEARCH_SQL = "SELECT `id`, `username` FROM `users` WHERE `username` LIKE %(pattern)s LIMIT 100"
 
     def __init__(self, user_data):
         """Constructor of user instance
@@ -65,7 +68,7 @@ class User(Model):
 
     @password.setter
     def password(self, password):
-        self._password = sha256_crypt.encrypt(str(password))
+        self._password = pbkdf2_sha256.hash(str(password))
 
     @property
     def name(self):
@@ -134,21 +137,24 @@ class User(Model):
             int: id of user instance
         """
         try:
-            cursor = Model._db.cursor()
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor()
             user_data = self.get_dict()
             user_data.pop("trips")
             cursor.execute(User.__INSERT_SQL, user_data)
-            Model._db.commit()
+            cnx.commit()
             self._id = cursor.lastrowid
-            app.logger.info("Added a new user with id: {}".format(self.id))
+            current_app.logger.info("Added a new user with id: {}".format(self.id))
             return self.id
-        except MariaDB.IntegrityError as err:
-            app.logger.warning(
+        except mysql.connector.IntegrityError as err:
+            current_app.logger.warning(
                 "Integrity error while inserting a user: %s" % err)
             return None
-        except MariaDB.Error as err:
-            app.logger.error("An error occured: {}".format(err))
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
             return None
+        finally:
+            cnx.close()
 
     def update(self):
         """method to update an instance in the DB
@@ -157,15 +163,18 @@ class User(Model):
             int: id of user instance
         """
         try:
-            cursor = Model._db.cursor()
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor()
             user_data = self.get_dict()
             user_data.pop("trips")
             cursor.execute(User.__UPDATE_SQL, user_data)
-            Model._db.commit()
+            cnx.commit()
             return self.id
-        except MariaDB.Error as err:
-            app.logger.error("An error occured: {}".format(err))
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
             return None
+        finally:
+            cnx.close()
 
     def delete(self):
         """method to delete an instance in the DB
@@ -174,14 +183,17 @@ class User(Model):
             int: id of deleted user instance
         """
         try:
-            cursor = Model._db.cursor()
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor()
             cursor.execute(User.__DELETE_SQL, {'id': self.id})
-            Model._db.commit()
-            app.logger.info("User with id {} deleted".format(self.id))
+            cnx.commit()
+            current_app.logger.info("User with id {} deleted".format(self.id))
             return self.id
-        except MariaDB.Error as err:
-            app.logger.error("An error occured: {}".format(err))
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
             return None
+        finally:
+            cnx.close()
 
     ###########################
     ##   STATIC FUNCTIONS    ##
@@ -197,16 +209,19 @@ class User(Model):
             User: user instance or None
         """
         try:
-            cursor = Model._db.cursor(dictionary=True)
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor(dictionary=True)
             cursor.execute(User.__SELECT_SQL, {'id': id})
             result = cursor.fetchone()
             if result is None:
                 return None
             user = User(result)
             return user
-        except MariaDB.Error as err:
-            app.logger.error("An error occured: {}".format(err))
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
             return None
+        finally:
+            cnx.close()
 
     @staticmethod
     def validate_user_input(user_data):
@@ -247,16 +262,19 @@ class User(Model):
             bool: True or False 
         """
         try:
-            cursor = Model._db.cursor()
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor()
             cursor.execute(User.__USERNAME_AVAILABLE_SQL,
                            {'username': username})
             data = cursor.fetchall()
             if len(data) > 0:
                 return False
             return True
-        except MariaDB.Error as err:
-            app.logger.error("An error occured: {}".format(err))
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
             return False
+        finally:
+            cnx.close()
 
     @staticmethod
     def check_login(username, password_candidate):
@@ -270,19 +288,22 @@ class User(Model):
             bool: True or False
         """
         try:
-            cursor = Model._db.cursor(dictionary=True)
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor(dictionary=True)
             cursor.execute(User.__CHECK_LOGIN_SQL, {'username': username})
             result = cursor.fetchone()
             if result is None:
                 return False
             password = result["password"]
-            if sha256_crypt.verify(password_candidate, password):
+            if pbkdf2_sha256.verify(password_candidate, password):
                 return result["id"]
             else:
                 return False
-        except MariaDB.Error as err:
-            app.logger.error("An error occured: {}".format(err))
-            raise False
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
+            return False
+        finally:
+            cnx.close()
 
     @staticmethod
     def get_profile_data(id):
@@ -312,6 +333,15 @@ class User(Model):
 
     @staticmethod
     def edit_profile(id, new_data):
+        """to edit additional attributes of a user
+
+        Args:
+            id (int): users id
+            new_data (dict): the properties to change
+
+        Returns:
+            [type]: [description]
+        """
         user = User.get(id)
         user.name = new_data["name"]
         user.surname = new_data["surname"]
@@ -319,3 +349,27 @@ class User(Model):
         if user.save() is None:
             return False
         return True
+
+    @staticmethod
+    def search(pattern):
+        """enables to search through the users with a specific pattern
+
+        Args:
+            pattern (str): pattern to match with username
+
+        Returns:
+            list: with id and matched username of user
+        """
+        try:
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor(dictionary=True)
+            cursor.execute(User.__SEARCH_SQL, {'pattern': '%{}%'.format(pattern)})
+            result = cursor.fetchall()
+            if result is None:
+                return []
+            return result
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
+            return []
+        finally:
+            cnx.close()

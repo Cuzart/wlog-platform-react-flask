@@ -30,7 +30,7 @@ function Header() {
           <img
             src="/images/wlogLogo.svg"
             alt="Link to wlog home"
-            style={{ width: "50%" }}
+            style={{ width: "126px" }}
           ></img>
         </NavLink>
         <NavLink
@@ -55,7 +55,7 @@ function Header() {
             exact
             className="nav-link"
             activeClassName="nav-link-active"
-            to="/profile"
+            to={"/users/" + sessionStorage.getItem("user")}
           >
             PROFILE
           </NavLink>

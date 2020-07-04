@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import axios from "axios";
 import TripImage from "./TripImage";
 import Spinner from "./Spinner";
+import Button from "react-bootstrap/Button";
 
 class TripGrid extends Component {
   constructor(props) {
@@ -16,7 +17,7 @@ class TripGrid extends Component {
   // fetching the data from the API
   getTripData() {
     axios
-      .get("/profile/" + this.state.profileId)
+      .get("/users/" + this.state.profileId)
       .then((res) => {
         this.setState({
           tripData: res.data.trips,
@@ -30,9 +31,24 @@ class TripGrid extends Component {
     this.getTripData();
   }
 
+  // requests sign out, clears session storage and redirect
+  handleSignOut = () => {
+    axios.get("/logout").then((res) => {
+      sessionStorage.clear();
+      if (res.data.statusCode === 0) {
+        this.props.history.push("/");
+        //success TODO
+      }
+    });
+  };
+
   render() {
     return (
       <div className="container" style={gridStyle}>
+        <Button variant="dark" onClick={() => this.handleSignOut()}>
+          {" "}
+          Sign Out{" "}
+        </Button>
         <div className="row ">
           {!this.state.isLoading ? (
             <React.Fragment>

@@ -8,23 +8,25 @@ class Home extends Component {
       <div>
         <div className="home-bg">
           <div className="container">
-            <div style={loginForm}>
-              {!sessionStorage.getItem("authenticated") ? <Login /> : <div />}
-            </div>
-            <div style={textStyle}>
-              A home for <br /> your{" "}
-              <span style={{ color: "#9EB091" }}> memories </span>
-            </div>
+            {!sessionStorage.getItem("authenticated") ? (
+              <div style={loginForm}>
+                <Login />
+              </div>
+            ) : (
+              <div style={imgContainer}>
+                <img src="/images/globeIllustration.svg" alt="" width="130%" />
+              </div>
+            )}
+          </div>
+          <div style={textStyle}>
+            A home for <br /> your{" "}
+            <span style={{ color: "#9EB091" }}> memories </span>
           </div>
         </div>
         <div style={barStyle}>
           <img src="/images/bar.svg" alt="" />
         </div>
-        <div className="App" height="500px">
-          <button
-            onClick={() => console.log(sessionStorage.getItem("user"))}
-          ></button>
-        </div>
+        <div className="App" height="500px"></div>
       </div>
     );
   }
@@ -38,6 +40,15 @@ const loginForm = {
   background: "#9EB091",
   borderRadius: "50px",
   textAlign: "left",
+};
+
+const imgContainer = {
+  position: "absolute",
+  height: "auto",
+  width: "340px",
+  top: "120%",
+
+  borderRadius: "50px",
 };
 
 const textStyle = {

@@ -63,13 +63,15 @@ export class CreatePost extends Component {
   };
 
   // shows success alert and dismisses it after 3 seconds, then forwards to profile 
-  onShowAlert = ()=>{
+  onShowAlert = (tripId)=>{
     this.setState({visible:true},()=>{
       window.setTimeout(()=>{
         this.setState({visible:false});
-        this.props.history.push("/profile");
-      },3000)
+        this.props.history.push("/trips/" + tripId);
+        window.location.reload();
+      },3000) 
     });
+    //this.props.history.push("/trips/" + tripId);
   }
   
 
@@ -86,8 +88,7 @@ export class CreatePost extends Component {
       ){
     fd.append("thumbnail", this.state.thumbnail);
     // submits the thumbnail
-    axios.post("/uploadImg", fd).then((res) => {
-      console.log(res);
+    axios.post("/images", fd).then((res) => {
       let trip = {
         title: this.state.title,
         country: this.state.country,
@@ -101,7 +102,7 @@ export class CreatePost extends Component {
         });
       }else {
       // submits the trip form
-      axios.post("/createTrip", trip).then((res) => {
+      axios.post("/trips", trip).then((res) => {
         // calls for each image in active editor /uploadImg
         console.log(res);
         let tripId = res.data.trip_id;
@@ -154,7 +155,7 @@ export class CreatePost extends Component {
               break;
             }
           // submits post with editor content
-          axios.post("/createPost", post).then((res) => {
+          axios.post("/posts", post).then((res) => {
             //check if successfully created
             console.log(res.data);
             switch(res.data.statusCode) {
@@ -165,7 +166,7 @@ export class CreatePost extends Component {
                   variant: "success"
                 });
                 window.scrollTo(0, 0);
-                this.onShowAlert();
+                this.onShowAlert(post.trip_id);
                 break;
                 case 1:
                 this.setState({
@@ -195,6 +196,7 @@ export class CreatePost extends Component {
                 break;
             }
             //this.props.history.push("/profile");
+            //this.props.history.push("/trips/" + tripId);
           });
         });
       });

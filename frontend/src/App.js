@@ -10,6 +10,7 @@ import AddPost from "./components/pages/AddPost";
 import TripPage from "./components/pages/TripPage";
 import TripGrid from "./components/TripGrid";
 import Explore from "./components/pages/Explore";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 class App extends Component {
   render() {
@@ -19,12 +20,12 @@ class App extends Component {
           <Header />
           <Switch>
             <Route exact path="/" component={Home} />
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/create" component={CreatePost} />
-            <Route exact path="/add" component={AddPost} />
-            <Route exact path="/trip/:id" component={TripPage} />
-            <Route exact path="/profile/:id" component={TripGrid} />
-            <Route exact path="/explore" component={Explore} />
+            <Route path="/register" component={Register} />
+            <ProtectedRoute path="/create" component={CreatePost} />
+            <ProtectedRoute path="/add" component={AddPost} />
+            <Route path="/trips/:id" component={TripPage} />
+            <Route path="/users/:id" component={TripGrid} />
+            <Route path="/explore" component={Explore} />
           </Switch>
         </div>
       </Router>
