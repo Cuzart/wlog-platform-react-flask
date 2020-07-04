@@ -99,6 +99,7 @@ input {
   display: table;
 }
 
+/* leaflet map container */
 .leaflet-container {
   height: 400px;
   width: 600px;
@@ -108,14 +109,7 @@ input {
   left: 45%;
 }
 
-/* center all loading spinners */
-.spinner {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-left: -4em;
-  margin-bottom: -4em;
-}
+/* centers all loading spinners */
 #spinner {
   position: absolute;
   left: 50%;
@@ -126,6 +120,7 @@ input {
   color: #4e564b;
 }
 
+/* link from login to register and vice versa */
 #logRegLink {
   color: #4e564b;
   font-weight: bold;
@@ -133,4 +128,26 @@ input {
 #logRegLink:hover {
   color: #000000;
   text-decoration: wavy;
+}
+
+/* profile page tab custom styling  */
+.nav-tabs .nav-link.active {
+  color: #ffffff !important ;
+  background-color: #9eb091 !important;
+  border-radius: 20px 20px 0px 0px;
+}
+.nav-tabs .nav-link.active:hover {
+  opacity: 0.9;
+}
+
+.tab > a {
+  font-size: large;
+  padding: 10px;
+  font-weight: bolder;
+  color: #000000;
+}
+.tab > a:hover {
+  background-color: #9eb09177;
+  color: rgb(255, 255, 255);
+  border-radius: 20px 20px 0px 0px;
 }

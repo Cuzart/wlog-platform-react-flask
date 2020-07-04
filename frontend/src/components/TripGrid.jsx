@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from "axios";
+import uuid from "uuid";
 import TripImage from "./TripImage";
 import Spinner from "./Spinner";
 
@@ -33,7 +34,6 @@ class TripGrid extends Component {
   render() {
     return (
       <div className="container" style={gridStyle}>
-        <h1>Trips</h1>
         <div className="row ">
           {!this.state.isLoading ? (
             <React.Fragment>
@@ -42,7 +42,7 @@ class TripGrid extends Component {
                 return (
                   <div className="col-6 my-4 d-flex justify-content-center">
                     <TripImage
-                      key={id}
+                      key={uuid.v4}
                       title={title}
                       description={description}
                       thumbnailUrl={thumbnail}
@@ -63,10 +63,10 @@ class TripGrid extends Component {
 }
 
 const gridStyle = {
-  margin: "80px 0px",
+  marginBottom: "80px",
   backgroundColor: "white",
   padding: "40px",
-  borderRadius: "20px",
+  borderRadius: "0px 20px",
 };
 
 export default TripGrid;

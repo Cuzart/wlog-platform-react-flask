@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Map, TileLayer, Marker, Popup, Polyline } from "react-leaflet";
 import { Icon } from "leaflet";
+import uuid from "uuid";
 import Spinner from "react-bootstrap/Spinner";
 import "../App.css";
 
@@ -29,7 +30,6 @@ class LeafletMap extends Component {
           {!isLoading ? (
             tripData.posts.map((post) => {
               const {
-                id,
                 location_latitude,
                 location_longitude,
                 location_label,
@@ -44,7 +44,7 @@ class LeafletMap extends Component {
                     positions={this.props.polyline}
                   ></Polyline>
                   <Marker
-                    key={id}
+                    key={uuid.v4}
                     position={[location_latitude, location_longitude]}
                     icon={pin}
                     onClick={() => {

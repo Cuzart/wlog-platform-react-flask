@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
+import uuid from "uuid";
 import "../../App.css";
 import LeafletMap from "../LeafletMap";
 import Spinner from "../Spinner";
@@ -127,6 +128,7 @@ export class TripPage extends Component {
                   <Card>
                     <Accordion.Toggle
                       as={Card.Header}
+                      key={uuid.v4}
                       eventKey={id}
                       onClick={() => {
                         this.setState({ activePost: post });
@@ -157,7 +159,7 @@ const rowStyle = {
 };
 
 const containerStyle = {
-  margin: "0px 150px",
+  margin: "32px 150px",
 };
 
 const headerStyle = {
