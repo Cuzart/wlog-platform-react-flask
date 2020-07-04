@@ -9,8 +9,7 @@ import SaveChangesModal from "../layout/SaveChangesModal";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
 import TripImage from "../TripImage";
-import Alert from 'react-bootstrap/Alert';
-
+import Alert from "react-bootstrap/Alert";
 
 export class CreatePost extends Component {
   constructor(props) {
@@ -62,155 +61,159 @@ export class CreatePost extends Component {
     });
   };
 
-  // shows success alert and dismisses it after 3 seconds, then forwards to profile 
-  onShowAlert = (tripId)=>{
-    this.setState({visible:true},()=>{
-      window.setTimeout(()=>{
-        this.setState({visible:false});
+  // shows success alert and dismisses it after 3 seconds, then forwards to profile
+  onShowAlert = (tripId) => {
+    this.setState({ visible: true }, () => {
+      window.setTimeout(() => {
+        this.setState({ visible: false });
         this.props.history.push("/trips/" + tripId);
         window.location.reload();
-      },3000) 
+      }, 3000);
     });
     //this.props.history.push("/trips/" + tripId);
-  }
-  
+  };
 
   // submitting a entire trip with a post as callback pipeline
   handleSubmit = (event) => {
     window.event.preventDefault();
     this.setState({ showModal: false });
     const fd = new FormData();
-    if(this.state.title.length>0 &&
-       this.state.country.length>0 &&
-       this.state.description.length>0 &&
-       this.state.caption.length>0 &&
-       this.state.location.length>0 
-      ){
-    fd.append("thumbnail", this.state.thumbnail);
-    // submits the thumbnail
-    axios.post("/images", fd).then((res) => {
-      let trip = {
-        title: this.state.title,
-        country: this.state.country,
-        description: this.state.description,
-      };
-      if (res.data.statusCode  !== 0){
-        this.setState({
-          note: "Error",
-          alertContent: "Please add a valid thumbnail.",
-          variant: "danger"
-        });
-      }else {
-      // submits the trip form
-      axios.post("/trips", trip).then((res) => {
-        // calls for each image in active editor /uploadImg
-        console.log(res);
-        let tripId = res.data.trip_id;
-        window.tinymce.activeEditor.uploadImages((success) => {
-          let post = {
-            trip_id: tripId,
-            post: {
-              subtitle: this.state.caption,
-              location_label: this.state.locationObject.label,
-              location_longitude: this.state.locationObject.x,
-              location_latitude: this.state.locationObject.y,
-              text: window.tinymce.activeEditor.getContent(),
-            },
-          };
-          switch(res.data.statusCode) {
-            case 0:
-              this.setState({
-                note: "Success",
-                alertContent: "You created a Trip! Congrats. You'll be forwarded to your profile.",
-                variant: "success"
-              });
-              window.scrollTo(0, 0);
-              this.onShowAlert();
-              break;
-              case 1:
-              this.setState({
-                note: "Error",
-                alertContent: "Did you miss some attributes?",
-                variant: "danger"
-              });
-              window.scrollTo(0, 0);
-              break;
-              case 2:
-              this.setState({
-                note: "Error",
-                alertContent: "Please add a thumbnail.",
-                variant: "danger"
-              });
-              window.scrollTo(0, 0);
-              break;
-              case 3:
-              this.setState({
-                note: "Success",
-                alertContent: "Something went wrong. Could not save trip. Sorry!",
-                variant: "danger"
-              });
-              window.scrollTo(0, 0);
-              break;
-              default:
-              break;
-            }
-          // submits post with editor content
-          axios.post("/posts", post).then((res) => {
-            //check if successfully created
-            console.log(res.data);
-            switch(res.data.statusCode) {
-              case 0:
-                this.setState({
-                  note: "Success",
-                  alertContent: "You created a post! Congrats. You'll be forwarded to your profile.",
-                  variant: "success"
-                });
-                window.scrollTo(0, 0);
-                this.onShowAlert(post.trip_id);
-                break;
-                case 1:
-                this.setState({
-                  note: "Error",
-                  alertContent: "Did you miss some attributes?",
-                  variant: "danger"
-                });
-                window.scrollTo(0, 0);
-                break;
-                case 2:
-                this.setState({
-                  note: "Error",
-                  alertContent: "No valid trip found.",
-                  variant: "danger"
-                });
-                window.scrollTo(0, 0);
-                break;
-                case 3:
-                this.setState({
-                  note: "Success",
-                  alertContent: "Something went wrong. Could not save post. Sorry!",
-                  variant: "danger"
-                });
-                window.scrollTo(0, 0);
-                break;
-                default:
-                break;
-            }
-            //this.props.history.push("/profile");
-            //this.props.history.push("/trips/" + tripId);
+    if (
+      this.state.title.length > 0 &&
+      this.state.country.length > 0 &&
+      this.state.description.length > 0 &&
+      this.state.caption.length > 0 &&
+      this.state.location.length > 0
+    ) {
+      fd.append("thumbnail", this.state.thumbnail);
+      // submits the thumbnail
+      axios.post("/images", fd).then((res) => {
+        let trip = {
+          title: this.state.title,
+          country: this.state.country,
+          description: this.state.description,
+        };
+        if (res.data.statusCode !== 0) {
+          this.setState({
+            note: "Error",
+            alertContent: "Please add a valid thumbnail.",
+            variant: "danger",
           });
-        });
+        } else {
+          // submits the trip form
+          axios.post("/trips", trip).then((res) => {
+            // calls for each image in active editor /uploadImg
+            console.log(res);
+            let tripId = res.data.trip_id;
+            window.tinymce.activeEditor.uploadImages((success) => {
+              let post = {
+                trip_id: tripId,
+                post: {
+                  subtitle: this.state.caption,
+                  location_label: this.state.locationObject.label,
+                  location_longitude: this.state.locationObject.x,
+                  location_latitude: this.state.locationObject.y,
+                  text: window.tinymce.activeEditor.getContent(),
+                },
+              };
+              switch (res.data.statusCode) {
+                case 0:
+                  this.setState({
+                    note: "Success",
+                    alertContent:
+                      "You created a Trip! Congrats. You'll be forwarded to your profile.",
+                    variant: "success",
+                  });
+                  window.scrollTo(0, 0);
+                  this.onShowAlert();
+                  break;
+                case 1:
+                  this.setState({
+                    note: "Error",
+                    alertContent: "Did you miss some attributes?",
+                    variant: "danger",
+                  });
+                  window.scrollTo(0, 0);
+                  break;
+                case 2:
+                  this.setState({
+                    note: "Error",
+                    alertContent: "Please add a thumbnail.",
+                    variant: "danger",
+                  });
+                  window.scrollTo(0, 0);
+                  break;
+                case 3:
+                  this.setState({
+                    note: "Success",
+                    alertContent:
+                      "Something went wrong. Could not save trip. Sorry!",
+                    variant: "danger",
+                  });
+                  window.scrollTo(0, 0);
+                  break;
+                default:
+                  break;
+              }
+              // submits post with editor content
+              axios.post("/posts", post).then((res) => {
+                //check if successfully created
+                console.log(res.data);
+                switch (res.data.statusCode) {
+                  case 0:
+                    this.setState({
+                      note: "Success",
+                      alertContent:
+                        "You created a post! Congrats. You'll be forwarded to your profile.",
+                      variant: "success",
+                    });
+                    window.scrollTo(0, 0);
+                    this.onShowAlert(post.trip_id);
+                    break;
+                  case 1:
+                    this.setState({
+                      note: "Error",
+                      alertContent: "Did you miss some attributes?",
+                      variant: "danger",
+                    });
+                    window.scrollTo(0, 0);
+                    break;
+                  case 2:
+                    this.setState({
+                      note: "Error",
+                      alertContent: "No valid trip found.",
+                      variant: "danger",
+                    });
+                    window.scrollTo(0, 0);
+                    break;
+                  case 3:
+                    this.setState({
+                      note: "Success",
+                      alertContent:
+                        "Something went wrong. Could not save post. Sorry!",
+                      variant: "danger",
+                    });
+                    window.scrollTo(0, 0);
+                    break;
+                  default:
+                    break;
+                }
+                //this.props.history.push("/profile");
+                //this.props.history.push("/trips/" + tripId);
+              });
+            });
+          });
+        }
       });
+    } else {
+      console.log("something went wrong");
+      this.setState({
+        note: "Error",
+        alertContent: "Did you miss some attributes?",
+        variant: "danger",
+      });
+      console.log(this.state);
     }
-    });
-  }else{
-    console.log("something went wrong")
-    this.setState({
-      note: "Error",
-      alertContent: "Did you miss some attributes?",
-      variant: "danger"
-    });
-    console.log(this.state)
-  }
   };
 
   render() {
@@ -260,13 +263,9 @@ export class CreatePost extends Component {
               onHide={() => this.setState({ showModal: false })}
               onSubmit={() => this.handleSubmit()}
               heading={"Are you sure you are done?"}
-              content={
-                "If you are happy with your blog entry you can press save otherwise just go back and keep on editing"
-              }
             />
           </div>
         </div>
-        
       </div>
     );
   }
@@ -292,5 +291,5 @@ const hrStyle = {
 const alertStyle = {
   textAlign: "center",
   fontWeight: "bold",
-}
+};
 export default withRouter(CreatePost);

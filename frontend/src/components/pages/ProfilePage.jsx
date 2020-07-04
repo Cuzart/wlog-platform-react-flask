@@ -3,7 +3,7 @@ import { withRouter } from "react-router-dom";
 import axios from "axios";
 import TripGrid from "../TripGrid";
 //import LeafletMap from "../LeafletMap";
-import SaveChangesModal from "../layout/SaveChangesModal";
+import CreateModal from "../layout/CreateModal";
 import Button from "react-bootstrap/Button";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
@@ -53,6 +53,7 @@ export class ProfilePage extends Component {
       sessionStorage.clear();
       if (res.data.statusCode === 0) {
         this.props.history.push("/");
+        window.location.reload();
         //success TODO
       }
     });
@@ -138,11 +139,9 @@ export class ProfilePage extends Component {
         ) : (
           ""
         )}
-        <SaveChangesModal
+        <CreateModal
           show={this.state.showModal}
           onHide={() => this.setState({ showModal: false })}
-          onSubmit={() => this.handleSubmit()}
-          heading={"What do you want to create?"}
         />
       </div>
     );

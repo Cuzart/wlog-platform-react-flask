@@ -1,69 +1,85 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import "../../App.css";
+import CreateModal from "./CreateModal";
 
-function Header() {
-  return (
-    <div>
-      <header id="navbar">
-        <NavLink
-          exact
-          to="/"
-          className="nav-link"
-          activeClassName="nav-link-active"
-        >
-          HOME
-        </NavLink>
-        <NavLink
-          to="/explore"
-          className="nav-link"
-          activeClassName="nav-link-active"
-        >
-          EXPLORE
-        </NavLink>
-        <NavLink
-          exact
-          to="/"
-          className="nav-link"
-          activeClassName="nav-link-active"
-        >
-          <img
-            src="/images/wlogLogo.svg"
-            alt="Link to wlog home"
-            style={{ width: "126px" }}
-          ></img>
-        </NavLink>
-        <NavLink
-          exact
-          className="nav-link"
-          activeClassName="nav-link-active"
-          to="/create"
-        >
-          CREATE
-        </NavLink>
-        {!sessionStorage.getItem("authenticated") ? (
+class Header extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showModal: false,
+    };
+  }
+
+  handleModalToggle = () => {
+    this.setState({ showModal: true });
+  };
+  render() {
+    return (
+      <div>
+        <header id="navbar">
           <NavLink
             exact
+            to="/"
             className="nav-link"
             activeClassName="nav-link-active"
-            to="/register"
           >
-            REGISTER
+            HOME
           </NavLink>
-        ) : (
+          <NavLink
+            to="/explore"
+            className="nav-link"
+            activeClassName="nav-link-active"
+          >
+            EXPLORE
+          </NavLink>
           <NavLink
             exact
+            to="/"
             className="nav-link"
             activeClassName="nav-link-active"
-            to={"/users/" + sessionStorage.getItem("user")}
           >
-            PROFILE
+            <img
+              src="/images/wlogLogo.svg"
+              alt="Link to wlog home"
+              style={{ width: "126px" }}
+            ></img>
           </NavLink>
-        )}
-      </header>
-      <footer style={footerStyle}></footer>
-    </div>
-  );
+          <div
+            id="createLink"
+            className="nav-link"
+            onClick={() => this.handleModalToggle()}
+          >
+            CREATE
+          </div>
+          {!sessionStorage.getItem("authenticated") ? (
+            <NavLink
+              exact
+              className="nav-link"
+              activeClassName="nav-link-active"
+              to="/register"
+            >
+              REGISTER
+            </NavLink>
+          ) : (
+            <NavLink
+              exact
+              className="nav-link"
+              activeClassName="nav-link-active"
+              to={"/users/" + sessionStorage.getItem("user")}
+            >
+              PROFILE
+            </NavLink>
+          )}
+        </header>
+        <CreateModal
+          show={this.state.showModal}
+          onHide={() => this.setState({ showModal: false })}
+        />
+        <footer style={footerStyle}></footer>
+      </div>
+    );
+  }
 }
 
 let footerStyle = {

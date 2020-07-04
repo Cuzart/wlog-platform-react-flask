@@ -125,10 +125,9 @@ export class TripPage extends Component {
               {this.state.tripData.posts.map((post) => {
                 const { id, location_label, subtitle, text } = post;
                 return (
-                  <Card>
+                  <Card key={uuid.v4}>
                     <Accordion.Toggle
                       as={Card.Header}
-                      key={uuid.v4}
                       eventKey={id}
                       onClick={() => {
                         this.setState({ activePost: post });

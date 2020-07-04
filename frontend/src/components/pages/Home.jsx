@@ -7,11 +7,9 @@ class Home extends Component {
     return (
       <div>
         <div className="home-bg">
-          <div className="container">
+          <div>
             {!sessionStorage.getItem("authenticated") ? (
-              <div style={loginForm}>
-                <Login />
-              </div>
+              <Login />
             ) : (
               <div style={imgContainer}>
                 <img src="/images/globeIllustration.svg" alt="" width="130%" />
@@ -31,16 +29,6 @@ class Home extends Component {
     );
   }
 }
-
-const loginForm = {
-  position: "absolute",
-  height: "auto",
-  width: "340px",
-  top: "43%",
-  background: "#9EB091",
-  borderRadius: "50px",
-  textAlign: "left",
-};
 
 const imgContainer = {
   position: "absolute",

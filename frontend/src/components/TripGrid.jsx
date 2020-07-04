@@ -64,9 +64,10 @@ class TripGrid extends Component {
 
 const gridStyle = {
   marginBottom: "80px",
+  minHeight: "200px",
   backgroundColor: "white",
   padding: "40px",
-  borderRadius: "0px 20px",
+  borderRadius: "0px 0px 20px 20px",
 };
 
 export default TripGrid;

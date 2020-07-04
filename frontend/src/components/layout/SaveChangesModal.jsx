@@ -18,21 +18,16 @@ class SaveChangesModal extends Component {
               {this.props.heading}
             </Modal.Title>
           </Modal.Header>
-          <Modal.Body>
-            <p>{this.props.content}</p>
-          </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={this.props.onHide}>
               Back
-          </Button>
+            </Button>
             <Button variant="dark" onClick={this.props.onSubmit}>
               Save changes
-          </Button>
+            </Button>
           </Modal.Footer>
         </Modal>
-
       </div>
-
     );
   }
 }

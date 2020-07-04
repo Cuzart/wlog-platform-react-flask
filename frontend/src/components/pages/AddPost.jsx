@@ -118,9 +118,6 @@ export class CreatePost extends Component {
                 onHide={() => this.setState({ showModal: false })}
                 onSubmit={() => this.handleSubmit()}
                 heading={"Are you sure you are done?"}
-                content={
-                  "If you are happy with your blog entry you can press save otherwise just go back and keep on editing"
-                }
               />
             </div>
           </React.Fragment>

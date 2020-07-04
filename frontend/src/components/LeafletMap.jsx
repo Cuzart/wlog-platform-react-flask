@@ -37,14 +37,12 @@ class LeafletMap extends Component {
               } = post;
 
               return (
-                <React.Fragment>
+                <React.Fragment key={uuid.v4}>
                   <Polyline
-                    key={"polylineKey"}
                     color="#ff7070"
                     positions={this.props.polyline}
                   ></Polyline>
                   <Marker
-                    key={uuid.v4}
                     position={[location_latitude, location_longitude]}
                     icon={pin}
                     onClick={() => {

@@ -22,23 +22,31 @@
   height: 112px;
   width: 100%;
 }
-header > a {
+header > a,
+header > div {
   color: #4e564b;
   text-decoration: none;
   font-weight: bold;
   width: 50%;
   margin: 0 auto;
 }
-#navbar > a:hover {
+#navbar > a:hover,
+#navbar > div:hover {
   color: #e2e2e2;
   cursor: pointer;
+  position: relative;
 }
 
 .nav-link-active {
   color: #ffffff;
 }
 
-input.error, textarea.error {
+#createLink {
+  padding: "8px 16px";
+}
+
+input.error,
+textarea.error {
   border: 2px solid #c45c5c;
 }
 
@@ -72,6 +80,7 @@ input {
   transform: translateY(-50%);
   overflow-wrap: break-word;
 }
+
 /* thumbnail description */
 .thumbnail_overlay {
   position: absolute;
@@ -150,4 +159,13 @@ input {
   background-color: #9eb09177;
   color: rgb(255, 255, 255);
   border-radius: 20px 20px 0px 0px;
+}
+
+/* shrink effect on hover */
+.shrink {
+  transition: all 0.2s ease-in-out;
+}
+
+.shrink:hover {
+  transform: scale(0.9);
 }
