@@ -17,9 +17,16 @@ class Trip(Model):
     __UPDATE_SQL = """UPDATE users 
                      SET title = %(title)s, country = %(country)s, description = %(thumbnail)s
                      WHERE id = %(id)s"""
-    __SELECT_SQL = "SELECT * FROM trips WHERE id = %(id)s"
+    __SELECT_SQL = """SELECT t.id, t.user_id, u.username as 'author', t.title, 
+                             t.country, t.description, t.thumbnail, t.created_at 
+                      FROM users u, trips t
+                      WHERE t.id = %(id)s"""
     __DELETE_SQL = "DELETE FROM trips WHERE id = %(id)s"
-    __SELECT_ALL_USER_TRIPS_SQL = "SELECT * FROM trips WHERE user_id = %(user_id)s"
+    __SELECT_ALL_USER_TRIPS_SQL = """SELECT t.id, t.user_id, u.username as 'author', t.title, 
+                                            t.country, t.description, t.thumbnail, t.created_at 
+                                     FROM users u, trips t
+                                     WHERE t.user_id = %(user_id)s"""
+    __SELECT_NEW_TRIPS_SQL = "SELECT * FROM `trips` ORDER BY `created_at` DESC LIMIT 50"
 
     def __init__(self, trip_data):
         """Constructor of trip instance
@@ -29,11 +36,11 @@ class Trip(Model):
         """
         super().__init__(trip_data.get("id"), trip_data.get("created_at"))
         self._user_id = trip_data.get("user_id")
+        self._author = trip_data.get("author")
         self.title = trip_data.get("title")
         self.country = trip_data.get("country")
         self.description = trip_data.get("description")
         self.thumbnail = trip_data.get("thumbnail")
-        self.posts = []
 
     ####################
     ##   PROPERTIES   ##
@@ -41,6 +48,10 @@ class Trip(Model):
     @property
     def user_id(self):
         return self._userId
+    
+    @property
+    def author(self):
+        return self._author
 
     @property
     def title(self):
@@ -74,14 +85,6 @@ class Trip(Model):
     def thumbnail(self, thumbnail):
         self._thumbnail = thumbnail
 
-    @property
-    def posts(self):
-        return self._posts
-
-    @posts.setter
-    def posts(self, posts):
-        self._posts = posts
-
     ####################
     ##   FUNCTIONS    ##
     ####################
@@ -96,11 +99,6 @@ class Trip(Model):
             trip_data[property.lstrip("_")] = value
         return trip_data
 
-    def load_posts(self):
-        """loads all posts of the trip out of the database
-        """
-        self.posts = Post.get_all_trip_posts(self.id)
-
     def insert(self):
         """method to insert an instance into the DB
 
@@ -110,9 +108,7 @@ class Trip(Model):
         try:
             cnx = conn_pool.get_connection()
             cursor = cnx.cursor()
-            trip_data = self.get_dict()
-            trip_data.pop("posts")
-            cursor.execute(Trip.__INSERT_SQL, trip_data)
+            cursor.execute(Trip.__INSERT_SQL, self.get_dict())
             cnx.commit()
             self._id = cursor.lastrowid
             current_app.logger.debug("Added a new trip with id: {}".format(self.id))
@@ -211,20 +207,17 @@ class Trip(Model):
             user_id (int): id of user 
 
         Returns:
-            list: list of trip instances
+            list: of dicts with all trip properties
         """
         try:
             cnx = conn_pool.get_connection()
             cursor = cnx.cursor(dictionary=True)
             cursor.execute(Trip.__SELECT_ALL_USER_TRIPS_SQL,
                            {'user_id': user_id})
-            result = cursor.fetchall()
-            if result is None:
+            trips = cursor.fetchall()
+            if trips is None:
                 return []
             else:
-                trips = []
-                for trip_data in result:
-                    trips.append(Trip(trip_data))
                 return trips
         except mysql.connector.Error as err:
             current_app.logger.error("An error occured: {}".format(err))
@@ -245,13 +238,24 @@ class Trip(Model):
         trip = Trip.get(id)
         if trip is None:
             return dict()
-        trip.load_posts()
-        # convert posts to Dict
-        posts_dict = []
-        for post in trip.posts:
-            post_dict = post.get_dict()
-            post_dict["text"] = post.text
-            posts_dict.append(post_dict)
+            
         trip_data = trip.get_dict()
-        trip_data["posts"] = posts_dict
+        trip_data["posts"] = Post.get_all_trip_posts(id)
         return trip_data
+
+    @staticmethod
+    def get_new_trips():
+        try:
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor(dictionary=True)
+            cursor.execute(Trip.__SELECT_NEW_TRIPS_SQL)
+            trips = cursor.fetchall()
+            if trips is None:
+                return []
+            else:
+                return trips
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
+            return []
+        finally:
+            cnx.close()

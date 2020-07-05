@@ -3,6 +3,8 @@ from flask import session
 from flask import Blueprint
 from flask import jsonify
 from api.db.user import User
+from api.db.trip import Trip
+from api.db.post import Post
 from api.controller.auth import login_required
 
 
@@ -12,6 +14,26 @@ bp = Blueprint("users", __name__)
 @bp.route('/users/<int:id>', methods=["GET"])
 def get_user(id):
     return User.get_profile_data(id)
+
+
+@bp.route('/users/<int:id>/trips', methods=["GET"])
+def get_user_trips(id):
+    """Endpoint to get all trips of a specific user
+
+    Returns:
+        json: a list of trips of the user
+    """
+    return jsonify(Trip.get_all_user_trips(id))
+
+
+@bp.route('/users/<int:id>/posts', methods=["GET"])
+def get_user_posts(id):
+    """Endpoint to get all posts of a specific user
+
+    Returns:
+        json: a list of posts of the user
+    """
+    return jsonify(Post.get_all_user_posts(id))
 
 
 @bp.route('/users/<int:id>', methods=["PATCH"])

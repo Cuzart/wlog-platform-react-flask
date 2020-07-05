@@ -41,7 +41,6 @@ class User(Model):
         self.surname = user_data.get("surname")
         self.description = user_data.get("description")
         self.profilepicture = user_data.get("profilepicture")
-        self.trips = []
 
     ####################
     ##   PROPERTIES   ##
@@ -102,14 +101,6 @@ class User(Model):
     def profilepicture(self, profilepicture):
         self._profilepicture = profilepicture
 
-    @property
-    def trips(self):
-        return self._trips
-
-    @trips.setter
-    def trips(self, trips):
-        self._trips = trips
-
     ####################
     ##   FUNCTIONS    ##
     ####################
@@ -124,11 +115,6 @@ class User(Model):
             user_data[property.lstrip("_")] = value
         return user_data
 
-    def load_trips(self):
-        """loads all trips of the user out of the database
-        """
-        self.trips = Trip.get_all_user_trips(self.id)
-
     def insert(self):
         """method to insert an instance into the DB.
         Node that 'is_username_available()' should be executed beforehand 
@@ -139,12 +125,11 @@ class User(Model):
         try:
             cnx = conn_pool.get_connection()
             cursor = cnx.cursor()
-            user_data = self.get_dict()
-            user_data.pop("trips")
-            cursor.execute(User.__INSERT_SQL, user_data)
+            cursor.execute(User.__INSERT_SQL, self.get_dict())
             cnx.commit()
             self._id = cursor.lastrowid
-            current_app.logger.info("Added a new user with id: {}".format(self.id))
+            current_app.logger.info(
+                "Added a new user with id: {}".format(self.id))
             return self.id
         except mysql.connector.IntegrityError as err:
             current_app.logger.warning(
@@ -165,9 +150,7 @@ class User(Model):
         try:
             cnx = conn_pool.get_connection()
             cursor = cnx.cursor()
-            user_data = self.get_dict()
-            user_data.pop("trips")
-            cursor.execute(User.__UPDATE_SQL, user_data)
+            cursor.execute(User.__UPDATE_SQL, self.get_dict())
             cnx.commit()
             return self.id
         except mysql.connector.Error as err:
@@ -222,6 +205,26 @@ class User(Model):
             return None
         finally:
             cnx.close()
+
+    @staticmethod
+    def get_profile_data(id):
+        """provides profile data for sending to clients
+
+        Args:
+            id (int): id of user instance
+
+        Returns:
+            dict: dict with all public properties of user 
+        """
+        user = User.get(id)
+        if user is None:
+            return dict()
+        profile_data = user.get_dict()
+        # remove personal data
+        profile_data.pop("email")
+        profile_data.pop("password")
+        profile_data.pop("created_at")
+        return profile_data
 
     @staticmethod
     def validate_user_input(user_data):
@@ -306,32 +309,6 @@ class User(Model):
             cnx.close()
 
     @staticmethod
-    def get_profile_data(id):
-        """provides profile data for sending to clients
-
-        Args:
-            id (int): id of user instance
-
-        Returns:
-            dict: dict with all public properties of user 
-        """
-        user = User.get(id)
-        if user is None:
-            return dict()
-        user.load_trips()
-        # convert trips to Dict
-        trips_dict = []
-        for trip in user.trips:
-            trips_dict.append(trip.get_dict())
-        profile_data = user.get_dict()
-        profile_data["trips"] = trips_dict
-        # remove personal data
-        profile_data.pop("email")
-        profile_data.pop("password")
-        profile_data.pop("created_at")
-        return profile_data
-
-    @staticmethod
     def edit_profile(id, new_data):
         """to edit additional attributes of a user
 
@@ -363,7 +340,8 @@ class User(Model):
         try:
             cnx = conn_pool.get_connection()
             cursor = cnx.cursor(dictionary=True)
-            cursor.execute(User.__SEARCH_SQL, {'pattern': '%{}%'.format(pattern)})
+            cursor.execute(User.__SEARCH_SQL, {
+                           'pattern': '%{}%'.format(pattern)})
             result = cursor.fetchall()
             if result is None:
                 return []
