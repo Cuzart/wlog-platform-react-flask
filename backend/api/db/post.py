@@ -22,6 +22,10 @@ class Post(Model):
     __SELECT_SQL = "SELECT * FROM posts WHERE id = %(id)s"
     __DELETE_SQL = "DELETE FROM posts WHERE id = %(id)s"
     __SELECT_ALL_TRIP_POSTS_SQL = "SELECT * FROM posts WHERE trip_id = %(trip_id)s"
+    __SELECT_ALL_USER_POSTS_SQL = """SELECT t.title, p.trip_id, p.subtitle, p.location_label, 
+                                        p.location_longitude, p.location_latitude, p.text, p.created_at 
+                                     FROM trips t, posts p
+                                     WHERE t.user_id = %(user_id)s AND p.trip_id = t.id"""
 
     def __init__(self, post_data):
         """Constructor of post instance
@@ -196,20 +200,43 @@ class Post(Model):
             trip_id (int): id of trip
 
         Returns:
-            list: list of post instances
+            list: of dicts with all post properties
         """
         try:
             cnx = conn_pool.get_connection()
             cursor = cnx.cursor(dictionary=True)
             cursor.execute(Post.__SELECT_ALL_TRIP_POSTS_SQL,
                            {'trip_id': trip_id})
-            result = cursor.fetchall()
-            if result is None:
+            posts = cursor.fetchall()
+            if posts is None:
                 return []
             else:
-                posts = []
-                for post_data in result:
-                    posts.append(Post(post_data))
+                return posts
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
+            return []
+        finally:
+            cnx.close()
+
+    @staticmethod
+    def get_all_user_posts(user_id):
+        """provides all post data belonging to a user
+
+        Args:
+            user_id (int): id of user 
+
+        Returns:
+            list: of dicts with all post properties
+        """
+        try:
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor(dictionary=True)
+            cursor.execute(Post.__SELECT_ALL_USER_POSTS_SQL,
+                           {'user_id': user_id})
+            posts = cursor.fetchall()
+            if posts is None:
+                return []
+            else:
                 return posts
         except mysql.connector.Error as err:
             current_app.logger.error("An error occured: {}".format(err))
