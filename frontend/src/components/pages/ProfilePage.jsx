@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import axios from "axios";
 import TripGrid from "../TripGrid";
-//import LeafletMap from "../LeafletMap";
+import LeafletMap from "../LeafletMap";
 import CreateModal from "../layout/CreateModal";
 import Button from "react-bootstrap/Button";
 import Tabs from "react-bootstrap/Tabs";
 import Tab from "react-bootstrap/Tab";
 
-export class ProfilePage extends Component {
+class ProfilePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,21 +16,21 @@ export class ProfilePage extends Component {
       userData: null,
       userImg: "/images/user.svg",
       description: "Introduce yourself to the world ...",
+      posts: [],
       activeTab: "trips",
       isLoading: true,
       toggleModal: false,
+      activePost: { text: "", location_longitude: 0, location_latitude: 0 },
     };
   }
 
-  // fetching all trips of current user
+  // fetching data of current user
   getTripData() {
     axios
       .get("/users/" + this.state.userId)
       .then((res) => {
-        console.log(res.data);
         this.setState({
           userData: res.data,
-          isLoading: false,
         });
         if (res.data.profilepicture !== null) {
           this.setState({ userImg: res.data.profilepicture });
@@ -38,6 +38,14 @@ export class ProfilePage extends Component {
         if (res.data.description !== null) {
           this.setState({ description: res.data.description });
         }
+        // then fetch all the posts
+        axios.get("/users/" + this.state.userId + "/posts").then((res) => {
+          this.setState({
+            posts: res.data,
+            activePost: res.data[0],
+            isLoading: false,
+          });
+        });
       })
 
       .catch((error) => this.setState({ isLoading: false }));
@@ -58,6 +66,12 @@ export class ProfilePage extends Component {
       }
     });
   };
+
+  // recenters map to active marker
+  handleActiveMarker = (post) => {
+    this.setState({ activePost: post });
+  };
+
   // shows modal for create
   toggleModal = () => {
     this.setState({ showModal: !this.state.showModal });
@@ -73,14 +87,14 @@ export class ProfilePage extends Component {
               variant="outline-success"
               onClick={() => this.toggleModal()}
             >
-              Create <i class="fas fa-plus-circle"></i>
+              Create <i className="fas fa-plus-circle"></i>
             </Button>
             <div className="mx-3">
               <Button
                 variant="outline-success"
-                onClick={() => this.handleSignOut()}
+                onClick={() => {console.log(this.state.activePost)}}
               >
-                Edit <i class="fas fa-user-edit"></i>
+                Edit <i className="fas fa-user-edit"></i>
               </Button>
             </div>
             <div className="mr-5">
@@ -88,7 +102,7 @@ export class ProfilePage extends Component {
                 variant="outline-dark"
                 onClick={() => this.handleSignOut()}
               >
-                Sign Out <i class="fas fa-sign-out-alt"></i>
+                Sign Out <i className="fas fa-sign-out-alt"></i>
               </Button>
             </div>
           </div>
@@ -108,7 +122,7 @@ export class ProfilePage extends Component {
                   {this.state.userData.name + " " + this.state.userData.surname}
                 </h4>
                 <div className="pt-1">
-                  <Button active={true} variant="outline-light">
+                  <Button active="true" variant="outline-light">
                     <span role="img" aria-labelledby="Clap">
                       27 Claps 👏🏼
                     </span>
@@ -121,17 +135,27 @@ export class ProfilePage extends Component {
             </div>
             <div className="pt-1 mt-5">
               <Tabs
-                justify="true"
+                mountOnEnter={true}
+                fill={true}
                 variant="tabs"
                 className="tab"
                 activeKey={this.state.activeTab}
                 onSelect={(k) => this.setState({ activeTab: k })}
               >
-                <Tab eventKey="trips" title="Trips" a>
+                <Tab eventKey="trips" title="Trips">
                   <TripGrid userId={this.state.userId} />
                 </Tab>
                 <Tab eventKey="posts" title="Posts">
-                  {/* <LeafletMap /> */}
+                  <div style={profileMap}>        
+                      <LeafletMap
+                        activePost={this.state.activePost}
+                        posts={this.state.posts}
+                        isLoading={this.state.isLoading}
+                        handleActiveMarker={this.handleActiveMarker}
+                        zoom="2"
+                        toTrip={true}
+                      />
+                  </div>
                 </Tab>
               </Tabs>
             </div>
@@ -169,5 +193,15 @@ const descriptionStyle = {
   backgroundColor: "white",
   borderRadius: "8px",
 };
+
+const profileMap = {
+  marginBottom: "80px",
+  height: "400px",
+  backgroundColor: "white",
+  padding: "40px",
+  borderRadius: "0px 0px 20px 20px",
+};
+
+
 
 export default withRouter(ProfilePage);

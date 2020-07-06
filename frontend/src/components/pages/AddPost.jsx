@@ -26,12 +26,12 @@ export class CreatePost extends Component {
   // fetching all trips of current user
   getTripData() {
     axios
-      .get("/users/" + sessionStorage.getItem("user"))
+      .get("/users/" + sessionStorage.getItem("user") + "/trips")
       .then((res) => {
         this.setState({
-          trips: res.data.trips,
+          trips: res.data,
           isLoading: false,
-          tripId: res.data.trips[0].id,
+          tripId: res.data[0].id,
         });
       })
 

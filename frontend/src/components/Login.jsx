@@ -25,7 +25,6 @@ class Login extends React.Component {
     this.setState({ visibleSuccessAlert: true }, () => {
       window.setTimeout(() => {
         this.setState({ visibleSuccessAlert: false });
-        //this.props.history.push("/profile");
         this.props.history.push("/users/" + res.data.user_id);
         window.location.reload();
       }, 1000);
@@ -69,14 +68,8 @@ class Login extends React.Component {
   render() {
     return (
       <div>
-        <Alert
-          variant="success"
-          style={{ textAlign: "center" }}
-          show={this.state.visibleSuccessAlert}
-        >
-          Welcome! You'll be forwarded.
-        </Alert>
         <div style={loginForm}>
+          <div style={alertStyle}></div>
           <div className="container">
             <div style={captionStyle}>login</div>
             <Form onSubmit={this.handleLogin}>
@@ -104,11 +97,21 @@ class Login extends React.Component {
                   />
                 </Col>
               </FormGroup>
-              {this.state.toggleAlert ? (
-                <Alert variant="danger">Check your username or password.</Alert>
-              ) : (
-                <div />
-              )}
+
+              <Alert
+                variant="danger"
+                style={{ textAlign: "center" }}
+                show={this.state.toggleAlert}
+              >
+                Check your username or password.
+              </Alert>
+              <Alert
+                variant="success"
+                style={{ textAlign: "center" }}
+                show={this.state.visibleSuccessAlert}
+              >
+                Welcome! You'll be forwarded.
+              </Alert>
 
               <div style={btnLayout}>
                 <Button variant="dark" type="submit" size="lg">
@@ -146,14 +149,19 @@ const btnLayout = {
   marginTop: "10px",
 };
 const loginForm = {
-  position: "absolute",
   height: "auto",
   width: "340px",
-  top: "42%",
-  marginLeft: "180px",
   background: "#9EB091",
   borderRadius: "50px",
   textAlign: "left",
+  padding: "5px",
+};
+
+const alertStyle = {
+  position: "absolute",
+  height: "50px",
+  width: "400px",
+  alignContent: "center",
 };
 
 export default withRouter(Login);

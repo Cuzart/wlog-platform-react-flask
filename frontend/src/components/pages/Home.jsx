@@ -7,22 +7,26 @@ class Home extends Component {
     return (
       <div>
         <div className="home-bg">
-          <div>
-            {!sessionStorage.getItem("authenticated") ? (
-              <Login />
-            ) : (
-              <div style={imgContainer}>
-                <img src="/images/globeIllustration.svg" alt="" width="130%" />
+          <div className="container pt-5">
+            <div
+              className="row align-items-center justify-content-around align-self-center py-3"
+              style={{ marginTop: "15%" }}
+            >
+              <div className="col-3 pr-5 mr-5">
+                {!sessionStorage.getItem("authenticated") ? <Login /> : ""}
               </div>
-            )}
-          </div>
-          <div style={textStyle}>
-            A home for <br /> your{" "}
-            <span style={{ color: "#9EB091" }}> memories </span>
+              <div className="col-7 ml-5" style={textStyle}>
+                A home for <br /> your
+                <span style={{ color: "#9EB091" }}> memories </span>
+              </div>
+            </div>
           </div>
         </div>
         <div style={barStyle}>
           <img src="/images/bar.svg" alt="" />
+          <div style={imgContainer}>
+            <img src="/images/globeIllustration.svg" alt="" width="130%" />
+          </div>
         </div>
         <div className="App" height="500px"></div>
       </div>
@@ -34,16 +38,11 @@ const imgContainer = {
   position: "absolute",
   height: "auto",
   width: "340px",
-  top: "120%",
-
   borderRadius: "50px",
 };
 
 const textStyle = {
-  position: "absolute",
   textAlign: "right",
-  top: "45%",
-  left: "50%",
   fontFamily: "Libre Baskerville , serif",
   padding: "20px",
   fontSize: "50pt",

@@ -17,10 +17,10 @@ class TripGrid extends Component {
   // fetching user trips from the API
   getTripData() {
     axios
-      .get("/users/" + this.props.userId)
+      .get("/users/" + this.props.userId + "/trips")
       .then((res) => {
         this.setState({
-          tripData: res.data.trips,
+          tripData: res.data,
           isLoading: false,
         });
       })
@@ -40,9 +40,11 @@ class TripGrid extends Component {
               {this.state.tripData.map((trip) => {
                 const { id, title, description, thumbnail, country } = trip;
                 return (
-                  <div className="col-6 my-4 d-flex justify-content-center">
+                  <div
+                    key={uuid.v4()}
+                    className="col-6 my-4 d-flex justify-content-center"
+                  >
                     <TripImage
-                      key={uuid.v4}
                       title={title}
                       description={description}
                       thumbnailUrl={thumbnail}

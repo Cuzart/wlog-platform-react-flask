@@ -13,7 +13,7 @@ class CreateModal extends Component {
     return (
       <div>
         {sessionStorage.getItem("authenticated") ? (
-          <div style={modalStyle}>
+          <div >
             <Modal
               {...this.props}
               open={this.props.open}
@@ -24,7 +24,7 @@ class CreateModal extends Component {
               <Modal.Header closeButton>
                 <Modal.Title
                   id="contained-modal-title-vcenter"
-                  style={{ textAlign: "center" }}
+                  style={titleStyle}
                 >
                   What do you want to create ?
                 </Modal.Title>
@@ -34,7 +34,7 @@ class CreateModal extends Component {
                   <div className="row ">
                     <div className="col text-center ml-5 ">
                       <Button variant="outline-success">
-                        <span style={{ fontSize: "20px" }}>
+                        <span style={{ fontSize: "20px", fontWeight: "bold" }}>
                           <i
                             onClick={(path) => this.handleForwarding("/create")}
                             className="fas fa-plus-circle"
@@ -47,7 +47,7 @@ class CreateModal extends Component {
                     </div>
                     <div className="col text-center mr-5">
                       <Button variant="outline-success">
-                        <span style={{ fontSize: "20px" }}>
+                        <span style={{ fontSize: "20px", fontWeight: "bold" }}>
                           <i
                             onClick={(path) => this.handleForwarding("/add")}
                             className="fas fa-book-open"
@@ -77,39 +77,15 @@ class CreateModal extends Component {
             centered
           >
             <Modal.Header closeButton>
-              <Modal.Title id="contained-modal-title-vcenter">
-                You need to be logged in.
+                <Modal.Title id="contained-modal-title-vcenter" style={titleStyle}>
+                Login required
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <div className="container">
                 <div className="row ">
-                  <div className="col text-center ml-5 ">
-                    <Button variant="dark">
-                      <span style={{ fontSize: "20px" }}>
-                        <i
-                          onClick={(path) => this.handleForwarding("/")}
-                          className="fas fa-door-open"
-                          fontSize="80px"
-                          style={{ fontSize: "80px" }}
-                        ></i>
-                        <br /> Login
-                      </span>
-                    </Button>
-                  </div>
-                  <div className="col text-center mr-5">
-                    <Button variant="dark">
-                      <span style={{ fontSize: "20px" }}>
-                        <i
-                          onClick={(path) => this.handleForwarding("/register")}
-                          className="fas fa-address-card"
-                          style={{ fontSize: "80px" }}
-                        ></i>
-                        <br />
-                        Register
-                      </span>
-                    </Button>
-                  </div>
+                    <p style={{ fontSize: "16px", fontWeight: "bold" }}> Please <a href="/">sign in</a>  if you already have an account <br/>
+                     or join our community and <a href="/register">register now</a>.</p>
                 </div>
               </div>
             </Modal.Body>
@@ -125,9 +101,11 @@ class CreateModal extends Component {
   }
 }
 
-const modalStyle = {
-  borderRadius: "10%",
-  backgroundColor: "black",
+const titleStyle = {
+  fontSize: "20px", 
+  fontWeight: "bold" 
 };
+
+
 
 export default withRouter(CreateModal);

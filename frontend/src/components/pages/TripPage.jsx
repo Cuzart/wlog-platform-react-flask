@@ -15,7 +15,6 @@ export class TripPage extends Component {
     super(props);
 
     this.state = {
-      user: "",
       tripId: this.props.match.params.id,
       activePost: { text: "", location_longitude: 0, location_latitude: 0 },
       tripData: [],
@@ -56,10 +55,6 @@ export class TripPage extends Component {
           activePost: res.data.posts[0],
           userId: res.data.user_id,
         });
-        // then get the username by the user id
-        axios
-          .get("/users/" + res.data.user_id)
-          .then((res) => this.setState({ user: res.data.username }));
 
         polyline = [];
         // creating a array of every post location point
@@ -80,9 +75,13 @@ export class TripPage extends Component {
   render() {
     return (
       <div className="container" style={containerStyle}>
-        <div className="d-flex justify-content-between w-100" style={rowStyle}>
-          <h1 style={headerStyle}>{this.state.tripData.title}</h1>
-          <div>
+        <div className="row align-content-center justify-content-between" style={rowStyle}>
+          <div className="col">
+            <h1 style={headerStyle}>{this.state.tripData.title}</h1>
+            <h5 style={{ fontStyle: "italic" }}>{this.state.tripData.country}</h5>
+          </div>
+          
+          <div className="mr-4">
             <Button
               active={this.state.liked}
               variant="outline-success"
@@ -92,32 +91,42 @@ export class TripPage extends Component {
             </Button>
           </div>
         </div>
-        <h5 style={{ fontStyle: "italic" }}>{this.state.tripData.country}</h5>{" "}
-        <div style={descriptionStyle}>
-          {this.state.tripData.description}
-          <div style={author}>
-            <Button
-              onClick={() =>
-                this.props.history.push("/users/" + this.state.userId)
-              }
-              variant="light"
-            >
-              by {this.state.user}
-            </Button>
+        <div className="row">
+          <div className="col-4 mr-2">
+            <div style={descriptionStyle}>
+              {this.state.tripData.description}
+              <div style={author}>
+                <Button
+                  onClick={() =>
+                    this.props.history.push("/users/" + this.state.userId)
+                  }
+                  variant="light"
+                >
+                  by {this.state.tripData.author}
+                </Button>
+              </div>
           </div>
+          </div>
+            <div className="col-7 pr-0 ml-5 mt-4" style={leafletContainer}>
+              <LeafletMap
+                activePost={this.state.activePost}
+                posts={this.state.tripData.posts}
+                isLoading={this.state.isLoading}
+                polyline={polyline}
+                handleActiveMarker={this.handleActiveMarker}
+                zoom="8"
+                toTrip = {false}
+              />
+            </div>
+          
         </div>
+        
         {/* render after data is loaded */}
         {!this.state.isLoading ? (
           <React.Fragment>
-            <h2 style={headerStyle}>Posts</h2>
 
-            <LeafletMap
-              activePost={this.state.activePost}
-              tripData={this.state.tripData}
-              isLoading={this.state.isLoading}
-              polyline={polyline}
-              handleActiveMarker={this.handleActiveMarker}
-            />
+
+            <h2 style={headerStyle}>Posts</h2>
             <Accordion
               defaultActiveKey={this.state.tripData.posts[0].id}
               activeKey={this.state.activePost.id}
@@ -125,7 +134,7 @@ export class TripPage extends Component {
               {this.state.tripData.posts.map((post) => {
                 const { id, location_label, subtitle, text } = post;
                 return (
-                  <Card key={uuid.v4}>
+                  <Card key={uuid.v4()}>
                     <Accordion.Toggle
                       as={Card.Header}
                       eventKey={id}
@@ -186,5 +195,11 @@ const descriptionStyle = {
   backgroundColor: "white",
   borderRadius: "8px",
 };
+
+const leafletContainer = {
+  width: "600px",
+  position: "relative",
+
+}
 
 export default withRouter(TripPage);

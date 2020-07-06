@@ -111,11 +111,7 @@ input {
 /* leaflet map container */
 .leaflet-container {
   height: 400px;
-  width: 600px;
-  background-color: rgba(255, 0, 0, 0);
-  position: absolute;
-  top: 34%;
-  left: 45%;
+  width: 100%;
 }
 
 /* centers all loading spinners */
@@ -169,3 +165,4 @@ input {
 .shrink:hover {
   transform: scale(0.9);
 }
+
