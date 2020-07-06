@@ -1,26 +1,26 @@
 import React, { Component } from "react";
 import axios from "axios";
+import uuid from "uuid";
 import TripImage from "./TripImage";
 import Spinner from "./Spinner";
-import Button from "react-bootstrap/Button";
 
 class TripGrid extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      profileId: this.props.match.params.id,
       tripData: [],
       isLoading: true,
     };
   }
-  // fetching the data from the API
+
+  // fetching user trips from the API
   getTripData() {
     axios
-      .get("/users/" + this.state.profileId)
+      .get("/users/" + this.props.userId + "/trips")
       .then((res) => {
         this.setState({
-          tripData: res.data.trips,
+          tripData: res.data,
           isLoading: false,
         });
       })
@@ -31,31 +31,19 @@ class TripGrid extends Component {
     this.getTripData();
   }
 
-  // requests sign out, clears session storage and redirect
-  handleSignOut = () => {
-    axios.get("/logout").then((res) => {
-      sessionStorage.clear();
-      if (res.data.statusCode === 0) {
-        this.props.history.push("/");
-        //success TODO
-      }
-    });
-  };
-
   render() {
     return (
       <div className="container" style={gridStyle}>
-        <Button variant="dark" onClick={() => this.handleSignOut()}>
-          {" "}
-          Sign Out{" "}
-        </Button>
         <div className="row ">
           {!this.state.isLoading ? (
             <React.Fragment>
               {this.state.tripData.map((trip) => {
                 const { id, title, description, thumbnail, country } = trip;
                 return (
-                  <div className="col-6 my-4 d-flex justify-content-center">
+                  <div
+                    key={uuid.v4()}
+                    className="col-6 my-4 d-flex justify-content-center"
+                  >
                     <TripImage
                       title={title}
                       description={description}
@@ -77,10 +65,11 @@ class TripGrid extends Component {
 }
 
 const gridStyle = {
-  marginTop: "100px",
+  marginBottom: "80px",
+  minHeight: "200px",
   backgroundColor: "white",
   padding: "40px",
-  borderRadius: "20px",
+  borderRadius: "0px 0px 20px 20px",
 };
 
 export default TripGrid;

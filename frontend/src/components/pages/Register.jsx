@@ -270,7 +270,7 @@ class Register extends React.Component {
                   Register
                 </Button>
                 <NavLink exact id="logRegLink" className="nav-link" to="/">
-                  Already have a Account ? Follow me!
+                  Already have an account ? Follow me.
                 </NavLink>
               </div>
             </div>

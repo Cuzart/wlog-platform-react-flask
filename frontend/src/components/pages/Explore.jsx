@@ -1,12 +1,14 @@
 import React, { Component } from "react";
 import SearchBar from "../SearchBar";
 import axios from "axios";
+import uuid from "uuid";
+import ListGroup from "react-bootstrap/ListGroup";
 
 export class Explore extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      search: "",
+      pattern: "",
       result: [],
     };
   }
@@ -17,12 +19,18 @@ export class Explore extends Component {
     this.setState({ [nam]: val });
   };
 
-  // sends search to API to get array of matching users
-  handleSearch = () => {
-    let searchTerm = this.state.search;
-    axios.get("/users/search", searchTerm).then((res) => {
-      console.log(res);
-    });
+  // sends pattern to API to get array of matching users
+  handleSearch = (event) => {
+    let pattern = this.state.pattern;
+    axios
+      .get("/users/search", {
+        params: {
+          pattern: pattern,
+        },
+      })
+      .then((res) => {
+        this.setState({ result: res.data });
+      });
   };
 
   render() {
@@ -34,6 +42,28 @@ export class Explore extends Component {
           handleSearch={this.handleSearch}
           search={this.state.search}
         />
+        {this.state.result.length > 0 ? (
+          <div className="container  align-self-center">
+            <ListGroup>
+              {this.state.result.map((user) => {
+                const { id, username } = user;
+                return (
+                  <ListGroup.Item
+                    key={uuid.v4}
+                    action
+                    onClick={() => console.log(user)}
+                    variant="outline-success"
+                    href={"/users/" + id}
+                  >
+                    {username}
+                  </ListGroup.Item>
+                );
+              })}
+            </ListGroup>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
     );
   }

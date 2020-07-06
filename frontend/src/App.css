@@ -22,23 +22,31 @@
   height: 112px;
   width: 100%;
 }
-header > a {
+header > a,
+header > div {
   color: #4e564b;
   text-decoration: none;
   font-weight: bold;
   width: 50%;
   margin: 0 auto;
 }
-#navbar > a:hover {
+#navbar > a:hover,
+#navbar > div:hover {
   color: #e2e2e2;
   cursor: pointer;
+  position: relative;
 }
 
 .nav-link-active {
   color: #ffffff;
 }
 
-input.error, textarea.error {
+#createLink {
+  padding: "8px 16px";
+}
+
+input.error,
+textarea.error {
   border: 2px solid #c45c5c;
 }
 
@@ -72,6 +80,7 @@ input {
   transform: translateY(-50%);
   overflow-wrap: break-word;
 }
+
 /* thumbnail description */
 .thumbnail_overlay {
   position: absolute;
@@ -99,23 +108,13 @@ input {
   display: table;
 }
 
+/* leaflet map container */
 .leaflet-container {
   height: 400px;
-  width: 600px;
-  background-color: rgba(255, 0, 0, 0);
-  position: absolute;
-  top: 34%;
-  left: 45%;
+  width: 100%;
 }
 
-/* center all loading spinners */
-.spinner {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin-left: -4em;
-  margin-bottom: -4em;
-}
+/* centers all loading spinners */
 #spinner {
   position: absolute;
   left: 50%;
@@ -126,6 +125,7 @@ input {
   color: #4e564b;
 }
 
+/* link from login to register and vice versa */
 #logRegLink {
   color: #4e564b;
   font-weight: bold;
@@ -134,3 +134,35 @@ input {
   color: #000000;
   text-decoration: wavy;
 }
+
+/* profile page tab custom styling  */
+.nav-tabs .nav-link.active {
+  color: #ffffff !important ;
+  background-color: #9eb091 !important;
+  border-radius: 20px 20px 0px 0px;
+}
+.nav-tabs .nav-link.active:hover {
+  opacity: 0.9;
+}
+
+.tab > a {
+  font-size: large;
+  padding: 10px;
+  font-weight: bolder;
+  color: #000000;
+}
+.tab > a:hover {
+  background-color: #9eb09177;
+  color: rgb(255, 255, 255);
+  border-radius: 20px 20px 0px 0px;
+}
+
+/* shrink effect on hover */
+.shrink {
+  transition: all 0.2s ease-in-out;
+}
+
+.shrink:hover {
+  transform: scale(0.9);
+}
+
