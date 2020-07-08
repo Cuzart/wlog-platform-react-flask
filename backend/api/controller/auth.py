@@ -22,7 +22,7 @@ def login_required(f):
 
 @bp.route('/login', methods=["POST"])
 def login():
-    """Endpoint to login. User can login with his credentials. 
+    """Endpoint to login. User can login with his credentials.
     Some important variables get stored in the session
 
     Returns:
@@ -52,8 +52,8 @@ def logout():
 
 @bp.route('/register', methods=["POST"])
 def register():
-    """Endpoint to register a new user. 
-    User input gets validated. Checks if username is still available. 
+    """Endpoint to register a new user.
+    User input gets validated. Checks if username is still available.
     If request is valid new user gets saved to DB (registered)
 
     Returns:

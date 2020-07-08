@@ -36,13 +36,13 @@ def save_post_img(user_id, file):
 
 def store_tmp_img(file):
     """in case of a thumbnail or profil picture the img gets tmp stored
-    and a uid gets returned to refer to it in the next request 
+    and a uid gets returned to refer to it in the next request
 
     Args:
         file (fileStorage): file to be stored
 
     Returns:
-        string: uid to refer to tmp img 
+        string: uid to refer to tmp img
     """
     filename = secure_filename(file.filename)
     uid = uuid.uuid4()

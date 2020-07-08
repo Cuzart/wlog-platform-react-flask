@@ -1,3 +1,5 @@
+/* eslint no-undef: 0 */  // --> OFF
+
 import React from "react";
 import { render } from "@testing-library/react";
 import App from "../App";

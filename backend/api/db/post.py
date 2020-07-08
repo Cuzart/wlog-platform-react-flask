@@ -2,28 +2,30 @@ from flask import current_app
 from api.db.model import Model
 from api import conn_pool
 import mysql.connector
-import json
 import html
 
 
 class Post(Model):
     """
     Model Class for a post which represents a table row
-    has functions to manipulate and interact with the database  
+    has functions to manipulate and interact with the database
     """
 
     __INSERT_SQL = """INSERT INTO posts
-                   (trip_id, subtitle, location_label, location_longitude, location_latitude, text) 
-                   VALUES (%(trip_id)s, %(subtitle)s, %(location_label)s, %(location_longitude)s, %(location_latitude)s, %(text)s)"""
-    __UPDATE_SQL = """UPDATE posts 
-                     SET subtitle = %(subtitle)s, location_label = %(location_label)s, 
-                         location_longitude = %(location_longitude)s, location_latitude = %(location_latitude)s, text = %(text)s
+                   (trip_id, subtitle, location_label, location_longitude, location_latitude, text)
+                   VALUES (%(trip_id)s, %(subtitle)s, %(location_label)s,
+                        %(location_longitude)s, %(location_latitude)s, %(text)s)"""
+    __UPDATE_SQL = """UPDATE posts
+                     SET subtitle = %(subtitle)s, location_label = %(location_label)s,
+                         location_longitude = %(location_longitude)s,
+                         location_latitude = %(location_latitude)s, text = %(text)s
                      WHERE id = %(id)s"""
     __SELECT_SQL = "SELECT * FROM posts WHERE id = %(id)s"
     __DELETE_SQL = "DELETE FROM posts WHERE id = %(id)s"
     __SELECT_ALL_TRIP_POSTS_SQL = "SELECT * FROM posts WHERE trip_id = %(trip_id)s"
-    __SELECT_ALL_USER_POSTS_SQL = """SELECT t.title, p.trip_id, p.subtitle, p.location_label, 
-                                        p.location_longitude, p.location_latitude, p.text, p.created_at 
+    __SELECT_ALL_USER_POSTS_SQL = """SELECT t.title, p.trip_id, p.subtitle, p.location_label,
+                                        p.location_longitude, p.location_latitude,
+                                        p.text, p.created_at
                                      FROM trips t, posts p
                                      WHERE t.user_id = %(user_id)s AND p.trip_id = t.id"""
 
@@ -181,8 +183,8 @@ class Post(Model):
             result = cursor.fetchone()
             if result is None:
                 return None
-            post = post(result)
-            return post
+
+            return Post(result)
         except mysql.connector.Error as err:
             current_app.logger.error("Something went wrong: {}".format(err))
             return None
@@ -223,7 +225,7 @@ class Post(Model):
         """provides all post data belonging to a user
 
         Args:
-            user_id (int): id of user 
+            user_id (int): id of user
 
         Returns:
             list: of dicts with all post properties

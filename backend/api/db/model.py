@@ -5,7 +5,7 @@ class Model(ABC):
     """
     defines a basic abstract Model Class, with to properties.
     An id and a created_at which each Model needs to implement
-    Other Model Classes should inherit from this 
+    Other Model Classes should inherit from this
     """
 
     def __init__(self, id, created_at):
@@ -22,7 +22,7 @@ class Model(ABC):
 
     def save(self):
         """
-        the save functions saves the instance into the database 
+        the save functions saves the instance into the database
         if it already exists it gets updated otherwise inserted
 
         Returns:
