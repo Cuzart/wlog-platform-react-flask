@@ -20,30 +20,21 @@ validate_backend:
     script:
         - flake8 --ignore=E402,E266,W605,W291
 
-test_backend:
-    image: docker/compose
-    stage: test
-    needs: [validate_backend]
-    before_script:
-        - docker-compose up
+        
+build_frontend:
+    image: node:14
+    stage: build
     script:
-        - docker-compose exec api sh
-        - echo 'works'
-
-# build_frontend:
-#     image: node:14
-#     stage: build
-#     script:
-#         - cd frontend
-#         - npm install
+        - cd frontend
+        - npm install
     
-# validate_frontend:
-#     image: node:14
-#     stage: validate
-#     needs: [build_frontend]
-#     before_script:
-#         - cd frontend
-#         - npm install eslint
-#     script:
-#         - npx eslint --ext .js --ext .jsx src/
-#     allow_failure: true
+validate_frontend:
+    image: node:14
+    stage: validate
+    needs: [build_frontend]
+    before_script:
+        - cd frontend
+        - npm install eslint
+    script:
+        - npx eslint --ext .js --ext .jsx src/
+    allow_failure: true
