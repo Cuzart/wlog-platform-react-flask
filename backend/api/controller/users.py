@@ -39,7 +39,7 @@ def get_user_posts(id):
 @bp.route('/users/<int:id>', methods=["PATCH"])
 @login_required
 def edit_profile(id):
-    """Endpoint to update a users profile. 
+    """Endpoint to update a users profile.
 
     Returns:
         json: status message
@@ -61,7 +61,7 @@ def edit_profile(id):
 
 @bp.route('/users/search', methods=["GET"])
 def search_users():
-    """Endpoint to search users 
+    """Endpoint to search users
 
     Returns:
         json: a list of matching users with id and username. else status message

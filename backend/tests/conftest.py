@@ -4,10 +4,9 @@ from api import conn_pool
 
 
 TEST_DB_CONFIG = {
-        'database': "test_wlog",
-        # 'user': "root",
-        # 'password': "iamroot",
+    'database': "test_wlog",
 }
+
 
 @pytest.fixture
 def client():
@@ -23,7 +22,7 @@ def client():
 
 def init_test_db():
     """ initialize 'test_wlog' db with identical structure
-    
+
     Returns:
         a database connection instance
     """
@@ -40,4 +39,3 @@ def init_test_db():
             cursor.execute(command + ";")
     cnx.commit()
     cnx.close()
-    

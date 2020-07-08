@@ -8,22 +8,22 @@ import mysql.connector
 class Trip(Model):
     """
     Model Class for a trip which represents a table row
-    has functions to manipulate and interact with the database  
+    has functions to manipulate and interact with the database
     """
 
     __INSERT_SQL = """INSERT INTO trips
-                   (user_id, title, country, description, thumbnail) 
+                   (user_id, title, country, description, thumbnail)
                    VALUES (%(user_id)s, %(title)s, %(country)s, %(description)s, %(thumbnail)s)"""
-    __UPDATE_SQL = """UPDATE users 
+    __UPDATE_SQL = """UPDATE users
                      SET title = %(title)s, country = %(country)s, description = %(thumbnail)s
                      WHERE id = %(id)s"""
-    __SELECT_SQL = """SELECT t.id, t.user_id, u.username as 'author', t.title, 
-                             t.country, t.description, t.thumbnail, t.created_at 
+    __SELECT_SQL = """SELECT t.id, t.user_id, u.username as 'author', t.title,
+                             t.country, t.description, t.thumbnail, t.created_at
                       FROM users u, trips t
                       WHERE t.id = %(id)s"""
     __DELETE_SQL = "DELETE FROM trips WHERE id = %(id)s"
-    __SELECT_ALL_USER_TRIPS_SQL = """SELECT t.id, t.user_id, u.username as 'author', t.title, 
-                                            t.country, t.description, t.thumbnail, t.created_at 
+    __SELECT_ALL_USER_TRIPS_SQL = """SELECT t.id, t.user_id, u.username as 'author', t.title,
+                                            t.country, t.description, t.thumbnail, t.created_at
                                      FROM users u, trips t
                                      WHERE t.user_id = %(user_id)s"""
     __SELECT_NEW_TRIPS_SQL = "SELECT * FROM `trips` ORDER BY `created_at` DESC LIMIT 50"
@@ -48,7 +48,7 @@ class Trip(Model):
     @property
     def user_id(self):
         return self._userId
-    
+
     @property
     def author(self):
         return self._author
@@ -204,7 +204,7 @@ class Trip(Model):
         """provides all trip data belonging to a user
 
         Args:
-            user_id (int): id of user 
+            user_id (int): id of user
 
         Returns:
             list: of dicts with all trip properties
@@ -238,7 +238,7 @@ class Trip(Model):
         trip = Trip.get(id)
         if trip is None:
             return dict()
-            
+
         trip_data = trip.get_dict()
         trip_data["posts"] = Post.get_all_trip_posts(id)
         return trip_data

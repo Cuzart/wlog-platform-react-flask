@@ -19,7 +19,7 @@ def get_img(filename):
 @login_required
 def upload_img():
     """Endpoint to upload an image. It is possible to upload an "postImg", "thumbnail", or "profileImg"
-    In case of the "thumbnail", the client gets a uid to refer to the image in the next request. 
+    In case of the "thumbnail", the client gets a uid to refer to the image in the next request.
     In case of the "profileImg" the old image gets removed and the new one saved.
 
     Returns:
