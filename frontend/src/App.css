@@ -21,6 +21,7 @@
   align-items: center;
   height: 112px;
   width: 100%;
+  box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.3);
 }
 header > a,
 header > div {
@@ -165,4 +166,3 @@ input {
 .shrink:hover {
   transform: scale(0.9);
 }
-

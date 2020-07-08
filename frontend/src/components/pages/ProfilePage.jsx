@@ -24,8 +24,11 @@ class ProfilePage extends Component {
     };
   }
 
+  componentDidMount() {
+    this.getUserData();
+  }
   // fetching data of current user
-  getTripData() {
+  getUserData() {
     axios
       .get("/users/" + this.state.userId)
       .then((res) => {
@@ -51,10 +54,6 @@ class ProfilePage extends Component {
       .catch((error) => this.setState({ isLoading: false }));
   }
 
-  componentDidMount() {
-    this.getTripData();
-  }
-
   // requests sign out, clears session storage and redirect
   handleSignOut = () => {
     axios.get("/logout").then((res) => {
@@ -62,7 +61,6 @@ class ProfilePage extends Component {
       if (res.data.statusCode === 0) {
         this.props.history.push("/");
         window.location.reload();
-        //success TODO
       }
     });
   };
@@ -82,7 +80,7 @@ class ProfilePage extends Component {
       <div className="container my-4">
         {/* logged in only features  */}
         {this.state.userId === sessionStorage.getItem("user") ? (
-          <div className="row justify-content-end mt-5 mr-4">
+          <div className="row justify-content-end mt-5 mr-2">
             <Button
               variant="outline-success"
               onClick={() => this.toggleModal()}
@@ -92,7 +90,7 @@ class ProfilePage extends Component {
             <div className="mx-3">
               <Button
                 variant="outline-success"
-                onClick={() => {console.log(this.state.activePost)}}
+                onClick={() => this.props.history.push("/edit")}
               >
                 Edit <i className="fas fa-user-edit"></i>
               </Button>
@@ -146,15 +144,15 @@ class ProfilePage extends Component {
                   <TripGrid userId={this.state.userId} />
                 </Tab>
                 <Tab eventKey="posts" title="Posts">
-                  <div style={profileMap}>        
-                      <LeafletMap
-                        activePost={this.state.activePost}
-                        posts={this.state.posts}
-                        isLoading={this.state.isLoading}
-                        handleActiveMarker={this.handleActiveMarker}
-                        zoom="2"
-                        toTrip={true}
-                      />
+                  <div style={profileMap}>
+                    <LeafletMap
+                      activePost={this.state.activePost}
+                      posts={this.state.posts}
+                      isLoading={this.state.isLoading}
+                      handleActiveMarker={this.handleActiveMarker}
+                      zoom="2"
+                      toTrip={true}
+                    />
                   </div>
                 </Tab>
               </Tabs>
@@ -201,7 +199,5 @@ const profileMap = {
   padding: "40px",
   borderRadius: "0px 0px 20px 20px",
 };
-
-
 
 export default withRouter(ProfilePage);

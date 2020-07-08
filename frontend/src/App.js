@@ -11,6 +11,7 @@ import TripPage from "./components/pages/TripPage";
 import Explore from "./components/pages/Explore";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProfilePage from "./components/pages/ProfilePage";
+import EditProfile from "./components/pages/EditProfile";
 
 class App extends Component {
   render() {
@@ -26,6 +27,7 @@ class App extends Component {
             <ProtectedRoute path="/add" component={AddPost} />
             <Route path="/trips/:id" component={TripPage} />
             <Route path="/users/:id" component={ProfilePage} />
+            <ProtectedRoute path="/edit" component={EditProfile} />
           </Switch>
         </div>
       </Router>

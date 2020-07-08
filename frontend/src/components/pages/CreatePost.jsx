@@ -62,15 +62,14 @@ export class CreatePost extends Component {
   };
 
   // shows success alert and dismisses it after 3 seconds, then forwards to profile
-  onShowAlert = (tripId) => {
+  onShowAlert = () => {
     this.setState({ visible: true }, () => {
       window.setTimeout(() => {
-        this.setState({ visible: false });
-        this.props.history.push("/trips/" + tripId);
-        window.location.reload();
-      }, 3000);
+        this.setState({ visible: false }, () => {
+          this.props.history.push("/users/" + sessionStorage.getItem("user"));
+        });
+      }, 1000);
     });
-    //this.props.history.push("/trips/" + tripId);
   };
 
   // submitting a entire trip with a post as callback pipeline
@@ -103,7 +102,6 @@ export class CreatePost extends Component {
           // submits the trip form
           axios.post("/trips", trip).then((res) => {
             // calls for each image in active editor /uploadImg
-            console.log(res);
             let tripId = res.data.trip_id;
             window.tinymce.activeEditor.uploadImages((success) => {
               let post = {
@@ -158,7 +156,6 @@ export class CreatePost extends Component {
               // submits post with editor content
               axios.post("/posts", post).then((res) => {
                 //check if successfully created
-                console.log(res.data);
                 switch (res.data.statusCode) {
                   case 0:
                     this.setState({
@@ -168,7 +165,7 @@ export class CreatePost extends Component {
                       variant: "success",
                     });
                     window.scrollTo(0, 0);
-                    this.onShowAlert(post.trip_id);
+                    this.onShowAlert();
                     break;
                   case 1:
                     this.setState({
@@ -188,7 +185,7 @@ export class CreatePost extends Component {
                     break;
                   case 3:
                     this.setState({
-                      note: "Success",
+                      note: "Error",
                       alertContent:
                         "Something went wrong. Could not save post. Sorry!",
                       variant: "danger",
@@ -198,21 +195,17 @@ export class CreatePost extends Component {
                   default:
                     break;
                 }
-                //this.props.history.push("/profile");
-                //this.props.history.push("/trips/" + tripId);
               });
             });
           });
         }
       });
     } else {
-      console.log("something went wrong");
       this.setState({
         note: "Error",
         alertContent: "Did you miss some attributes?",
         variant: "danger",
       });
-      console.log(this.state);
     }
   };
 

@@ -22,7 +22,7 @@ class SaveChangesModal extends Component {
             <Button variant="secondary" onClick={this.props.onHide}>
               Back
             </Button>
-            <Button variant="dark" onClick={this.props.onSubmit}>
+            <Button variant="dark" onClick={() => this.props.onSubmit()}>
               Save changes
             </Button>
           </Modal.Footer>

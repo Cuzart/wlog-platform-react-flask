@@ -13,7 +13,7 @@ class CreateModal extends Component {
     return (
       <div>
         {sessionStorage.getItem("authenticated") ? (
-          <div >
+          <div>
             <Modal
               {...this.props}
               open={this.props.open}
@@ -77,15 +77,23 @@ class CreateModal extends Component {
             centered
           >
             <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter" style={titleStyle}>
+              <Modal.Title
+                id="contained-modal-title-vcenter"
+                style={titleStyle}
+              >
                 Login required
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <div className="container">
                 <div className="row ">
-                    <p style={{ fontSize: "16px", fontWeight: "bold" }}> Please <a href="/">sign in</a>  if you already have an account <br/>
-                     or join our community and <a href="/register">register now</a>.</p>
+                  <p style={{ fontSize: "16px", fontWeight: "bold" }}>
+                    {" "}
+                    Please <a href="/">sign in</a> if you already have an
+                    account <br />
+                    or join our community and{" "}
+                    <a href="/register">register now</a>.
+                  </p>
                 </div>
               </div>
             </Modal.Body>
@@ -102,10 +110,8 @@ class CreateModal extends Component {
 }
 
 const titleStyle = {
-  fontSize: "20px", 
-  fontWeight: "bold" 
+  fontSize: "20px",
+  fontWeight: "bold",
 };
-
-
 
 export default withRouter(CreateModal);
