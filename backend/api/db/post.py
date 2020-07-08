@@ -28,6 +28,7 @@ class Post(Model):
                                         p.text, p.created_at
                                      FROM trips t, posts p
                                      WHERE t.user_id = %(user_id)s AND p.trip_id = t.id"""
+    __SELECT_NEW_POSTS_SQL = "SELECT * FROM `posts` ORDER BY `created_at` DESC LIMIT 15"
 
     def __init__(self, post_data):
         """Constructor of post instance
@@ -178,7 +179,7 @@ class Post(Model):
         """
         try:
             cnx = conn_pool.get_connection()
-            cursor = cnx.cursor(dictionary=True)
+            cursor = cnx.cursor(dictionary=True, buffered=True)
             cursor.execute(Post.__SELECT_SQL, {'id': id})
             result = cursor.fetchone()
             if result is None:
@@ -235,6 +236,23 @@ class Post(Model):
             cursor = cnx.cursor(dictionary=True)
             cursor.execute(Post.__SELECT_ALL_USER_POSTS_SQL,
                            {'user_id': user_id})
+            posts = cursor.fetchall()
+            if posts is None:
+                return []
+            else:
+                return posts
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
+            return []
+        finally:
+            cnx.close()
+
+    @staticmethod
+    def get_new_posts():
+        try:
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor(dictionary=True)
+            cursor.execute(Post.__SELECT_NEW_POSTS_SQL)
             posts = cursor.fetchall()
             if posts is None:
                 return []

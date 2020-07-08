@@ -5,8 +5,8 @@ from api.config import config
 
 app = Flask(__name__)
 conn_pool = mysql.connector.pooling.MySQLConnectionPool(
-    pool_name="pool",
-    pool_size=3,
+    pool_name="wlog_pool",
+    pool_size=5,
     host=config['MARIADB']['HOST'],
     user=config['MARIADB']['USER'],
     passwd=config['MARIADB']['PASSWORD'],
