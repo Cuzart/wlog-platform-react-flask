@@ -281,7 +281,7 @@ class Register extends React.Component {
           variant="success"
           show={this.state.visibleSuccessAlert}
         >
-          You've been registered! You can login now.
+          You have been registered successfully! 
         </Alert>
       </div>
     );

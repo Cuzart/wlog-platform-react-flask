@@ -35,7 +35,7 @@ export class CreatePost extends Component {
         });
       })
 
-      .catch((error) => this.setState({ isLoading: false }));
+      .catch(() => this.setState({ isLoading: false }));
   }
 
   componentDidMount() {
@@ -43,14 +43,14 @@ export class CreatePost extends Component {
   }
 
   // Updates state when form is changed
-  handleChange = (event) => {
+  handleChange = () => {
     let nam = window.event.target.name;
     let val = window.event.target.value;
     this.setState({ [nam]: val });
   };
 
   // leaflet-geosearch asynchronous API call to get a result{x: longitude, y: latitude, label: adress}
-  handleLocationApi = async (event) => {
+  handleLocationApi = async () => {
     const provider = new OpenStreetMapProvider();
     const results = await provider.search({ query: this.state.location });
     if (results.length > 0) {
@@ -59,10 +59,10 @@ export class CreatePost extends Component {
   };
 
   // adds a post to a existing trip
-  handleSubmit = (event) => {
+  handleSubmit = () => {
     this.setState({ showModal: false });
     // calls for each image in active editor /uploadImg
-    window.tinymce.activeEditor.uploadImages((success) => {
+    window.tinymce.activeEditor.uploadImages(() => {
       let post = {
         trip_id: this.state.tripId,
         post: {

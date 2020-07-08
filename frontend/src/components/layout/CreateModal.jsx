@@ -36,7 +36,7 @@ class CreateModal extends Component {
                       <Button variant="outline-success">
                         <span style={{ fontSize: "20px", fontWeight: "bold" }}>
                           <i
-                            onClick={(path) => this.handleForwarding("/create")}
+                            onClick={() => this.handleForwarding("/create")}
                             className="fas fa-plus-circle"
                             fontSize="80px"
                             style={{ fontSize: "80px" }}
@@ -49,7 +49,7 @@ class CreateModal extends Component {
                       <Button variant="outline-success">
                         <span style={{ fontSize: "20px", fontWeight: "bold" }}>
                           <i
-                            onClick={(path) => this.handleForwarding("/add")}
+                            onClick={() => this.handleForwarding("/add")}
                             className="fas fa-book-open"
                             style={{ fontSize: "80px" }}
                           ></i>

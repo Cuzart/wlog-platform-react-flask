@@ -51,7 +51,7 @@ class ProfilePage extends Component {
         });
       })
 
-      .catch((error) => this.setState({ isLoading: false }));
+      .catch(() => this.setState({ isLoading: false }));
   }
 
   // requests sign out, clears session storage and redirect

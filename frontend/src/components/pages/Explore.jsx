@@ -12,14 +12,14 @@ export class Explore extends Component {
     };
   }
 
-  handleChange = (event) => {
+  handleChange = () => {
     let nam = window.event.target.name;
     let val = window.event.target.value;
     this.setState({ [nam]: val });
   };
 
   // sends pattern to API to get array of matching users
-  handleSearch = (event) => {
+  handleSearch = () => {
     let pattern = this.state.pattern;
     axios
       .get("/users/search", {
@@ -32,7 +32,7 @@ export class Explore extends Component {
       });
   };
 
-  // fetches 10 posts
+  // fetches 15 latest posts
   // getPostData = () => {
   //   axios.get("/posts").then((res) => {
   //     this.setState({
@@ -75,7 +75,7 @@ export class Explore extends Component {
                       >
                         <div className="col-10"> {username}</div>
                         <div className="col-1 ml-4">
-                          <i class="fas fa-map-pin"></i>
+                          <i className="fas fa-map-pin"></i>
                         </div>
                       </div>
                     </ListGroup.Item>

@@ -21,7 +21,7 @@ class TripForm extends Component {
   };
 }
   
-validateInput = (event) => {
+validateInput = () => {
   let nam = window.event.target.name;
   let val = window.event.target.value;
   const data = { ...this.state.data, [nam]: val };

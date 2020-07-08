@@ -37,14 +37,14 @@ export class CreatePost extends Component {
   };
 
   // Updates state when form is changed
-  handleChange = (event) => {
+  handleChange = () => {
     let nam = window.event.target.name;
     let val = window.event.target.value;
     this.setState({ [nam]: val });
   };
 
   // leaflet-geosearch asynchronous API call to get a result{x: longitude, y: latitude, label: adress}
-  handleLocationApi = async (event) => {
+  handleLocationApi = async () => {
     const provider = new OpenStreetMapProvider();
     const results = await provider.search({ query: this.state.location });
     if (results.length > 0) {
@@ -53,7 +53,7 @@ export class CreatePost extends Component {
   };
 
   // updates thumbnail and its url in state when new file is selected
-  handleFileSelect = (event) => {
+  handleFileSelect = () => {
     this.setState({
       thumbnail: window.event.target.files[0],
       thumbnailUrl: URL.createObjectURL(window.event.target.files[0]),
@@ -73,7 +73,7 @@ export class CreatePost extends Component {
   };
 
   // submitting a entire trip with a post as callback pipeline
-  handleSubmit = (event) => {
+  handleSubmit = () => {
     window.event.preventDefault();
     this.setState({ showModal: false });
     const fd = new FormData();
@@ -103,7 +103,7 @@ export class CreatePost extends Component {
           axios.post("/trips", trip).then((res) => {
             // calls for each image in active editor /uploadImg
             let tripId = res.data.trip_id;
-            window.tinymce.activeEditor.uploadImages((success) => {
+            window.tinymce.activeEditor.uploadImages(() => {
               let post = {
                 trip_id: tripId,
                 post: {

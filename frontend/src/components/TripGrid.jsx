@@ -24,7 +24,7 @@ class TripGrid extends Component {
           isLoading: false,
         });
       })
-      .catch((error) => this.setState({ isLoading: false }));
+      .catch(() => this.setState({ isLoading: false }));
   }
 
   componentDidMount() {

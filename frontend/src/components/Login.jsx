@@ -110,7 +110,7 @@ class Login extends React.Component {
                 style={{ textAlign: "center" }}
                 show={this.state.visibleSuccessAlert}
               >
-                Welcome! You'll be forwarded.
+                Welcome! You will be forwarded.
               </Alert>
 
               <div style={btnLayout}>

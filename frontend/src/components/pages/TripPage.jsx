@@ -65,7 +65,7 @@ export class TripPage extends Component {
         });
       })
 
-      .catch((error) => this.setState({ isLoading: false }));
+      .catch(() => this.setState({ isLoading: false }));
   }
 
   componentDidMount() {
@@ -196,10 +196,9 @@ const descriptionStyle = {
   borderRadius: "8px",
 };
 
-const leafletContainer = {
+const leafletContainer = {
   width: "600px",
-  position: "relative",
-
+  position: "relative"
 }
 
 export default withRouter(TripPage);
