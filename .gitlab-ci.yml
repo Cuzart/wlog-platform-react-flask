@@ -1,0 +1,38 @@
+stages:
+    - build
+    - validate
+
+build_backend:
+    image: python:3.7-alpine
+    stage: build
+    script:
+        - echo "Building"
+        - pip install -r backend/requirements.txt -t backend/api/
+
+validate_backend:
+    image: python:3.7-alpine
+    stage: validate
+    needs: [build_backend]
+    before_script:
+        - cd backend
+        - pip install flake8
+    script:
+        - flake8 --ignore=E402,E266,W605,W291
+
+build_frontend:
+    image: node:14
+    stage: build
+    script:
+        - cd frontend
+        - npm install
+    
+validate_frontend:
+    image: node:14
+    stage: validate
+    needs: [build_frontend]
+    before_script:
+        - cd frontend
+        - npm install eslint
+    script:
+        - npx eslint --ext .js --ext .jsx src/
+    allow_failure: true

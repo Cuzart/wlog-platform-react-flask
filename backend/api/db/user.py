@@ -1,25 +1,23 @@
 import mysql.connector
+import re
 from flask import current_app
 from api.db.model import Model
-from api.db.trip import Trip
-import re
 from passlib.hash import pbkdf2_sha256
-from api.config import config
 from api import conn_pool
 
 
 class User(Model):
     """
     Model Class for a user which represents a table row
-    has functions to manipulate and interact with the database  
+    has functions to manipulate and interact with the database
     """
 
     __INSERT_SQL = """INSERT INTO users
-                   (username, email, password, name, surname) 
+                   (username, email, password, name, surname)
                    VALUES (%(username)s, %(email)s, %(password)s, %(name)s, %(surname)s)"""
-    __UPDATE_SQL = """UPDATE users 
+    __UPDATE_SQL = """UPDATE users
                      SET username = %(username)s, email = %(email)s, password = %(password)s, name = %(name)s,
-                     surname = %(surname)s, description = %(description)s, profilepicture = %(profilepicture)s 
+                     surname = %(surname)s, description = %(description)s, profilepicture = %(profilepicture)s
                      WHERE id = %(id)s"""
     __SELECT_SQL = "SELECT * FROM users WHERE id = %(id)s"
     __DELETE_SQL = "DELETE FROM users WHERE id = %(id)s"
@@ -117,7 +115,7 @@ class User(Model):
 
     def insert(self):
         """method to insert an instance into the DB.
-        Node that 'is_username_available()' should be executed beforehand 
+        Node that 'is_username_available()' should be executed beforehand
 
         Returns:
             int: id of user instance
@@ -214,7 +212,7 @@ class User(Model):
             id (int): id of user instance
 
         Returns:
-            dict: dict with all public properties of user 
+            dict: dict with all public properties of user
         """
         user = User.get(id)
         if user is None:
@@ -262,7 +260,7 @@ class User(Model):
             username (string): prefered username
 
         Returns:
-            bool: True or False 
+            bool: True or False
         """
         try:
             cnx = conn_pool.get_connection()

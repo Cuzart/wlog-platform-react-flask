@@ -1,4 +1,5 @@
-import pytest
+# import pytest
+
 
 def test_empty_db(client):
     rv = client.get('/users/1')

@@ -1,8 +1,6 @@
 from flask import request
-from flask import session
 from flask import Blueprint
 from api.db.trip import Trip
-from api.db.post import Post
 from api.controller.auth import login_required
 
 

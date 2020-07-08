@@ -1,4 +1,4 @@
-import pytest
+# import pytest
 from api.db.trip import Trip
 
 

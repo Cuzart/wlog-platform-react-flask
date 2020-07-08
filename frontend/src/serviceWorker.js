@@ -1,3 +1,5 @@
+/* eslint no-undef: 0 */  // --> OFF
+
 // This optional code is used to register a service worker.
 // register() is not called by default.
 
