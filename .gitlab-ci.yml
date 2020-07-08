@@ -20,7 +20,7 @@ validate_backend:
     script:
         - flake8 --ignore=E402,E266,W605,W291
 
-validate_backend:
+test_backend:
     image: docker/compose
     stage: test
     needs: [validate_backend]
