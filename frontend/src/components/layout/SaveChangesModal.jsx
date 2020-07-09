@@ -19,10 +19,13 @@ class SaveChangesModal extends Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.props.onHide}>
+            <Button variant="outline-own" onClick={this.props.onHide}>
               Back
             </Button>
-            <Button variant="dark" onClick={this.props.onSubmit}>
+            <Button
+              variant="outline-ownLight"
+              onClick={() => this.props.onSubmit()}
+            >
               Save changes
             </Button>
           </Modal.Footer>
@@ -31,4 +34,5 @@ class SaveChangesModal extends Component {
     );
   }
 }
+
 export default SaveChangesModal;

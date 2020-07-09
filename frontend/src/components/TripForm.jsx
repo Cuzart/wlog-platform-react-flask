@@ -5,42 +5,42 @@ import Col from "react-bootstrap/Col";
 import FormGroup from "react-bootstrap/FormGroup";
 
 class TripForm extends Component {
-  constructor(props){
-  super(props);
-  this.state={
-    data: {
-      title: "",
-      country: "",
-      description: ""
-    },
-    tripErrors: {
-      titleError: "",
-      countryError: "",
-      descriptionError: "",
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: {
+        title: "",
+        country: "",
+        description: "",
+      },
+      tripErrors: {
+        titleError: "",
+        countryError: "",
+        descriptionError: "",
+      },
+    };
+  }
+
+  validateInput = () => {
+    let nam = window.event.target.name;
+    let val = window.event.target.value;
+    const data = { ...this.state.data, [nam]: val };
+    this.setState(() => ({ data }));
+    let tripErrors = this.state.tripErrors;
+    switch (nam) {
+      case "title":
+        tripErrors.titleError = val.length > 0 ? "" : "required";
+        break;
+      case "country":
+        tripErrors.countryError = val.length > 0 ? "" : "required";
+        break;
+      case "description":
+        tripErrors.descriptionError = val.length > 0 ? "" : "required";
+        break;
+      default:
+        break;
     }
   };
-}
-  
-validateInput = (event) => {
-  let nam = window.event.target.name;
-  let val = window.event.target.value;
-  const data = { ...this.state.data, [nam]: val };
-  this.setState(() => ({ data }));
-  let tripErrors = this.state.tripErrors;
-  switch(nam) {
-    case "title":
-      tripErrors.titleError = val.length >0 ? "" : "required";
-      break;
-      case "country":
-        tripErrors.countryError = val.length >0 ? "" : "required";
-      break;
-      case "description":
-        tripErrors.descriptionError = val.length >0 ? "" : "required";
-      break;
-      default:
-      break;
-  }
-}   
   render() {
     const { tripErrors } = this.state;
     return (
@@ -54,10 +54,13 @@ validateInput = (event) => {
               </Form.Label>
               <Col sm={5}>
                 <Form.Control
-                  className={tripErrors.titleError.length >0 ? "error" : null}
+                  className={tripErrors.titleError.length > 0 ? "error" : null}
                   name="title"
                   type="text"
-                  onChange={e => {this.props.handleChange(e); this.validateInput()}}
+                  onChange={(e) => {
+                    this.props.handleChange(e);
+                    this.validateInput();
+                  }}
                 />
               </Col>
             </FormGroup>
@@ -70,7 +73,6 @@ validateInput = (event) => {
                   id="formfile"
                   accept="image/png, image/jpeg"
                   onChange={this.props.handleFileSelect}
-                  //onChange={e => {this.props.handleChange(e); this.validateInput()}}
                   label={this.props.fileFormLabel}
                   custom
                 />
@@ -82,9 +84,14 @@ validateInput = (event) => {
               </Form.Label>
               <Col sm={5}>
                 <Form.Control
-                  className={tripErrors.countryError.length >0 ? "error" : null}
+                  className={
+                    tripErrors.countryError.length > 0 ? "error" : null
+                  }
                   name="country"
-                  onChange={e => {this.props.handleChange(e); this.validateInput()}}
+                  onChange={(e) => {
+                    this.props.handleChange(e);
+                    this.validateInput();
+                  }}
                   type="text"
                 />
               </Col>
@@ -95,14 +102,20 @@ validateInput = (event) => {
               </Form.Label>
               <Col sm={5}>
                 <Form.Control
-                  className={tripErrors.descriptionError.length >0 ? "error" : null}
+                  className={
+                    tripErrors.descriptionError.length > 0 ? "error" : null
+                  }
                   as="textarea"
                   name="description"
-                  onChange={e => {this.props.handleChange(e); this.validateInput()}}
+                  onChange={(e) => {
+                    this.props.handleChange(e);
+                    this.validateInput();
+                  }}
                   rows="3"
+                  maxLength="240"
                 />
               </Col>
-            </FormGroup> 
+            </FormGroup>
           </Form>
         </div>
       </div>

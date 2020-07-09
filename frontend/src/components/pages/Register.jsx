@@ -56,15 +56,15 @@ class Register extends React.Component {
     return valid;
   };
 
-  //shows success alert and dismisses it after 3 seconds, then sends to login 
-  onShowAlert = ()=>{
-    this.setState({visibleSuccessAlert:true},()=>{
-      window.setTimeout(()=>{
-        this.setState({visibleSuccessAlert:false});
+  //shows success alert and dismisses it after 3 seconds, then sends to login
+  onShowAlert = () => {
+    this.setState({ visibleSuccessAlert: true }, () => {
+      window.setTimeout(() => {
+        this.setState({ visibleSuccessAlert: false });
         this.props.history.push("/");
-      },3000)
+      }, 1000);
     });
-  }
+  };
 
   // sends state object to REST API
   //if one form is invalid nothing will be send
@@ -91,8 +91,8 @@ class Register extends React.Component {
             });
         }
       });
-      
-      this.setState({toggleAlert: false});
+
+      this.setState({ toggleAlert: false });
     } else {
       this.setState({
         toggleAlert: true,
@@ -205,7 +205,7 @@ class Register extends React.Component {
                   )}
                 </div>
               </FormGroup>
-              <FormGroup as={Col} sm="6">
+              <FormGroup as={Col} sm="6" cla>
                 <Form.Label>Confirm Password</Form.Label>
                 <Form.Control
                   className={formErrors.password2.length > 0 ? "error" : null}
@@ -266,7 +266,7 @@ class Register extends React.Component {
                 className="col py-3 justify-content-between w-100"
                 style={{ textAlign: "center" }}
               >
-                <Button variant="dark" type="submit" size="lg">
+                <Button variant="outline-own" type="submit" size="lg">
                   Register
                 </Button>
                 <NavLink exact id="logRegLink" className="nav-link" to="/">
@@ -276,7 +276,13 @@ class Register extends React.Component {
             </div>
           </Form>
         </div>
-        <Alert style={successAlertStyle} variant="success" show={this.state.visibleSuccessAlert}>You've been registered! You can login now.</Alert>
+        <Alert
+          style={successAlertStyle}
+          variant="success"
+          show={this.state.visibleSuccessAlert}
+        >
+          You have been registered successfully!
+        </Alert>
       </div>
     );
   }
@@ -296,6 +302,7 @@ const registerForm = {
   background: "#9EB091",
   borderRadius: "15px",
   textAlign: "left",
+  boxShadow: "0px 2px 2px 2px rgba(0, 0, 0, 0.1)",
 };
 
 const captionStyle = {
@@ -315,7 +322,7 @@ const errorMessage = {
 const successAlertStyle = {
   textAlign: "center",
   fontWeight: "bold",
-}
+};
 const bg = {
   backgroundImage: " url(/images/bg3.png)",
   backgroundPosition: "center",

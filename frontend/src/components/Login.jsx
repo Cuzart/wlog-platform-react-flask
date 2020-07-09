@@ -110,11 +110,11 @@ class Login extends React.Component {
                 style={{ textAlign: "center" }}
                 show={this.state.visibleSuccessAlert}
               >
-                Welcome! You'll be forwarded.
+                Welcome! You will be forwarded.
               </Alert>
 
               <div style={btnLayout}>
-                <Button variant="dark" type="submit" size="lg">
+                <Button variant="outline-own" type="submit" size="lg">
                   Login
                 </Button>
                 <br />
@@ -155,6 +155,7 @@ const loginForm = {
   borderRadius: "50px",
   textAlign: "left",
   padding: "5px",
+  boxShadow: "0px 2px 2px 2px rgba(0, 0, 0, 0.1)",
 };
 
 const alertStyle = {
