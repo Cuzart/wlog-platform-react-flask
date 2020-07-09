@@ -62,7 +62,7 @@ class Register extends React.Component {
       window.setTimeout(() => {
         this.setState({ visibleSuccessAlert: false });
         this.props.history.push("/");
-      }, 3000);
+      }, 1000);
     });
   };
 
@@ -281,7 +281,7 @@ class Register extends React.Component {
           variant="success"
           show={this.state.visibleSuccessAlert}
         >
-          You have been registered successfully! 
+          You have been registered successfully!
         </Alert>
       </div>
     );
@@ -302,6 +302,7 @@ const registerForm = {
   background: "#9EB091",
   borderRadius: "15px",
   textAlign: "left",
+  boxShadow: "0px 2px 2px 2px rgba(0, 0, 0, 0.1)",
 };
 
 const captionStyle = {

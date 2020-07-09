@@ -145,14 +145,18 @@ class ProfilePage extends Component {
                 </Tab>
                 <Tab eventKey="posts" title="Posts">
                   <div style={profileMap}>
-                    <LeafletMap
-                      activePost={this.state.activePost}
-                      posts={this.state.posts}
-                      isLoading={this.state.isLoading}
-                      handleActiveMarker={this.handleActiveMarker}
-                      zoom="2"
-                      toTrip={true}
-                    />
+                    {this.state.posts.length > 0 ? (
+                      <LeafletMap
+                        activePost={this.state.activePost}
+                        posts={this.state.posts}
+                        isLoading={this.state.isLoading}
+                        handleActiveMarker={this.handleActiveMarker}
+                        zoom="2"
+                        toTrip={true}
+                      />
+                    ) : (
+                      ""
+                    )}
                   </div>
                 </Tab>
               </Tabs>
@@ -194,7 +198,8 @@ const descriptionStyle = {
 
 const profileMap = {
   marginBottom: "80px",
-  height: "400px",
+  minHeight: "200px",
+  height: "auto",
   backgroundColor: "white",
   padding: "40px",
   borderRadius: "0px 0px 20px 20px",
