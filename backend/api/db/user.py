@@ -65,7 +65,7 @@ class User(Model):
 
     @password.setter
     def password(self, password):
-        self._password = pbkdf2_sha256.hash(str(password))
+        self._password = password
 
     @property
     def name(self):
@@ -191,7 +191,7 @@ class User(Model):
         """
         try:
             cnx = conn_pool.get_connection()
-            cursor = cnx.cursor(dictionary=True)
+            cursor = cnx.cursor(dictionary=True, buffered=True)
             cursor.execute(User.__SELECT_SQL, {'id': id})
             result = cursor.fetchone()
             if result is None:
@@ -278,6 +278,23 @@ class User(Model):
             cnx.close()
 
     @staticmethod
+    def register(user_data):
+        """registers a new user, the password gets hashed
+        Important: is_username_available should be called before
+
+        Args:
+            user_data (dict): given properties of user
+
+        Returns:
+            bool: success or failure
+        """
+        user = User(user_data)
+        user.password = pbkdf2_sha256.hash(str(user.password))
+        if user.save() is None:
+            return False
+        return True
+
+    @staticmethod
     def check_login(username, password_candidate):
         """checks if user and password match
 
@@ -290,7 +307,7 @@ class User(Model):
         """
         try:
             cnx = conn_pool.get_connection()
-            cursor = cnx.cursor(dictionary=True)
+            cursor = cnx.cursor(dictionary=True, buffered=True)
             cursor.execute(User.__CHECK_LOGIN_SQL, {'username': username})
             result = cursor.fetchone()
             if result is None:
@@ -308,7 +325,8 @@ class User(Model):
 
     @staticmethod
     def edit_profile(id, new_data):
-        """to edit additional attributes of a user
+        """to edit description of a user
+        in the future maybe more...
 
         Args:
             id (int): users id
@@ -318,8 +336,6 @@ class User(Model):
             [type]: [description]
         """
         user = User.get(id)
-        user.name = new_data["name"]
-        user.surname = new_data["surname"]
         user.description = new_data["description"]
         if user.save() is None:
             return False

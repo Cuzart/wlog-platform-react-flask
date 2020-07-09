@@ -25,8 +25,8 @@ class Trip(Model):
     __SELECT_ALL_USER_TRIPS_SQL = """SELECT t.id, t.user_id, u.username as 'author', t.title,
                                             t.country, t.description, t.thumbnail, t.created_at
                                      FROM users u, trips t
-                                     WHERE t.user_id = %(user_id)s"""
-    __SELECT_NEW_TRIPS_SQL = "SELECT * FROM `trips` ORDER BY `created_at` DESC LIMIT 50"
+                                     WHERE  u.id = t.user_id AND t.user_id = %(user_id)s"""
+    __SELECT_NEW_TRIPS_SQL = "SELECT * FROM `trips` ORDER BY `created_at` DESC LIMIT 20"
 
     def __init__(self, trip_data):
         """Constructor of trip instance
@@ -186,7 +186,7 @@ class Trip(Model):
         """
         try:
             cnx = conn_pool.get_connection()
-            cursor = cnx.cursor(dictionary=True)
+            cursor = cnx.cursor(dictionary=True, buffered=True)
             cursor.execute(Trip.__SELECT_SQL, {'id': id})
             result = cursor.fetchone()
             if result is None:

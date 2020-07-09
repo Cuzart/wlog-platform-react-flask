@@ -1,10 +1,17 @@
 from flask import request
 from flask import Blueprint
+from flask import jsonify
 from api.db.trip import Trip
+from api.db.post import Post
 from api.controller.auth import login_required
 
 
 bp = Blueprint("posts", __name__)
+
+
+@bp.route('/posts', methods=["GET"])
+def get_new_posts():
+    return jsonify(Post.get_new_posts())
 
 
 @bp.route('/posts', methods=["POST"])

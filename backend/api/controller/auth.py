@@ -72,8 +72,9 @@ def register():
                     "Invalid register post. JSON was not validated: {}".format(error_msg))
                 return {'statusCode': 2, 'status': 'other error', 'error': error_msg}
 
-        user = User(user_data)
-        user.save()
-        return {'statusCode': 0, 'status': 'successfully registered'}
+        if User.register(user_data):
+            return {'statusCode': 0, 'status': 'successfully registered'}
+        else:
+            return {'statusCode': 3, 'status': 'could not register user'}
     else:
         return "Bad Request", 400
