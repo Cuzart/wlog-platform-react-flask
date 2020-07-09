@@ -1,6 +1,6 @@
 import pytest
-from api import app
 from api.db.user import User
+from api.helper.instanceCache import InstanceCache
 
 
 USER_DATA = [
@@ -124,9 +124,11 @@ def test_update(app_context):
 
 def test_edit_profile(app_context):
     old_user = User.get(1)
+    # remove instance from cache to get new_user out from the db
+    InstanceCache.remove('User', 1) 
     assert User.edit_profile(1, {'description': 'Ich bin ein tester'})
     new_user = User.get(1)
-    assert old_user.description != new_user.description 
+    assert old_user.description != new_user.description
     assert old_user.username == new_user.username 
 
 

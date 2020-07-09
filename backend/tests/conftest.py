@@ -8,6 +8,7 @@ TEST_DB_CONFIG = {
 }
 
 
+
 @pytest.fixture
 def client():
     """ returns a client for testing requests"""
@@ -17,6 +18,7 @@ def client():
         with app.app_context():
             conn_pool.set_config(**TEST_DB_CONFIG)
             init_test_db()
+            # insert_test_user()
         yield client
 
 
@@ -48,5 +50,14 @@ def init_test_db():
     for command in sql_commands:
         if command.strip() != '':
             cursor.execute(command + ";")
+    cnx.commit()
+    cnx.close()
+
+def insert_test_user():
+    cnx = conn_pool.get_connection()
+    cursor = cnx.cursor()
+    insert_sql = """INSERT INTO `users` (username, email, password, name, surname)
+                    VALUES ('test_user', 'test@mail.com', 'password', 'Max', 'Muster')"""
+    cursor.execute(insert_sql)
     cnx.commit()
     cnx.close()
