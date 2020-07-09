@@ -1,9 +1,10 @@
 import mysql.connector
 import re
 from flask import current_app
-from api.db.model import Model
-from passlib.hash import pbkdf2_sha256
 from api import conn_pool
+from api.db.model import Model
+from api.helper.instanceCache import InstanceCache
+from passlib.hash import pbkdf2_sha256
 
 
 class User(Model):
@@ -168,6 +169,7 @@ class User(Model):
             cursor = cnx.cursor()
             cursor.execute(User.__DELETE_SQL, {'id': self.id})
             cnx.commit()
+            InstanceCache.remove('User', self.id)
             current_app.logger.info("User with id {} deleted".format(self.id))
             return self.id
         except mysql.connector.Error as err:
@@ -181,7 +183,7 @@ class User(Model):
     ###########################
     @staticmethod
     def get(id):
-        """this method fetches a user instance out of the database
+        """this method fetches a user instance out of the DB or InstanceCache
 
         Args:
             id (int): id of the prefered user instance
@@ -189,6 +191,9 @@ class User(Model):
         Returns:
             User: user instance or None
         """
+        if InstanceCache.is_cached('User', id):
+            return InstanceCache.get('User', id)
+
         try:
             cnx = conn_pool.get_connection()
             cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -197,6 +202,7 @@ class User(Model):
             if result is None:
                 return None
             user = User(result)
+            InstanceCache.add('User', id, user)
             return user
         except mysql.connector.Error as err:
             current_app.logger.error("An error occured: {}".format(err))

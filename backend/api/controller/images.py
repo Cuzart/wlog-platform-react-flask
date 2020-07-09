@@ -52,8 +52,7 @@ def upload_img():
                 user = User.get(session["id"])
                 if user.profilepicture is not None:  # remove old profile picture
                     img_handler.remove_image(user.profilepicture)
-                filename = img_handler.save_image(
-                    uid, session["id"], 'profileImg')
+                filename = img_handler.save_image(uid, session["id"], 'profileImg')
                 user.profilepicture = "/images/{}".format(filename)
                 user.save()
                 return {'statusCode': 3, 'status': "profileImg successfully saved"}

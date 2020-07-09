@@ -1,5 +1,6 @@
 from flask import current_app
 from api.db.model import Model
+from api.helper.instanceCache import InstanceCache
 from api.db.post import Post
 from api import conn_pool
 import mysql.connector
@@ -148,6 +149,7 @@ class Trip(Model):
             cursor = cnx.cursor()
             cursor.execute(Trip.__DELETE_SQL, {'id': self.id})
             cnx.commit()
+            InstanceCache.remove('Trip', self.id)
             current_app.logger.debug("Trip {} deleted".format(self.id))
             return self.id
         except mysql.connector.Error as err:
@@ -176,7 +178,7 @@ class Trip(Model):
     ###########################
     @staticmethod
     def get(id):
-        """this method fetches a trip instance out of the database
+        """this method fetches a trip instance out of the DB or InstanceCache
 
         Args:
             id (int): id of the prefered trip instance
@@ -184,6 +186,10 @@ class Trip(Model):
         Returns:
             Trip: trip instance or None
         """
+
+        if InstanceCache.is_cached('Trip', id):
+            return InstanceCache.get('Trip', id)
+
         try:
             cnx = conn_pool.get_connection()
             cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -192,6 +198,7 @@ class Trip(Model):
             if result is None:
                 return None
             trip = Trip(result)
+            InstanceCache.add('Trip', id, trip)
             return trip
         except mysql.connector.Error as err:
             current_app.logger.error("An error occured: {}".format(err))

@@ -17,16 +17,27 @@ def client():
         with app.app_context():
             conn_pool.set_config(**TEST_DB_CONFIG)
             init_test_db()
+            # insert_test_user()
         yield client
+
+
+@pytest.fixture(scope="module")
+def app_context():
+    """ many functions need a app_context
+    this function should be used per module the have app_context and a test_database
+    database and its content remains the same for the module
+    """
+    app.config['TESTING'] = True
+
+    with app.app_context():
+        conn_pool.set_config(**TEST_DB_CONFIG)
+        init_test_db()
+        yield True
 
 
 def init_test_db():
     """ initialize 'test_wlog' db with identical structure
-
-    Returns:
-        a database connection instance
     """
-
     fd = open("/usr/src/app/sql_dump/test_wlog.sql")
     sqlFile = fd.read()
     fd.close()
@@ -37,5 +48,15 @@ def init_test_db():
     for command in sql_commands:
         if command.strip() != '':
             cursor.execute(command + ";")
+    cnx.commit()
+    cnx.close()
+
+
+def insert_test_user():
+    cnx = conn_pool.get_connection()
+    cursor = cnx.cursor()
+    insert_sql = """INSERT INTO `users` (username, email, password, name, surname)
+                    VALUES ('test_user', 'test@mail.com', 'password', 'Max', 'Muster')"""
+    cursor.execute(insert_sql)
     cnx.commit()
     cnx.close()
