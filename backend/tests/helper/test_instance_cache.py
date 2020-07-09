@@ -2,20 +2,23 @@ from api.db.user import User
 from api.helper.instanceCache import InstanceCache
 
 USER_DATA = {
-        "username": "test_user",
-        "email": "test@mail.com",
-        "password": "passwd",
-        "name": "Max",
-        "surname": "Mustermann",
-        }
+    "username": "test_user",
+    "email": "test@mail.com",
+    "password": "passwd",
+    "name": "Max",
+    "surname": "Mustermann",
+}
+
 
 class A:
     def __init__(self, x):
         self.x = x
 
+
 class B:
     def __init__(self, x):
         self.x = x
+
 
 def test_instance_cache():
     a = A(1)
@@ -25,6 +28,7 @@ def test_instance_cache():
     InstanceCache.remove('A', 1)
     c = InstanceCache.get('A', 1)
     assert c is None
+
 
 def test_is_cached():
     b = B(2)
@@ -44,6 +48,3 @@ def test_with_user_instance(app_context):
     user_from_db.description = "Moinsen"
     assert user_from_cache.description == user_from_db.description
     assert user_from_cache is user_from_db
-
-
-

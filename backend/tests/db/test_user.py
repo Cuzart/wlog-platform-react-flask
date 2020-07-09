@@ -1,4 +1,3 @@
-import pytest
 from api.db.user import User
 from api.helper.instanceCache import InstanceCache
 
@@ -20,7 +19,7 @@ USER_DATA = [
     },
 ]
 INVALID_DATA = [
-        {
+    {
         "username": "te",
         "email": "testmai",
         "password": "12345",
@@ -35,7 +34,6 @@ INVALID_DATA = [
         "surname": "Leber",
     },
 ]
-
 
 
 def test_get_with_empty_db(client):
@@ -118,18 +116,18 @@ def test_update(app_context):
     user.description = "Hallo ich teste mich gerade"
     assert user.save() == 1
     same_user = User.get(1)
-    assert user.description == same_user.description 
-    assert user.username == same_user.username 
+    assert user.description == same_user.description
+    assert user.username == same_user.username
 
 
 def test_edit_profile(app_context):
     old_user = User.get(1)
     # remove instance from cache to get new_user out from the db
-    InstanceCache.remove('User', 1) 
+    InstanceCache.remove('User', 1)
     assert User.edit_profile(1, {'description': 'Ich bin ein tester'})
     new_user = User.get(1)
     assert old_user.description != new_user.description
-    assert old_user.username == new_user.username 
+    assert old_user.username == new_user.username
 
 
 def test_delete(app_context):

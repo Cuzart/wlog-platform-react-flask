@@ -5,7 +5,7 @@ class InstanceCache:
     """Class to cache db model instances.
     has 2 big advantages. Instance does not need to be fetched from DB each time.
     In rare cases if 2 or even more requests want to change the instance and save it to db,
-    they don't overwrite each other 
+    they don't overwrite each other
     """
 
     storage = defaultdict(dict)

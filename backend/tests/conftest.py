@@ -8,7 +8,6 @@ TEST_DB_CONFIG = {
 }
 
 
-
 @pytest.fixture
 def client():
     """ returns a client for testing requests"""
@@ -26,7 +25,7 @@ def client():
 def app_context():
     """ many functions need a app_context
     this function should be used per module the have app_context and a test_database
-    database and its content remains the same for the module 
+    database and its content remains the same for the module
     """
     app.config['TESTING'] = True
 
@@ -34,7 +33,6 @@ def app_context():
         conn_pool.set_config(**TEST_DB_CONFIG)
         init_test_db()
         yield True
-
 
 
 def init_test_db():
@@ -52,6 +50,7 @@ def init_test_db():
             cursor.execute(command + ";")
     cnx.commit()
     cnx.close()
+
 
 def insert_test_user():
     cnx = conn_pool.get_connection()
