@@ -21,6 +21,7 @@
   align-items: center;
   height: 112px;
   width: 100%;
+  box-shadow: 0px 2px 2px 2px rgba(0, 0, 0, 0.3);
 }
 header > a,
 header > div {
@@ -156,13 +157,3 @@ input {
   color: rgb(255, 255, 255);
   border-radius: 20px 20px 0px 0px;
 }
-
-/* shrink effect on hover */
-.shrink {
-  transition: all 0.2s ease-in-out;
-}
-
-.shrink:hover {
-  transform: scale(0.9);
-}
-

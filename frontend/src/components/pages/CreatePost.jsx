@@ -37,14 +37,14 @@ export class CreatePost extends Component {
   };
 
   // Updates state when form is changed
-  handleChange = (event) => {
+  handleChange = () => {
     let nam = window.event.target.name;
     let val = window.event.target.value;
     this.setState({ [nam]: val });
   };
 
   // leaflet-geosearch asynchronous API call to get a result{x: longitude, y: latitude, label: adress}
-  handleLocationApi = async (event) => {
+  handleLocationApi = async () => {
     const provider = new OpenStreetMapProvider();
     const results = await provider.search({ query: this.state.location });
     if (results.length > 0) {
@@ -53,7 +53,7 @@ export class CreatePost extends Component {
   };
 
   // updates thumbnail and its url in state when new file is selected
-  handleFileSelect = (event) => {
+  handleFileSelect = () => {
     this.setState({
       thumbnail: window.event.target.files[0],
       thumbnailUrl: URL.createObjectURL(window.event.target.files[0]),
@@ -62,19 +62,18 @@ export class CreatePost extends Component {
   };
 
   // shows success alert and dismisses it after 3 seconds, then forwards to profile
-  onShowAlert = (tripId) => {
+  onShowAlert = () => {
     this.setState({ visible: true }, () => {
       window.setTimeout(() => {
-        this.setState({ visible: false });
-        this.props.history.push("/trips/" + tripId);
-        window.location.reload();
-      }, 3000);
+        this.setState({ visible: false }, () => {
+          this.props.history.push("/users/" + sessionStorage.getItem("user"));
+        });
+      }, 1000);
     });
-    //this.props.history.push("/trips/" + tripId);
   };
 
   // submitting a entire trip with a post as callback pipeline
-  handleSubmit = (event) => {
+  handleSubmit = () => {
     window.event.preventDefault();
     this.setState({ showModal: false });
     const fd = new FormData();
@@ -103,9 +102,8 @@ export class CreatePost extends Component {
           // submits the trip form
           axios.post("/trips", trip).then((res) => {
             // calls for each image in active editor /uploadImg
-            console.log(res);
             let tripId = res.data.trip_id;
-            window.tinymce.activeEditor.uploadImages((success) => {
+            window.tinymce.activeEditor.uploadImages(() => {
               let post = {
                 trip_id: tripId,
                 post: {
@@ -158,7 +156,6 @@ export class CreatePost extends Component {
               // submits post with editor content
               axios.post("/posts", post).then((res) => {
                 //check if successfully created
-                console.log(res.data);
                 switch (res.data.statusCode) {
                   case 0:
                     this.setState({
@@ -168,7 +165,7 @@ export class CreatePost extends Component {
                       variant: "success",
                     });
                     window.scrollTo(0, 0);
-                    this.onShowAlert(post.trip_id);
+                    this.onShowAlert();
                     break;
                   case 1:
                     this.setState({
@@ -188,7 +185,7 @@ export class CreatePost extends Component {
                     break;
                   case 3:
                     this.setState({
-                      note: "Success",
+                      note: "Error",
                       alertContent:
                         "Something went wrong. Could not save post. Sorry!",
                       variant: "danger",
@@ -198,21 +195,17 @@ export class CreatePost extends Component {
                   default:
                     break;
                 }
-                //this.props.history.push("/profile");
-                //this.props.history.push("/trips/" + tripId);
               });
             });
           });
         }
       });
     } else {
-      console.log("something went wrong");
       this.setState({
         note: "Error",
         alertContent: "Did you miss some attributes?",
         variant: "danger",
       });
-      console.log(this.state);
     }
   };
 
@@ -248,12 +241,12 @@ export class CreatePost extends Component {
             </div>
             <div style={btnLayout}>
               <Button
-                variant="dark"
+                variant="outline-ownLight"
                 type="submit"
                 onClick={this.toggleModal}
                 size="lg"
               >
-                Done
+                Save
               </Button>
             </div>
           </Col>
@@ -270,9 +263,9 @@ export class CreatePost extends Component {
     );
   }
 }
+
 const formStyle = {
   paddingBottom: "100px",
-  paddingTop: "50px",
 };
 const previewStyle = {
   position: "absolute",
@@ -281,8 +274,7 @@ const previewStyle = {
 };
 const btnLayout = {
   marginTop: "50px",
-  textAlign: "right",
-  padding: "0px 90px",
+  textAlign: "center",
 };
 const hrStyle = {
   margin: "30px 0px",

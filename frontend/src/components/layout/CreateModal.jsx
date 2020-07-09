@@ -13,7 +13,7 @@ class CreateModal extends Component {
     return (
       <div>
         {sessionStorage.getItem("authenticated") ? (
-          <div >
+          <div>
             <Modal
               {...this.props}
               open={this.props.open}
@@ -33,10 +33,10 @@ class CreateModal extends Component {
                 <div className="container">
                   <div className="row ">
                     <div className="col text-center ml-5 ">
-                      <Button variant="outline-success">
+                      <Button variant="outline-ownLight">
                         <span style={{ fontSize: "20px", fontWeight: "bold" }}>
                           <i
-                            onClick={(path) => this.handleForwarding("/create")}
+                            onClick={() => this.handleForwarding("/create")}
                             className="fas fa-plus-circle"
                             fontSize="80px"
                             style={{ fontSize: "80px" }}
@@ -46,10 +46,10 @@ class CreateModal extends Component {
                       </Button>
                     </div>
                     <div className="col text-center mr-5">
-                      <Button variant="outline-success">
+                      <Button variant="outline-ownLight">
                         <span style={{ fontSize: "20px", fontWeight: "bold" }}>
                           <i
-                            onClick={(path) => this.handleForwarding("/add")}
+                            onClick={() => this.handleForwarding("/add")}
                             className="fas fa-book-open"
                             style={{ fontSize: "80px" }}
                           ></i>
@@ -62,7 +62,7 @@ class CreateModal extends Component {
                 </div>
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="secondary" onClick={this.props.onHide}>
+                <Button variant="outline-own" onClick={this.props.onHide}>
                   Back
                 </Button>
               </Modal.Footer>
@@ -77,20 +77,28 @@ class CreateModal extends Component {
             centered
           >
             <Modal.Header closeButton>
-                <Modal.Title id="contained-modal-title-vcenter" style={titleStyle}>
+              <Modal.Title
+                id="contained-modal-title-vcenter"
+                style={titleStyle}
+              >
                 Login required
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <div className="container">
                 <div className="row ">
-                    <p style={{ fontSize: "16px", fontWeight: "bold" }}> Please <a href="/">sign in</a>  if you already have an account <br/>
-                     or join our community and <a href="/register">register now</a>.</p>
+                  <p style={{ fontSize: "16px", fontWeight: "bold" }}>
+                    {" "}
+                    Please <a href="/">sign in</a> if you already have an
+                    account <br />
+                    or join our community and{" "}
+                    <a href="/register">register now</a>.
+                  </p>
                 </div>
               </div>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={this.props.onHide}>
+              <Button variant="outline-own" onClick={this.props.onHide}>
                 Back
               </Button>
             </Modal.Footer>
@@ -102,10 +110,8 @@ class CreateModal extends Component {
 }
 
 const titleStyle = {
-  fontSize: "20px", 
-  fontWeight: "bold" 
+  fontSize: "20px",
+  fontWeight: "bold",
 };
-
-
 
 export default withRouter(CreateModal);

@@ -1,5 +1,6 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, withRouter } from "react-router-dom";
+
 import "../../App.css";
 import CreateModal from "./CreateModal";
 
@@ -11,10 +12,21 @@ class Header extends React.Component {
     };
   }
 
+  // toggles create modal
   handleModalToggle = () => {
     this.setState({ showModal: true });
   };
+
   render() {
+    // if path is /add or /create the create link style is active
+    // necessary because it doesn't redirect to a path but toggles a modal
+    const {
+      location: { pathname },
+    } = this.props;
+    const linkClass = ["/add", "/create"].includes(pathname)
+      ? "nav-link-active"
+      : "nav-link";
+
     return (
       <div>
         <header id="navbar">
@@ -47,7 +59,7 @@ class Header extends React.Component {
           </NavLink>
           <div
             id="createLink"
-            className="nav-link"
+            className={linkClass}
             onClick={() => this.handleModalToggle()}
           >
             CREATE
@@ -76,22 +88,9 @@ class Header extends React.Component {
           show={this.state.showModal}
           onHide={() => this.setState({ showModal: false })}
         />
-        <footer style={footerStyle}></footer>
       </div>
     );
   }
 }
 
-let footerStyle = {
-  visibility: "hidden",
-  position: "fixed",
-  left: "0",
-  bottom: "0",
-  width: "100%",
-  height: "40px",
-  marginTop: "40px",
-  background: "#9EB091",
-  textAlign: "center",
-};
-
-export default Header;
+export default withRouter(Header);
