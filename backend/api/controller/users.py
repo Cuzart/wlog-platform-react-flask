@@ -40,6 +40,7 @@ def get_user_posts(id):
 @login_required
 def edit_profile(id):
     """Endpoint to update a users profile.
+    At the moment only description in the future more..
 
     Returns:
         json: status message
@@ -48,7 +49,7 @@ def edit_profile(id):
         if id is not session['id']:
             return "Forbidden", 403
         user_data = request.get_json()
-        req_att = ("name", "surname", "description")
+        req_att = ("description",)
         if not all(key in user_data for key in req_att):
             return {'statusCode': 1, 'status': "invalid request, attributes missing"}
         if User.edit_profile(session["id"], user_data):
