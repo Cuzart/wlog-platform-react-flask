@@ -241,12 +241,12 @@ export class CreatePost extends Component {
             </div>
             <div style={btnLayout}>
               <Button
-                variant="dark"
+                variant="outline-ownLight"
                 type="submit"
                 onClick={this.toggleModal}
                 size="lg"
               >
-                Done
+                Save
               </Button>
             </div>
           </Col>
@@ -263,9 +263,9 @@ export class CreatePost extends Component {
     );
   }
 }
+
 const formStyle = {
   paddingBottom: "100px",
-  paddingTop: "50px",
 };
 const previewStyle = {
   position: "absolute",
@@ -274,8 +274,7 @@ const previewStyle = {
 };
 const btnLayout = {
   marginTop: "50px",
-  textAlign: "right",
-  padding: "0px 90px",
+  textAlign: "center",
 };
 const hrStyle = {
   margin: "30px 0px",

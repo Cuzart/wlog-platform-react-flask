@@ -12,22 +12,24 @@ class Header extends React.Component {
     };
   }
 
-  // toggles create modal 
+  // toggles create modal
   handleModalToggle = () => {
     this.setState({ showModal: true });
   };
 
   render() {
-    // if path is /add or /create the create link is active
-    const { location: { pathname } } = this.props;
+    // if path is /add or /create the create link style is active
+    // necessary because it doesn't redirect to a path but toggles a modal
+    const {
+      location: { pathname },
+    } = this.props;
     const linkClass = ["/add", "/create"].includes(pathname)
       ? "nav-link-active"
       : "nav-link";
 
     return (
-      <div >
-        <header id="navbar" >
-          
+      <div>
+        <header id="navbar">
           <NavLink
             exact
             to="/"
@@ -90,7 +92,5 @@ class Header extends React.Component {
     );
   }
 }
-
-
 
 export default withRouter(Header);

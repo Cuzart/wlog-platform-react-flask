@@ -114,7 +114,7 @@ class Login extends React.Component {
               </Alert>
 
               <div style={btnLayout}>
-                <Button variant="dark" type="submit" size="lg">
+                <Button variant="outline-own" type="submit" size="lg">
                   Login
                 </Button>
                 <br />

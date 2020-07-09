@@ -103,12 +103,12 @@ export class CreatePost extends Component {
               />
               <div style={btnLayout}>
                 <Button
-                  variant="dark"
+                  variant="outline-ownLight"
                   type="submit"
                   onClick={this.toggleModal}
                   size="lg"
                 >
-                  Done
+                  Save
                 </Button>
               </div>
             </Col>
@@ -135,8 +135,7 @@ const formStyle = {
 
 const btnLayout = {
   marginTop: "50px",
-  textAlign: "right",
-  padding: "0px 90px",
+  textAlign: "center",
 };
 
 export default withRouter(CreatePost);

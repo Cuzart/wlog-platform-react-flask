@@ -82,14 +82,14 @@ class ProfilePage extends Component {
         {this.state.userId === sessionStorage.getItem("user") ? (
           <div className="row justify-content-end mt-5 mr-2">
             <Button
-              variant="outline-success"
+              variant="outline-ownLight"
               onClick={() => this.toggleModal()}
             >
               Create <i className="fas fa-plus-circle"></i>
             </Button>
             <div className="mx-3">
               <Button
-                variant="outline-success"
+                variant="outline-ownLight"
                 onClick={() => this.props.history.push("/edit")}
               >
                 Edit <i className="fas fa-user-edit"></i>
@@ -97,7 +97,7 @@ class ProfilePage extends Component {
             </div>
             <div className="mr-5">
               <Button
-                variant="outline-dark"
+                variant="outline-own"
                 onClick={() => this.handleSignOut()}
               >
                 Sign Out <i className="fas fa-sign-out-alt"></i>
@@ -111,10 +111,10 @@ class ProfilePage extends Component {
         {!this.state.isLoading ? (
           <React.Fragment>
             <div className="row align-items-center">
-              <div className="col-3">
+              <div className="col-3 ">
                 <img src={this.state.userImg} alt="User" style={pictureStyle} />
               </div>
-              <div className="col-4 align-self-center">
+              <div className="col-4 align-self-center ml-5">
                 <h1 style={headerStyle}>{this.state.userData.username}</h1>
                 <h4>
                   {this.state.userData.name + " " + this.state.userData.surname}

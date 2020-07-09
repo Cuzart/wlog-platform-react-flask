@@ -112,6 +112,7 @@ class TripForm extends Component {
                     this.validateInput();
                   }}
                   rows="3"
+                  maxLength="240"
                 />
               </Col>
             </FormGroup>

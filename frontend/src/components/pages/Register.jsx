@@ -266,7 +266,7 @@ class Register extends React.Component {
                 className="col py-3 justify-content-between w-100"
                 style={{ textAlign: "center" }}
               >
-                <Button variant="dark" type="submit" size="lg">
+                <Button variant="outline-own" type="submit" size="lg">
                   Register
                 </Button>
                 <NavLink exact id="logRegLink" className="nav-link" to="/">

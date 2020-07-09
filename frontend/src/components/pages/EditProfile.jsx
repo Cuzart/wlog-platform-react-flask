@@ -73,22 +73,26 @@ class EditProfile extends Component {
 
   // updates the edited profile in the database
   onSave = () => {
-    const fd = new FormData();
-    let blob = this.dataURItoBlob(this.state.preview);
-    let file = new File([blob], "preview.png", { type: "image/png" });
-    fd.append("profileImg", file);
-
     if (this.state.preview !== null) {
+      const fd = new FormData();
+      let blob = this.dataURItoBlob(this.state.preview);
+      let file = new File([blob], "preview.png", { type: "image/png" });
+      fd.append("profileImg", file);
       axios.post("/images", fd).then((res) => {
-        console.log(res);
+        console.log(res.data);
       });
     }
     if (this.state.description !== null) {
-      axios.patch("/users/" + user, this.state.description).then((res) => {
-        console.log(res);
-      });
+      console.log(this.state.description);
+      axios
+        .patch("/users/" + user, { description: this.state.description })
+        .then((res) => {
+          console.log(res.data);
+        });
     }
     this.setState({ showModal: false });
+    this.props.history.push("/users/" + user);
+    window.location.reload();
   };
 
   render() {
@@ -97,7 +101,7 @@ class EditProfile extends Component {
         <div className="row align-items-center">
           <div className="col text-center">
             <Button
-              variant="outline-dark"
+              variant="outline-own"
               onClick={() => {
                 this.props.history.push(
                   "/users/" + sessionStorage.getItem("user")
@@ -112,7 +116,7 @@ class EditProfile extends Component {
           </div>
           <div className="col text-center">
             <Button
-              variant="outline-success"
+              variant="outline-ownLight"
               onClick={() => this.toggleModal()}
             >
               Save
@@ -121,21 +125,37 @@ class EditProfile extends Component {
         </div>
 
         {!this.state.isLoading ? (
-          <div className="row mt-5 pb-4 align-items-center justify-content-around ">
-            <div className="col-5">
-              <h4 style={{ fontWeight: "bold" }}> Edit your description</h4>
-              <Form.Control
-                as="textarea"
-                name="description"
-                onChange={this.handleChange}
-                rows="7"
-              >
-                {this.state.oldDescription === null
-                  ? "Introduce yourself to the world ..."
-                  : this.state.oldDescription}
-              </Form.Control>
+          <div className="row mt-3 pb-4 justify-content-center ">
+            <div className="col-6">
+              <h5 style={{ fontWeight: "bold" }}> Edit your description</h5>
+              <div style={descriptionStyle}>
+                <Form.Control
+                  defaultValue={
+                    this.state.oldDescription === null
+                      ? "Introduce yourself to the world ..."
+                      : this.state.oldDescription
+                  }
+                  maxLength="235"
+                  minLength="5"
+                  as="textarea"
+                  name="description"
+                  onChange={this.handleChange}
+                  rows="6"
+                ></Form.Control>
+              </div>
+              <h5 style={{ fontWeight: "bold" }}>
+                Choose a new profile picture
+              </h5>
+              <Avatar
+                label="Choose file"
+                width={400}
+                height={300}
+                onCrop={this.onCrop}
+                onClose={this.onClose}
+                src={this.state.src}
+              />
             </div>
-            <div className="col-4 text-center">
+            <div className="col-3 text-center align-self-end mb-5">
               <h5 style={{ fontWeight: "bold" }}>preview</h5>
               <img
                 src={this.state.preview}
@@ -149,16 +169,6 @@ class EditProfile extends Component {
           ""
         )}
 
-        <div className="row  mt-5 mb-3">
-          <Avatar
-            label="Choose a new profile picture"
-            width={400}
-            height={300}
-            onCrop={this.onCrop}
-            onClose={this.onClose}
-            src={this.state.src}
-          />
-        </div>
         <SaveChangesModal
           show={this.state.showModal}
           onHide={() => this.setState({ showModal: false })}
@@ -176,14 +186,13 @@ const headerStyles = {
   textAlign: "center",
 };
 
-// const descriptionStyle = {
-//   height: "auto",
-//   minHeight: "50px",
-//   maxHeight: "200px",
-//   width: "400px",
-//   padding: "30px",
-
-//   borderRadius: "8px",
-// };
+const descriptionStyle = {
+  height: "auto",
+  minHeight: "50px",
+  maxHeight: "200px",
+  width: "400px",
+  margin: "30px 0px",
+  borderRadius: "8px",
+};
 
 export default withRouter(EditProfile);

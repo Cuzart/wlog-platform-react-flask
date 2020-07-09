@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import axios from "axios";
 import uuid from "uuid";
 import TripImage from "./TripImage";
@@ -43,6 +44,7 @@ class TripGrid extends Component {
                   <div
                     key={uuid.v4()}
                     className="col-6 my-4 d-flex justify-content-center"
+                    onClick={() => this.props.history.push("/trips/" + id)}
                   >
                     <TripImage
                       title={title}
@@ -72,4 +74,4 @@ const gridStyle = {
   borderRadius: "0px 0px 20px 20px",
 };
 
-export default TripGrid;
+export default withRouter(TripGrid);

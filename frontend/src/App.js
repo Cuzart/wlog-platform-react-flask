@@ -30,6 +30,36 @@ class App extends Component {
             <ProtectedRoute path="/edit" component={EditProfile} />
           </Switch>
         </div>
+        {/* custom styling for bs-buttons */}
+        <style>
+          {`
+            .btn-outline-own {
+              color: #4e564b;
+              border-color: #4e564b;
+              border-width: medium;
+              font-weight: bold;
+            }
+            .btn-outline-own:hover {
+              color: white;
+              background-color:  #4e564b;
+            }
+            
+            .btn-outline-ownLight {
+              color: #20752f;
+              border-color: #20752f;
+              font-weight: bold;
+              border-width: medium;
+            }
+            .btn-outline-ownLight:hover {
+              color: white;
+              background-color:  #20752f;
+            }
+            .btn.btn-ownLight:active {
+              color: white;
+              background-color: #20752f; 
+            }
+          `}
+        </style>
       </Router>
     );
   }

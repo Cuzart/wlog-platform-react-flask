@@ -33,7 +33,7 @@ class CreateModal extends Component {
                 <div className="container">
                   <div className="row ">
                     <div className="col text-center ml-5 ">
-                      <Button variant="outline-success">
+                      <Button variant="outline-ownLight">
                         <span style={{ fontSize: "20px", fontWeight: "bold" }}>
                           <i
                             onClick={() => this.handleForwarding("/create")}
@@ -46,7 +46,7 @@ class CreateModal extends Component {
                       </Button>
                     </div>
                     <div className="col text-center mr-5">
-                      <Button variant="outline-success">
+                      <Button variant="outline-ownLight">
                         <span style={{ fontSize: "20px", fontWeight: "bold" }}>
                           <i
                             onClick={() => this.handleForwarding("/add")}
@@ -62,7 +62,7 @@ class CreateModal extends Component {
                 </div>
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="secondary" onClick={this.props.onHide}>
+                <Button variant="outline-own" onClick={this.props.onHide}>
                   Back
                 </Button>
               </Modal.Footer>
@@ -98,7 +98,7 @@ class CreateModal extends Component {
               </div>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="secondary" onClick={this.props.onHide}>
+              <Button variant="outline-own" onClick={this.props.onHide}>
                 Back
               </Button>
             </Modal.Footer>
