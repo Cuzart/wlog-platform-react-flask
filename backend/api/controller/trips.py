@@ -5,7 +5,7 @@ from flask import jsonify
 from api.db.trip import Trip
 from api.controller.auth import login_required
 import api.helper.imageHandler as img_handler
-import api.db.model as herf
+
 
 
 bp = Blueprint("trips", __name__)
