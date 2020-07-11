@@ -7,8 +7,11 @@ TEST_DB_CONFIG = {
     'database': "test_wlog",
 }
 
+##################
+##   FIXTURES   ##
+##################
 
-@pytest.fixture
+@pytest.fixture(scope="class")
 def client():
     """ returns a client for testing requests"""
     app.config['TESTING'] = True
@@ -17,11 +20,13 @@ def client():
         with app.app_context():
             conn_pool.set_config(**TEST_DB_CONFIG)
             init_test_db()
-            # insert_test_user()
+            insert_test_user()
         yield client
 
+    remove_test_db()
 
-@pytest.fixture(scope="module")
+
+@pytest.fixture(scope="class")
 def app_context():
     """ many functions need a app_context
     this function should be used per module the have app_context and a test_database
@@ -34,29 +39,55 @@ def app_context():
         init_test_db()
         yield True
 
+    remove_test_db()
+
+
+################################
+##  SETUP TEST_WLOG DATABASE  ##
+################################
 
 def init_test_db():
     """ initialize 'test_wlog' db with identical structure
     """
-    fd = open("/usr/src/app/sql_dump/test_wlog.sql")
-    sqlFile = fd.read()
-    fd.close()
-    sql_commands = sqlFile.split(';')
-
+    sql_commands = get_sql_commands("/usr/src/app/sql_dump/test_wlog.sql")
     cnx = conn_pool.get_connection()
     cursor = cnx.cursor()
     for command in sql_commands:
-        if command.strip() != '':
-            cursor.execute(command + ";")
+        if command != '':
+            cursor.execute(command)
     cnx.commit()
     cnx.close()
 
 
 def insert_test_user():
+    sql_commands = get_sql_commands("/usr/src/app/sql_dump/insert_test_wlog.sql")
     cnx = conn_pool.get_connection()
     cursor = cnx.cursor()
-    insert_sql = """INSERT INTO `users` (username, email, password, name, surname)
-                    VALUES ('test_user', 'test@mail.com', 'password', 'Max', 'Muster')"""
-    cursor.execute(insert_sql)
+    for command in sql_commands:
+        if command != '':
+            cursor.execute(command)
     cnx.commit()
     cnx.close()
+
+
+def remove_test_db():
+    """ remove 'test_wlog' db after use
+    """
+    sql_commands = get_sql_commands("/usr/src/app/sql_dump/drop_test_wlog.sql")
+    cnx = conn_pool.get_connection()
+    cursor = cnx.cursor()
+    for command in sql_commands:
+        if command != '':
+            cursor.execute(command)
+    cnx.commit()
+    cnx.close()
+
+
+def get_sql_commands(file):
+    fd = open(file)
+    sql_file = fd.read()
+    fd.close()
+    sql_commands = sql_file.split(';')
+    sql_commands = [sql.strip() for  sql in sql_commands]
+    return sql_commands
+
