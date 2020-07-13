@@ -15,13 +15,14 @@ class Trip(Model):
     __INSERT_SQL = """INSERT INTO trips
                    (user_id, title, country, description, thumbnail)
                    VALUES (%(user_id)s, %(title)s, %(country)s, %(description)s, %(thumbnail)s)"""
-    __UPDATE_SQL = """UPDATE users
-                     SET title = %(title)s, country = %(country)s, description = %(thumbnail)s
+    __UPDATE_SQL = """UPDATE trips
+                     SET title = %(title)s, country = %(country)s,
+                         description = %(description)s, thumbnail = %(thumbnail)s
                      WHERE id = %(id)s"""
     __SELECT_SQL = """SELECT t.id, t.user_id, u.username as 'author', t.title,
                              t.country, t.description, t.thumbnail, t.created_at
                       FROM users u, trips t
-                      WHERE t.id = %(id)s"""
+                      WHERE t.id = %(id)s AND u.id = t.user_id"""
     __DELETE_SQL = "DELETE FROM trips WHERE id = %(id)s"
     __SELECT_ALL_USER_TRIPS_SQL = """SELECT t.id, t.user_id, u.username as 'author', t.title,
                                             t.country, t.description, t.thumbnail, t.created_at
@@ -186,7 +187,6 @@ class Trip(Model):
         Returns:
             Trip: trip instance or None
         """
-
         if InstanceCache.is_cached('Trip', id):
             return InstanceCache.get('Trip', id)
 

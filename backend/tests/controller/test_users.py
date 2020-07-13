@@ -3,7 +3,7 @@ import json
 
 
 class TestUsersController():
-    """Class to Test the users controller.
+    """Class to test the users controller.
     Is using the client fixture defined in 'conftest.py'
     Values to compare are defined in 'insert_test_wlog.sql' and got inserted before
     """
@@ -27,26 +27,26 @@ class TestUsersController():
         rv = client.get('users/1/trips')
         trips = rv.get_json()
         assert type(trips) is list
-        assert len(trips) is 1
+        assert len(trips) == 1
         assert trips[0]['user_id'] == 1
         assert trips[0]['title'] == 'Work&Travel'
         assert trips[0]['author'] == 'test_user'
 
         rv = client.get('users/3242/trips')
         trips = rv.get_json()
-        assert len(trips) is 0
+        assert len(trips) == 0
 
     def test_get_user_posts(self, client):
         rv = client.get('users/1/posts')
         posts = rv.get_json()
         assert type(posts) is list
-        assert len(posts) is 1
+        assert len(posts) == 1
         assert posts[0]['trip_id'] == 1
         assert posts[0]['subtitle'] == 'Auckland'
 
         rv = client.get('users/3242/posts')
         posts = rv.get_json()
-        assert len(posts) is 0
+        assert len(posts) == 0
 
     def test_edit_profile(self, client):
         rv = client.patch('/users/1')       # not logged in

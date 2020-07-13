@@ -1,15 +1,18 @@
 # import pytest
+import io
 import json
+import api.helper.imageHandler as img_handler
+from api.db.trip import Trip
 
 TRIP_DATA = {
-   'title': 'MyAwesomeTrip', 
-   'country': 'Mars', 
+   'title': 'MyAwesomeTrip',
+   'country': 'Mars',
    'description': 'Lorum Ipsum...'
 }
 
 
-class TestUsersController():
-    """Class to Test the test controller.
+class TestTripsController():
+    """Class to test the trips controller.
     Is using the client fixture defined in 'conftest.py'
     Values to compare are defined in 'insert_test_wlog.sql' and got inserted before
     """
@@ -40,11 +43,21 @@ class TestUsersController():
         assert response['statusCode'] == 2
         assert response['status'] == 'thumbnail missing'
 
-        # upload img ...
-        # rv = client.post('/trips', data=json.dumps(TRIP_DATA), content_type='application/json')
-        # response = rv.get_json()
-        # assert response['statusCode'] == 0
-        # assert response['status'] == 'post successfully created'
+        # upload thumbnail
+        file = {}
+        file['thumbnail'] = (io.BytesIO(b"abcdef"), 'test.jpg')
+        rv = client.post('/images', data=file, content_type='multipart/form-data')
+        response = rv.get_json()
+        assert response['statusCode'] == 0
+        assert response['status'] == 'file temporarily saved'
+        # temporarily saved because related trip still missing
+        rv = client.post('/trips', data=json.dumps(TRIP_DATA), content_type='application/json')
+        response = rv.get_json()
+        assert response['statusCode'] == 0
+        assert response['status'] == 'trip successfully created'
+        trip_id = response['trip_id']
+        assert trip_id == 2     # one there from setup
+        img_handler.remove_image(Trip.get(2).thumbnail)
 
         del TRIP_DATA['country']
         rv = client.post('/trips', data=json.dumps(TRIP_DATA), content_type='application/json')
@@ -56,7 +69,7 @@ class TestUsersController():
         rv = client.get('/trips')
         trips = rv.get_json()
         assert type(trips) is list
-        assert len(trips) == 2 # one created one through db setup
+        assert len(trips) == 2  # one was created from db setup
         assert trips[1]['title'] != TRIP_DATA['title']    # should not be the second one, new ones first
         assert trips[0]['title'] == TRIP_DATA['title']
         assert trips[0]['id'] > trips[1]['id']

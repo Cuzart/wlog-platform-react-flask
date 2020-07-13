@@ -1,16 +1,17 @@
 import pytest
 from api import app
 from api import conn_pool
+from api.helper.instanceCache import InstanceCache
 
 
 TEST_DB_CONFIG = {
     'database': "test_wlog",
 }
 
+
 ##################
 ##   FIXTURES   ##
 ##################
-
 @pytest.fixture(scope="class")
 def client():
     """ returns a client for testing requests"""
@@ -21,6 +22,8 @@ def client():
             conn_pool.set_config(**TEST_DB_CONFIG)
             init_test_db()
             insert_test_user()
+            # clear instance cache, that nothing is cached from other tests
+            InstanceCache.clear()
         yield client
 
     remove_test_db()
@@ -37,6 +40,8 @@ def app_context():
     with app.app_context():
         conn_pool.set_config(**TEST_DB_CONFIG)
         init_test_db()
+        # clear instance cache, that nothing is cached from other tests
+        InstanceCache.clear()
         yield True
 
     remove_test_db()
@@ -88,6 +93,5 @@ def get_sql_commands(file):
     sql_file = fd.read()
     fd.close()
     sql_commands = sql_file.split(';')
-    sql_commands = [sql.strip() for  sql in sql_commands]
+    sql_commands = [sql.strip() for sql in sql_commands]
     return sql_commands
-

@@ -4,7 +4,7 @@ import json
 
 
 class TestAuthController():
-    """Class to Test the auth controller.
+    """Class to test the auth controller.
     Is using the client fixture defined in 'conftest.py'
     Values used are defined in 'insert_test_wlog.sql' and got inserted before
     """
@@ -32,10 +32,10 @@ class TestAuthController():
 
     def test_register(self, client):
         new_user = {
-            'username': 'test_user', 
-            'email': 'test@mail.com', 
-            'password': 'strenggeheim', 
-            'name': 'Otto', 
+            'username': 'test_user',
+            'email': 'test@mail.com',
+            'password': 'strenggeheim',
+            'name': 'Otto',
             'surname': 'Walter'
         }
         rv = client.post('/register', data=json.dumps(new_user), content_type='application/json')
@@ -52,5 +52,3 @@ class TestAuthController():
         response = rv.get_json()
         assert response['username'] == new_user['username']
         assert response['name'] == new_user['name']
-
-
