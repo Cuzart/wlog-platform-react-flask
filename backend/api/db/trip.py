@@ -32,6 +32,8 @@ class Trip(Model):
     __SELECT_CLAPS_SQL = "SELECT COUNT(*) as 'claps' FROM `claps` WHERE `trip_id` = %(id)s"
     __ADD_CLAP_SQL = "INSERT INTO `claps` (`trip_id`, `clapping_user`) VALUES (%(id)s, %(user_id)s)"
     __DELETE_CLAP_SQL = "DELETE FROM `claps` WHERE `trip_id` = %(id)s AND `clapping_user` = %(user_id)s"
+    __USER_CLAPPED_SQL = """SELECT COUNT(*) as 'clap' FROM `claps` 
+                            WHERE `trip_id` = %(id)s AND `clapping_user` = %(user_id)s"""
 
     def __init__(self, trip_data):
         """Constructor of trip instance
@@ -339,5 +341,28 @@ class Trip(Model):
         except mysql.connector.Error as err:
             current_app.logger.error("An error occured: {}".format(err))
             return None
+        finally:
+            cnx.close()
+
+    @staticmethod
+    def has_user_clapped(id, user_id):
+        """checks whether the user has already clapped the trip
+
+        Args:
+            id (int): id of trip
+            user_id (int): id of user
+
+        Returns:
+            bool: True if already clapped, else False
+        """
+        try:
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor(dictionary=True, buffered=True)
+            cursor.execute(Trip.__USER_CLAPPED_SQL, {'id': id, 'user_id': user_id})
+            result = cursor.fetchone()
+            return bool(result['clap'])
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
+            return False
         finally:
             cnx.close()

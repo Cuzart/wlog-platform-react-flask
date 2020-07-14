@@ -17,7 +17,13 @@ def get_new_trips():
 
 @bp.route('/trips/<int:id>', methods=["GET"])
 def get_trip(id):
-    return Trip.get_trip_data(id)
+    trip_data = Trip.get_trip_data(id)
+    if trip_data: 
+        if session.get('id') is None:
+            trip_data['user_clapped'] = False
+        else:
+            trip_data['user_clapped'] = Trip.has_user_clapped(id, session['id'])
+    return trip_data
 
 
 @bp.route('/trips', methods=["POST"])

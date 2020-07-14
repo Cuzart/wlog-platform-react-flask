@@ -92,6 +92,7 @@ class TestTripsController():
         response = rv.get_json()
         assert response['statusCode'] == 0
         assert response['status'] == 'successfully clapped'
+        assert Trip.has_user_clapped(2, 1)
 
         rv = client.post('/trips/2/claps')
         response = rv.get_json()
@@ -103,6 +104,7 @@ class TestTripsController():
         response = rv.get_json()
         assert response['statusCode'] == 0
         assert response['status'] == 'successfully unclapped'
+        assert not Trip.has_user_clapped(2, 1)
         rv = client.get('/trips/2/claps')
         response = rv.get_json()
         assert response['claps'] == 0
