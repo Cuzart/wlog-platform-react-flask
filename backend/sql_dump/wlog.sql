@@ -72,7 +72,7 @@ CREATE TABLE `trips` (
 --
 
 INSERT INTO `trips` (`id`, `user_id`, `title`, `country`, `description`, `thumbnail`, `created_at`) VALUES
-(1, 1, 'Work&Travel', 'New Zealand', 'reisen und arbeiten im schönsten Land der Welt', '/img/000001_thumbnail_nichtVorhanden', '2020-06-13 19:41:17');
+(1, 1, 'Work&Travel', 'New Zealand', 'reisen und arbeiten im schönsten Land der Welt', '/images/000001_thumbnail_nichtVorhanden', '2020-06-13 19:41:17');
 
 -- --------------------------------------------------------
 

@@ -59,3 +59,8 @@ class InstanceCache:
             return False
         else:
             return True
+
+    @staticmethod
+    def clear():
+        for _ in range(len(InstanceCache.storage)):
+            InstanceCache.storage.popitem()
