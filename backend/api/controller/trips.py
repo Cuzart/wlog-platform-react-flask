@@ -54,6 +54,34 @@ def create_trip():
         return "Bad Request", 400
 
 
+@bp.route('/trips/<int:id>/claps', methods=["GET"])
+def get_claps(id):
+    return {'claps': Trip.get_claps(id)}
+
+
+@bp.route('/trips/<int:id>/claps', methods=["POST"])
+@login_required
+def add_clap(id):
+    trip = Trip.get(id)
+    if trip is None:
+        return {'statusCode': 1, 'status': "no valid trip found"}
+    if trip.add_clap(session['id']):
+        return {'statusCode': 0, 'status': "successfully clapped"}
+    else:
+        return {'statusCode': 2, 'status': "already clapped"}
+
+
+@bp.route('/trips/<int:id>/claps', methods=["DELETE"])
+def delete_clap(id):
+    trip = Trip.get(id)
+    if trip is None:
+        return {'statusCode': 1, 'status': "no valid trip found"}
+    if trip.delete_clap(session['id']):
+        return {'statusCode': 0, 'status': "successfully unclapped"}
+    else:
+        return {'statusCode': 2, 'status': "could not delete clap"}
+
+
 @bp.route('/trips/<int:id>', methods=["PATCH"])
 @login_required
 def edit_trip(id):

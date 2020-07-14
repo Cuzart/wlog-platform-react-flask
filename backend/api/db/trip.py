@@ -29,6 +29,9 @@ class Trip(Model):
                                      FROM users u, trips t
                                      WHERE  u.id = t.user_id AND t.user_id = %(user_id)s"""
     __SELECT_NEW_TRIPS_SQL = "SELECT * FROM `trips` ORDER BY `created_at` DESC LIMIT 20"
+    __SELECT_CLAPS_SQL = "SELECT COUNT(*) as 'claps' FROM `claps` WHERE `trip_id` = %(id)s"
+    __ADD_CLAP_SQL = "INSERT INTO `claps` (`trip_id`, `clapping_user`) VALUES (%(id)s, %(user_id)s)"
+    __DELETE_CLAP_SQL = "DELETE FROM `claps` WHERE `trip_id` = %(id)s AND `clapping_user` = %(user_id)s"
 
     def __init__(self, trip_data):
         """Constructor of trip instance
@@ -174,6 +177,51 @@ class Trip(Model):
             return False
         return True
 
+    def add_clap(self, user_id):
+        """adds a new clap to the trip from a specific user
+
+        Args:
+            user_id (int): id of clapper
+
+        Returns:
+            bool: True if successfully clapped else False
+        """
+        try:
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor()
+            cursor.execute(Trip.__ADD_CLAP_SQL, {'id': self.id, 'user_id': user_id})
+            cnx.commit()
+            return True
+        except mysql.connector.IntegrityError:
+            # already clapped
+            return False
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
+            return False
+        finally:
+            cnx.close()
+
+    def delete_clap(self, user_id):
+        """removes a the clap from a user
+
+        Args:
+            user_id (int): id of clapper
+
+        Returns:
+            bool: True or False
+        """
+        try:
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor()
+            cursor.execute(Trip.__DELETE_CLAP_SQL, {'id': self.id, 'user_id': user_id})
+            cnx.commit()
+            return True
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
+            return False
+        finally:
+            cnx.close()
+
     ###########################
     ##   STATIC FUNCTIONS    ##
     ###########################
@@ -252,6 +300,11 @@ class Trip(Model):
 
     @staticmethod
     def get_new_trips():
+        """gets a list with the 20 newest trips
+
+        Returns:
+            list: with trips and their properties
+        """
         try:
             cnx = conn_pool.get_connection()
             cursor = cnx.cursor(dictionary=True)
@@ -264,5 +317,27 @@ class Trip(Model):
         except mysql.connector.Error as err:
             current_app.logger.error("An error occured: {}".format(err))
             return []
+        finally:
+            cnx.close()
+
+    @staticmethod
+    def get_claps(id):
+        """gets all claps from a trip
+
+        Args:
+            id (int): id of trip instance
+
+        Returns:
+            int: clap count
+        """
+        try:
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor(dictionary=True, buffered=True)
+            cursor.execute(Trip.__SELECT_CLAPS_SQL, {'id': id})
+            result = cursor.fetchone()
+            return result['claps']
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
+            return None
         finally:
             cnx.close()

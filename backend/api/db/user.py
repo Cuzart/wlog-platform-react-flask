@@ -25,6 +25,8 @@ class User(Model):
     __USERNAME_AVAILABLE_SQL = "SELECT * FROM users WHERE username = %(username)s"
     __CHECK_LOGIN_SQL = "SELECT id, username, password FROM users WHERE username = %(username)s"
     __SEARCH_SQL = "SELECT `id`, `username` FROM `users` WHERE `username` LIKE %(pattern)s LIMIT 100"
+    __SELECT_CLAPS_SQL = """SELECT COUNT(*) as 'claps' FROM `claps` c, `trips` t, `users` u
+                            WHERE u.id = %(id)s AND u.id = t.user_id AND c.trip_id = t.id"""
 
     def __init__(self, user_data):
         """Constructor of user instance
@@ -369,5 +371,27 @@ class User(Model):
         except mysql.connector.Error as err:
             current_app.logger.error("An error occured: {}".format(err))
             return []
+        finally:
+            cnx.close()
+
+    @staticmethod
+    def get_claps(id):
+        """gets all claps accumulated from his trips
+
+        Args:
+            id (int): id of user instance
+
+        Returns:
+            int: clap count
+        """
+        try:
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor(dictionary=True, buffered=True)
+            cursor.execute(User.__SELECT_CLAPS_SQL, {'id': id})
+            result = cursor.fetchone()
+            return result['claps']
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
+            return None
         finally:
             cnx.close()
