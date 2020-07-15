@@ -64,25 +64,5 @@ const textStyle = {
   textShadow: '2px 2px #000000c0',
 };
 
-const barStyle = {
-  position: 'grid',
-  marginTop: '-420px',
-};
-
-const bottomIllustration = {
-  backgroundPosition: 'center',
-  backgroundSize: 'cover',
-  bottom: '0px',
-  height: '677px',
-  backgroundImage: 'url(/images/homeBottom.png)',
-};
-
-const text = {
-  fontWeight: 'bold',
-  padding: '15px',
-  paddingLeft: '50px',
-  color: 'black',
-  fontSize: '24px',
-};
 
 export default Home;
