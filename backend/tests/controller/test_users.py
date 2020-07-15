@@ -86,3 +86,8 @@ class TestUsersController():
         response = rv.get_json()
         assert type(response) is list
         assert response[0]['username'] == 'test_user'
+
+    def test_get_claps(self, client):
+        rv = client.get('/users/1/claps')
+        response = rv.get_json()
+        assert response['claps'] == 1

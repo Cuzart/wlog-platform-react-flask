@@ -5,9 +5,9 @@ import api.helper.imageHandler as img_handler
 from api.db.trip import Trip
 
 TRIP_DATA = {
-   'title': 'MyAwesomeTrip',
-   'country': 'Mars',
-   'description': 'Lorum Ipsum...'
+    'title': 'MyAwesomeTrip',
+    'country': 'Mars',
+    'description': 'Lorum Ipsum...'
 }
 
 
@@ -74,3 +74,37 @@ class TestTripsController():
         assert trips[0]['title'] == TRIP_DATA['title']
         assert trips[0]['id'] > trips[1]['id']
         assert trips[0]['created_at'] >= trips[1]['created_at']
+
+    def test_get_claps(self, client):
+        rv = client.get('/trips/1/claps')
+        response = rv.get_json()
+        assert response['claps'] == 1
+
+    def test_add_clap(self, client):
+        client.get('/logout')
+        rv = client.post('/trips/2/claps')
+        assert rv.status_code == 401
+        assert b'Unauthorized' in rv.data
+
+        credentials = {'username': 'test_user', 'password': 'password'}
+        client.post('/login', data=json.dumps(credentials), content_type='application/json')
+        rv = client.post('/trips/2/claps')
+        response = rv.get_json()
+        assert response['statusCode'] == 0
+        assert response['status'] == 'successfully clapped'
+        assert Trip.has_user_clapped(2, 1)
+
+        rv = client.post('/trips/2/claps')
+        response = rv.get_json()
+        assert response['statusCode'] == 2
+        assert response['status'] == 'already clapped'
+
+    def test_delete_clap(self, client):
+        rv = client.delete('/trips/2/claps')
+        response = rv.get_json()
+        assert response['statusCode'] == 0
+        assert response['status'] == 'successfully unclapped'
+        assert not Trip.has_user_clapped(2, 1)
+        rv = client.get('/trips/2/claps')
+        response = rv.get_json()
+        assert response['claps'] == 0

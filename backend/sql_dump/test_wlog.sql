@@ -15,6 +15,19 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `claps`
+--
+
+DROP TABLE IF EXISTS `claps`;
+CREATE TABLE `claps` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `trip_id` int(10) UNSIGNED NOT NULL,
+  `clapping_user` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `posts`
 --
 
@@ -63,6 +76,13 @@ CREATE TABLE `users` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Indexes for table `claps`
+--
+ALTER TABLE `claps`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_clap` (`trip_id`,`clapping_user`),
+  ADD KEY `fk_clapping_user` (`clapping_user`);
 
 --
 -- Indexes for table `posts`
@@ -90,6 +110,12 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `claps`
+--
+ALTER TABLE `claps`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
@@ -110,6 +136,13 @@ ALTER TABLE `users`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `claps`
+--
+ALTER TABLE `claps`
+  ADD CONSTRAINT `fk_clapped_trip` FOREIGN KEY (`trip_id`) REFERENCES `trips` (`id`),
+  ADD CONSTRAINT `fk_clapping_user` FOREIGN KEY (`clapping_user`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `posts`

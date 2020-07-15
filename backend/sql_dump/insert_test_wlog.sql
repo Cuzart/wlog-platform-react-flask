@@ -6,3 +6,6 @@ INSERT INTO `trips` (`user_id`, `title`, `country`, `description`, `thumbnail`, 
 
 INSERT INTO `posts` (`trip_id`, `subtitle`, `location_label`, `location_longitude`, `location_latitude`, `text`, `created_at`) VALUES
 (1, 'Auckland', 'Mount Eden', 174.772358, -36.868682, 'Des einzig schöne an Auckland. Lorem ipsum dolor sit amet.', '2020-07-10 00:42:00');
+
+INSERT INTO `claps` (`id`, `trip_id`, `clapping_user`) VALUES
+(1, 1, 1);
