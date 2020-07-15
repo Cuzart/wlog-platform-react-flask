@@ -89,7 +89,7 @@ export class TripPage extends Component {
           <div className="mr-4">
             <Button
               active={this.state.liked}
-              variant="outline-info"
+              variant="outline-success"
               onClick={() => this.handleLike()}
             >
               {this.state.likedMessage}

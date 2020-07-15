@@ -60,7 +60,10 @@ class ProfilePage extends Component {
       sessionStorage.clear();
       if (res.data.statusCode === 0) {
         this.props.history.push("/");
-        window.location.reload();
+        this.props.showAlert(
+          "success",
+          "Successfully signed out. See you soon!"
+        );
       }
     });
   };
@@ -80,7 +83,10 @@ class ProfilePage extends Component {
       <div className="container my-4">
         {/* logged in only features  */}
         {this.state.userId === sessionStorage.getItem("user") ? (
-          <div className="row justify-content-end mt-5 mr-2">
+          <div
+            className="row justify-content-end mt-5 mr-2"
+            style={{ paddingBottom: "-30px" }}
+          >
             <Button
               variant="outline-ownLight"
               onClick={() => this.toggleModal()}
@@ -90,7 +96,10 @@ class ProfilePage extends Component {
             <div className="mx-3">
               <Button
                 variant="outline-ownLight"
-                onClick={() => this.props.history.push("/edit")}
+                onClick={() => {
+                  this.props.history.push("/edit");
+                  window.location.reload();
+                }}
               >
                 Edit <i className="fas fa-user-edit"></i>
               </Button>
@@ -111,11 +120,11 @@ class ProfilePage extends Component {
         {!this.state.isLoading ? (
           <React.Fragment>
             <div className="row align-items-center">
-              <div className="col-3 ">
+              <div className="col-3 ml-4">
                 <img src={this.state.userImg} alt="User" style={pictureStyle} />
               </div>
-              <div className="col-4 align-self-center ml-5">
-                <h1 style={headerStyle}>{this.state.userData.username}</h1>
+              <div className="col-4 align-self-center ">
+                <h1 style={headerStyle}> {this.state.userData.username}</h1>
                 <h4>
                   {this.state.userData.name + " " + this.state.userData.surname}
                 </h4>
@@ -181,9 +190,10 @@ const headerStyle = {
 
 const pictureStyle = {
   borderRadius: "50%",
-  height: "180px",
-  width: "180px",
+  height: "200px",
+  width: "200px",
   margin: "50px",
+  border: "10px solid #ddd",
 };
 
 const descriptionStyle = {
@@ -201,7 +211,7 @@ const profileMap = {
   minHeight: "200px",
   height: "auto",
   backgroundColor: "white",
-  padding: "40px",
+  padding: "20px",
   borderRadius: "0px 0px 20px 20px",
 };
 

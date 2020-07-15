@@ -16,21 +16,10 @@ class Login extends React.Component {
       username: "",
       password: "",
       toggleAlert: false,
-      visibleSuccessAlert: false,
     };
   }
 
-  //shows success alert and dismisses it after 3 seconds, then sends to login
-  onShowAlert = (res) => {
-    this.setState({ visibleSuccessAlert: true }, () => {
-      window.setTimeout(() => {
-        this.setState({ visibleSuccessAlert: false });
-        this.props.history.push("/users/" + res.data.user_id);
-        window.location.reload();
-      }, 1000);
-    });
-  };
-
+  // requests login at API and sets sessionStorage
   handleLogin = (event) => {
     event.preventDefault();
     let login = this.state;
@@ -39,20 +28,12 @@ class Login extends React.Component {
       if (res.data.statusCode === 0) {
         this.setState({ toggleAlert: false });
         sessionStorage.setItem("authenticated", true);
-        //sessionStorage.setItem("user", login.username);
         sessionStorage.setItem("user", res.data.user_id);
-        /*this.setState({visibleSuccessAlert:true},()=>{
-          window.setTimeout(()=>{
-            this.setState({visibleSuccessAlert:false});
-            //this.props.history.push("/profile");
-            this.props.history.push("/users/" + res.data.user_id);
-            window.location.reload();
-          },3000)
-        });*/
-        this.onShowAlert(res);
-        //this.props.history.push("/users/" + res.data.user_id);
-        //window.location.reload();
-        //otherwise there will be an error message
+        this.props.history.push("/users/" + res.data.user_id);
+        this.props.showAlert(
+          "success",
+          "Welcome you have successfully logged in! "
+        );
       } else {
         this.setState({ toggleAlert: true });
       }
@@ -72,7 +53,7 @@ class Login extends React.Component {
           <div style={alertStyle}></div>
           <div className="container">
             <div style={captionStyle}>login</div>
-            <Form onSubmit={this.handleLogin}>
+            <Form onSubmit={this.handleLogin} id="formFont">
               <FormGroup as={Row}>
                 <Form.Label column sm={3}>
                   Username
@@ -104,13 +85,6 @@ class Login extends React.Component {
                 show={this.state.toggleAlert}
               >
                 Check your username or password.
-              </Alert>
-              <Alert
-                variant="success"
-                style={{ textAlign: "center" }}
-                show={this.state.visibleSuccessAlert}
-              >
-                Welcome! You will be forwarded.
               </Alert>
 
               <div style={btnLayout}>

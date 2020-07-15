@@ -21,7 +21,7 @@ class Trip(Model):
     __SELECT_SQL = """SELECT t.id, t.user_id, u.username as 'author', t.title,
                              t.country, t.description, t.thumbnail, t.created_at
                       FROM users u, trips t
-                      WHERE t.id = %(id)s"""
+                      WHERE t.id = %(id)s AND u.id = t.user_id"""
     __DELETE_SQL = "DELETE FROM trips WHERE id = %(id)s"
     __SELECT_ALL_USER_TRIPS_SQL = """SELECT t.id, t.user_id, u.username as 'author', t.title,
                                             t.country, t.description, t.thumbnail, t.created_at

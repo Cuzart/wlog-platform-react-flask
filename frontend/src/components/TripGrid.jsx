@@ -8,7 +8,6 @@ import Spinner from "./Spinner";
 class TripGrid extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       tripData: [],
       isLoading: true,

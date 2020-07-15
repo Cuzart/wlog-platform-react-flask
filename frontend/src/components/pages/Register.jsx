@@ -33,7 +33,6 @@ class Register extends React.Component {
 
       toggleAlert: false,
       alertContent: "",
-      visibleSuccessAlert: false,
     };
   }
 
@@ -56,16 +55,6 @@ class Register extends React.Component {
     return valid;
   };
 
-  //shows success alert and dismisses it after 3 seconds, then sends to login
-  onShowAlert = () => {
-    this.setState({ visibleSuccessAlert: true }, () => {
-      window.setTimeout(() => {
-        this.setState({ visibleSuccessAlert: false });
-        this.props.history.push("/");
-      }, 1000);
-    });
-  };
-
   // sends state object to REST API
   //if one form is invalid nothing will be send
   handleSubmit = (event) => {
@@ -75,8 +64,11 @@ class Register extends React.Component {
       axios.post("/register", user).then((res) => {
         switch (res.data.statusCode) {
           case 0:
-            this.onShowAlert();
-            //this.props.history.push("/");
+            this.props.history.push("/");
+            this.props.showAlert(
+              "success",
+              "You have been registered successfully!"
+            );
             break;
           case 1:
             this.setState({
@@ -157,7 +149,7 @@ class Register extends React.Component {
       <div style={bg}>
         <div className="container" style={registerForm}>
           <div style={captionStyle}>Create an account</div>
-          <Form onSubmit={this.handleSubmit}>
+          <Form onSubmit={this.handleSubmit} id="formFont">
             <Form.Row>
               <FormGroup as={Col} sm="6">
                 <Form.Label>Username</Form.Label>
@@ -276,13 +268,6 @@ class Register extends React.Component {
             </div>
           </Form>
         </div>
-        <Alert
-          style={successAlertStyle}
-          variant="success"
-          show={this.state.visibleSuccessAlert}
-        >
-          You have been registered successfully!
-        </Alert>
       </div>
     );
   }
@@ -299,7 +284,7 @@ const registerForm = {
   // half the height and width to center
   marginTop: "-230px",
   marginLeft: "-290px",
-  background: "#9EB091",
+  background: "#f1f1f1ec",
   borderRadius: "15px",
   textAlign: "left",
   boxShadow: "0px 2px 2px 2px rgba(0, 0, 0, 0.1)",
@@ -319,12 +304,8 @@ const errorMessage = {
   fontSize: "0.7em",
 };
 
-const successAlertStyle = {
-  textAlign: "center",
-  fontWeight: "bold",
-};
 const bg = {
-  backgroundImage: " url(/images/bg3.png)",
+  backgroundImage: " url(/images/bg.jpg)",
   backgroundPosition: "center",
   backgroundSize: "cover",
   height: "100vh",

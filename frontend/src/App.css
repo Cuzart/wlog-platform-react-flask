@@ -5,7 +5,6 @@
 
 .home-bg {
   background-image: url(/images/wlogBG.jpg);
-  z-index: -10;
   height: 100vh;
   background-position: center;
   background-size: cover;
@@ -156,4 +155,13 @@ input {
   background-color: #9eb09177;
   color: rgb(255, 255, 255);
   border-radius: 20px 20px 0px 0px;
+}
+
+#formFont > * {
+  font-weight: bold;
+}
+
+#success-alert-style {
+  text-align: center;
+  font-weight: bold;
 }

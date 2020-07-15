@@ -1,59 +1,88 @@
-import React, { Component } from "react";
-import "../../App.css";
-import Login from "../Login";
+import React, { Component } from 'react';
+import '../../App.css';
+import Login from '../Login';
+import Button from 'react-bootstrap/Button';
+import InfoContent from '../InfoContent';
 
 class Home extends Component {
   render() {
     return (
       <div>
-        <div className="home-bg">
-          <div className="container pt-5">
+        <div className='home-bg'>
+          <div className='container pt-5'>
             <div
-              className="row align-items-center justify-content-around align-self-center py-3"
-              style={{ marginTop: "15%" }}
+              className='row align-items-center justify-content-around align-self-center py-3'
+              style={{ marginTop: '15%' }}
             >
-              <div className="col-3 pr-5 mr-5">
-                {!sessionStorage.getItem("authenticated") ? <Login /> : ""}
+              <div className='col-3 pr-5 mr-5'>
+                {!sessionStorage.getItem('authenticated') ? (
+                  <Login showAlert={this.props.showAlert} />
+                ) : (
+                  <div className='ml-5 pl-5'>
+                    <Button
+                      variant='outline-light'
+                      onClick={() =>
+                        window.scrollTo({
+                          top: 1000,
+                          behavior: 'smooth',
+                        })
+                      }
+                    >
+                      <span style={{ fontSize: '30px', fontWeight: 'bold' }}>
+                        learn
+                        <br />
+                        <i
+                          className='fas fa-chevron-down'
+                          style={{ fontSize: '100px' }}
+                        ></i>
+                        <br />
+                        more
+                      </span>
+                    </Button>
+                  </div>
+                )}
               </div>
-              <div className="col-7 ml-5" style={textStyle}>
+              <div className='col-7 ml-5' style={textStyle}>
                 A home for <br /> your
-                <span style={{ color: "#9EB091" }}> memories </span>
+                <span style={{ color: '#9EB091' }}> memories </span>
               </div>
             </div>
           </div>
         </div>
-        <div style={barStyle}>
-          <img src="/images/bar.svg" alt="" />
-          <div style={imgContainer}>
-            <img src="/images/globeIllustration.svg" alt="" width="130%" />
-          </div>
-        </div>
-        <div className="App" height="500px"></div>
+        <InfoContent />
       </div>
     );
   }
 }
 
-const imgContainer = {
-  position: "absolute",
-  height: "auto",
-  width: "340px",
-  borderRadius: "50px",
-};
-
 const textStyle = {
-  textAlign: "right",
-  fontFamily: "Libre Baskerville , serif",
-  padding: "20px",
-  fontSize: "50pt",
-  color: "white",
-  textShadow: "2px 2px #000000c0",
+  textAlign: 'right',
+  fontFamily: 'Libre Baskerville , serif',
+  padding: '20px',
+  fontSize: '50pt',
+  color: 'white',
+  textShadow: '2px 2px #000000c0',
 };
 
 const barStyle = {
-  position: "grid",
-  marginTop: "-300px",
-  bottom: "-200px",
+  position: 'grid',
+  marginTop: '-420px',
+};
+
+const bottomIllustration = {
+  backgroundPosition: 'center',
+  backgroundSize: 'cover',
+  bottom: '0px',
+  height: '677px',
+  backgroundImage: 'url(/images/homeBottom.png)',
+};
+
+const text = {
+  fontWeight: 'bold',
+  padding: '15px',
+  paddingLeft: '50px',
+  color: 'black',
+  fontSize: '24px',
 };
 
 export default Home;

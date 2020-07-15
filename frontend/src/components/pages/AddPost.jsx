@@ -75,8 +75,8 @@ export class CreatePost extends Component {
       };
       // sending to API and give feedback
       axios.post("/posts", post).then((res) => {
+        this.props.showAlert("success", "Successfully added a new post");
         //check if successfully created
-        console.log(res.data);
         this.props.history.push("/users/" + sessionStorage.getItem("user"));
       });
     });

@@ -7,7 +7,7 @@ class ProtectedRoute extends React.Component {
     const isAuthenticated = sessionStorage.getItem("authenticated");
 
     return isAuthenticated ? (
-      <Component />
+      <Component showAlert={this.props.showAlert} />
     ) : (
       <Redirect to={{ pathname: "/" }} />
     );

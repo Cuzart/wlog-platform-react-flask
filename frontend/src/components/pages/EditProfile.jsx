@@ -5,8 +5,10 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
 import SaveChangesModal from "../layout/SaveChangesModal";
+import Spinner from "../Spinner";
 
-const user = sessionStorage.getItem("user");
+var user = sessionStorage.getItem("user");
+
 class EditProfile extends Component {
   constructor(props) {
     super(props);
@@ -27,7 +29,10 @@ class EditProfile extends Component {
   // fetching user description
   getDescription = () => {
     axios.get("/users/" + user).then((res) => {
-      this.setState({ oldDescription: res.data.description, isLoading: false });
+      this.setState({
+        oldDescription: res.data.description,
+        isLoading: false,
+      });
     });
   };
 
@@ -83,16 +88,21 @@ class EditProfile extends Component {
       });
     }
     if (this.state.description !== null) {
-      console.log(this.state.description);
       axios
-        .patch("/users/" + user, { description: this.state.description })
+        .patch("/users/" + user, {
+          description: this.state.description,
+        })
         .then((res) => {
           console.log(res.data);
         });
     }
     this.setState({ showModal: false });
+
     this.props.history.push("/users/" + user);
-    window.location.reload();
+    window.setTimeout(() => {
+      window.location.reload();
+    }, 2000);
+    this.props.showAlert("success", "Successfully updated your profile");
   };
 
   render() {
@@ -103,9 +113,7 @@ class EditProfile extends Component {
             <Button
               variant="outline-own"
               onClick={() => {
-                this.props.history.push(
-                  "/users/" + sessionStorage.getItem("user")
-                );
+                this.props.history.push("/users/" + user);
               }}
             >
               Back
@@ -126,8 +134,8 @@ class EditProfile extends Component {
 
         {!this.state.isLoading ? (
           <div className="row mt-3 pb-4 justify-content-center ">
-            <div className="col-6">
-              <h5 style={{ fontWeight: "bold" }}> Edit your description</h5>
+            <div className="col-5 text-center">
+              <h5 style={{ fontWeight: "bold" }}>reintroduce yourself</h5>
               <div style={descriptionStyle}>
                 <Form.Control
                   defaultValue={
@@ -143,19 +151,19 @@ class EditProfile extends Component {
                   rows="6"
                 ></Form.Control>
               </div>
-              <h5 style={{ fontWeight: "bold" }}>
-                Choose a new profile picture
+              <h5 style={{ fontWeight: "bold", paddingBottom: "15px" }}>
+                a picture says more than a thousand words
               </h5>
               <Avatar
                 label="Choose file"
-                width={400}
+                width={445}
                 height={300}
                 onCrop={this.onCrop}
                 onClose={this.onClose}
                 src={this.state.src}
               />
             </div>
-            <div className="col-3 text-center align-self-end mb-5">
+            {/* <div className="col-3 text-center align-self-end mb-5">
               <h5 style={{ fontWeight: "bold" }}>preview</h5>
               <img
                 src={this.state.preview}
@@ -163,10 +171,10 @@ class EditProfile extends Component {
                 width="180px"
                 height="180px"
               />
-            </div>
+            </div> */}
           </div>
         ) : (
-          ""
+          <Spinner />
         )}
 
         <SaveChangesModal
@@ -190,7 +198,7 @@ const descriptionStyle = {
   height: "auto",
   minHeight: "50px",
   maxHeight: "200px",
-  width: "400px",
+  width: "445px",
   margin: "30px 0px",
   borderRadius: "8px",
 };
