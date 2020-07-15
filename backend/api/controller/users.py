@@ -36,6 +36,11 @@ def get_user_posts(id):
     return jsonify(Post.get_all_user_posts(id))
 
 
+@bp.route('/users/<int:id>/claps', methods=["GET"])
+def get_claps(id):
+    return {'claps': User.get_claps(id)}
+
+
 @bp.route('/users/<int:id>', methods=["PATCH"])
 @login_required
 def edit_profile(id):

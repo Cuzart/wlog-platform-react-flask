@@ -18,7 +18,7 @@ validate_backend:
         - cd backend
         - pip install flake8
     script:
-        - flake8 --ignore=E402,E266,W605,W291
+        - flake8 --ignore=E402,E266,E121,W605,W291
 
         
 build_frontend:
