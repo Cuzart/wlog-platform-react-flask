@@ -1,23 +1,25 @@
-import React, { Component } from "react";
-import { OpenStreetMapProvider } from "leaflet-geosearch";
-import { withRouter } from "react-router-dom";
-import SaveChangesModal from "../layout/SaveChangesModal";
-import PostForm from "../PostForm";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
-import axios from "axios";
-import Spinner from "../Spinner";
+import React, { Component } from 'react';
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import { withRouter } from 'react-router-dom';
+import SaveChangesModal from '../layout/SaveChangesModal';
+import PostForm from '../PostForm';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert';
+import axios from 'axios';
+import Spinner from '../Spinner';
 
 export class CreatePost extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      caption: "",
-      location: "",
-      locationObject: { label: "" },
-      tripId: "",
+      caption: '',
+      location: '',
+      locationObject: { label: '' },
+      tripId: '',
       showModal: false,
+      toggleAlert: false,
       trips: [],
       isLoading: true,
     };
@@ -26,7 +28,7 @@ export class CreatePost extends Component {
   // fetching all trips of current user
   getTripData() {
     axios
-      .get("/users/" + sessionStorage.getItem("user") + "/trips")
+      .get('/users/' + sessionStorage.getItem('user') + '/trips')
       .then((res) => {
         this.setState({
           trips: res.data,
@@ -74,12 +76,16 @@ export class CreatePost extends Component {
         },
       };
       // sending to API and give feedback
-      axios.post("/posts", post).then((res) => {
-        this.props.showAlert("success", "Successfully added a new post");
-        //check if successfully created
-        this.props.history.push("/users/" + sessionStorage.getItem("user"));
+      axios.post('/posts', post).then((res) => {
+        if (res.data.statusCode === 0) {
+          this.props.showAlert('success', 'Successfully added a new post');
+          this.props.history.push('/users/' + sessionStorage.getItem('user'));
+        } else {
+          this.setState({ toggleAlert: true });
+        }
       });
     });
+    window.$('html, body').animate({ scrollTop: 0 }, '50');
   };
 
   // Shows modal on submit
@@ -89,53 +95,59 @@ export class CreatePost extends Component {
 
   render() {
     return (
-      <div as={Row} className="container" style={formStyle}>
-        {!this.state.isLoading ? (
-          <React.Fragment>
-            <Col>
-              <PostForm
-                heading="Add a blog entry"
-                handleChange={this.handleChange}
-                handleEditorChange={this.handleEditorChange}
-                handleLocationApi={this.handleLocationApi}
-                locationObject={this.state.locationObject}
-                trips={this.state.trips}
-              />
-              <div style={btnLayout}>
-                <Button
-                  variant="outline-ownLight"
-                  type="submit"
-                  onClick={this.toggleModal}
-                  size="lg"
-                >
-                  Save
-                </Button>
+      <div>
+        <Alert variant='danger' id='alert' show={this.state.toggleAlert}>
+          Something went wrong. Please check your inputs.
+        </Alert>
+
+        <div as={Row} className='container' style={formStyle}>
+          {!this.state.isLoading ? (
+            <React.Fragment>
+              <Col>
+                <PostForm
+                  heading='Add a blog entry'
+                  handleChange={this.handleChange}
+                  handleEditorChange={this.handleEditorChange}
+                  handleLocationApi={this.handleLocationApi}
+                  locationObject={this.state.locationObject}
+                  trips={this.state.trips}
+                />
+                <div style={btnLayout}>
+                  <Button
+                    variant='outline-ownLight'
+                    type='submit'
+                    onClick={this.toggleModal}
+                    size='lg'
+                  >
+                    Save
+                  </Button>
+                </div>
+              </Col>
+              <div>
+                <SaveChangesModal
+                  show={this.state.showModal}
+                  onHide={() => this.setState({ showModal: false })}
+                  onSubmit={() => this.handleSubmit()}
+                  heading={'Are you sure you are done?'}
+                />
               </div>
-            </Col>
-            <div>
-              <SaveChangesModal
-                show={this.state.showModal}
-                onHide={() => this.setState({ showModal: false })}
-                onSubmit={() => this.handleSubmit()}
-                heading={"Are you sure you are done?"}
-              />
-            </div>
-          </React.Fragment>
-        ) : (
-          <Spinner />
-        )}
+            </React.Fragment>
+          ) : (
+            <Spinner />
+          )}
+        </div>
       </div>
     );
   }
 }
 const formStyle = {
-  paddingBottom: "100px",
-  paddingTop: "50px",
+  paddingBottom: '100px',
+  paddingTop: '50px',
 };
 
 const btnLayout = {
-  marginTop: "50px",
-  textAlign: "center",
+  marginTop: '50px',
+  textAlign: 'center',
 };
 
 export default withRouter(CreatePost);

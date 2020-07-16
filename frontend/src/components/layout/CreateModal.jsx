@@ -22,10 +22,7 @@ class CreateModal extends Component {
               centered
             >
               <Modal.Header closeButton>
-                <Modal.Title
-                  id='contained-modal-title-vcenter'
-                  style={titleStyle}
-                >
+                <Modal.Title id='contained-modal-title-vcenter' style={titleStyle}>
                   What do you want to create ?
                 </Modal.Title>
               </Modal.Header>
@@ -95,10 +92,7 @@ class CreateModal extends Component {
             centered
           >
             <Modal.Header closeButton>
-              <Modal.Title
-                id='contained-modal-title-vcenter'
-                style={titleStyle}
-              >
+              <Modal.Title id='contained-modal-title-vcenter' style={titleStyle}>
                 Login required
               </Modal.Title>
             </Modal.Header>
@@ -112,10 +106,8 @@ class CreateModal extends Component {
                     }}
                   >
                     {' '}
-                    Please <a href='/'>sign in</a> if you already have an
-                    account <br />
-                    or join our community and{' '}
-                    <a href='/register'>register now</a>.
+                    Please <a href='/'>sign in</a> if you already have an account <br />
+                    or join our community and <a href='/register'>register now</a>.
                   </p>
                 </div>
               </div>

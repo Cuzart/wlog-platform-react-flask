@@ -1,13 +1,13 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import axios from "axios";
-import uuid from "uuid";
-import TripImage from "./TripImage";
-import Spinner from "./Spinner";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import "../App.css";
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import axios from 'axios';
+import uuid from 'uuid';
+import TripImage from './TripImage';
+import Spinner from './Spinner';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import '../App.css';
 
 export class SlickGrid extends Component {
   constructor(props) {
@@ -22,7 +22,7 @@ export class SlickGrid extends Component {
   // fetch 20 last trips
   getTripData() {
     axios
-      .get("/trips")
+      .get('/trips')
       .then((res) => {
         this.setState({
           tripData: res.data,
@@ -53,10 +53,7 @@ export class SlickGrid extends Component {
             {this.state.tripData.map((trip) => {
               const { id, title, description, thumbnail, country } = trip;
               return (
-                <div
-                  key={uuid.v4()}
-                  onClick={() => this.props.history.push("/trips/" + id)}
-                >
+                <div key={uuid.v4()} onClick={() => this.props.history.push('/trips/' + id)}>
                   <TripImage
                     title={title}
                     description={description}
@@ -77,8 +74,6 @@ export class SlickGrid extends Component {
             .slick-prev:before,
             .slick-next:before {
             color: black;
-            font-size: 25px;
-            
             }
         `}
         </style>

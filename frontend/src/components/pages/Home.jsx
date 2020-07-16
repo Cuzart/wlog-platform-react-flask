@@ -21,20 +21,12 @@ class Home extends Component {
                   <div className='ml-5 pl-5'>
                     <Button
                       variant='outline-light'
-                      onClick={() =>
-                        window.scrollTo({
-                          top: 1000,
-                          behavior: 'smooth',
-                        })
-                      }
+                      onClick={() => window.$('html, body').animate({ scrollTop: 960 }, '50')}
                     >
                       <span style={{ fontSize: '30px', fontWeight: 'bold' }}>
                         learn
                         <br />
-                        <i
-                          className='fas fa-chevron-down'
-                          style={{ fontSize: '100px' }}
-                        ></i>
+                        <i className='fas fa-chevron-down' style={{ fontSize: '100px' }}></i>
                         <br />
                         more
                       </span>
@@ -63,6 +55,5 @@ const textStyle = {
   color: 'white',
   textShadow: '2px 2px #000000c0',
 };
-
 
 export default Home;

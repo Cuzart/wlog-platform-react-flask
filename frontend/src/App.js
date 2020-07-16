@@ -42,7 +42,7 @@ class App extends Component {
       <Router>
         <div className="App">
           <Header />
-          <div id="success-alert-style">
+          <div id="alert">
             <Alert variant={this.state.variant} show={this.state.showAlert}>
               {this.state.message}
             </Alert>

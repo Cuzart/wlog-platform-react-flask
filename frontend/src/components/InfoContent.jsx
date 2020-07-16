@@ -4,65 +4,65 @@ export default function InfoContent() {
   return (
     <div>
       <div style={barStyle}>
-        <div style={{ marginBottom: '-120px' }}>
-          <img src='/images/bar.svg' alt='' />
-        </div>
+        <img src='/images/bar.svg' alt='' style={{ display: 'block' }} />
+        <p className='home-caption'>Learn how to use world log.</p>
+      </div>
 
-        <div className='container mb-5'>
-          {/* <p style={textStyle}>Learn how to use world log</p> */}
-          <div className='row  align-items-center'>
-            <div className='col-4'>
-              <img src='/images/globe.svg' width='100%' alt='' />
-            </div>
-            <div className='col-8'>
-              <p style={text}>
-                Start with a new trip to connect your blog posts in it. And show
-                it on the map.
-              </p>
-            </div>
+      <div className='container mb-5'>
+        <div className='row  align-items-center'>
+          <div className='col-4'>
+            <img src='/images/globe.svg' width='90%' alt='' />
           </div>
-          <div className='row  align-items-center'>
-            <div className='col-4'>
-              <img src='/images/post.svg' width='100%' alt='' />
-            </div>
-            <div className='col-8'>
-              <p style={text}>
-                Create your individual Blog Post with an editor and bring it on
-                the map
-              </p>
-            </div>
+          <div className='col-8'>
+            <p style={text}>
+              Start with a new trip to connect your blog posts and pin them on the map. From there
+              you can add posts to existing trips or create new ones.
+            </p>
           </div>
-          <div className='row  align-items-center'>
-            <div className='col-4'>
-              <img src='/images/explore.svg' width='100%' alt='' />
-            </div>
-            <div className='col-8'>
-              <p style={text}>
-                You can search for other users or discover the latest posts on
-                the community map. There is also a feed for the trips with the
-                most claps.
-              </p>
-            </div>
+        </div>
+        <div className='row  align-items-center'>
+          <div className='col-4'>
+            <img src='/images/post.svg' width='90%' alt='' />
           </div>
-          <div className='row  align-items-center'>
-            <div className='col-4'>
-              <img src='/images/clap.svg' width='100%' alt='' />
-            </div>
-            <div className='col-8'>
-              <p style={text}>Some Text</p>
-            </div>
+          <div className='col-8'>
+            <p style={text}>
+              Create your individual blog post with our editor, add pictures, tell your stories and
+              bring your memories to life.
+            </p>
+          </div>
+        </div>
+        <div className='row  align-items-center'>
+          <div className='col-4'>
+            <img src='/images/explore.svg' width='90%' alt='' />
+          </div>
+          <div className='col-8'>
+            <p style={text}>
+              You can search for other users or discover the latest posts on the community map.
+              There is an additional feed for the trips with the most claps.
+            </p>
+          </div>
+        </div>
+        <div className='row  align-items-center'>
+          <div className='col-4'>
+            <img src='/images/clap.svg' width='90%' alt='' />
+          </div>
+          <div className='col-8'>
+            <p style={text}>
+              Use claps to show other users some love for their trips or collect your own to get a
+              spot in the trip feed.
+            </p>
           </div>
         </div>
       </div>
-      <div style={bottomIllustration}></div>
+
+      <div style={bottomIllustration}>
+        <p className='home-caption' style={{ color: 'rgb(64,59,88)', bottom: '335px' }}>
+          start <br /> now.
+        </p>
+      </div>
     </div>
   );
 }
-
-const barStyle = {
-  position: 'grid',
-  marginTop: '-420px',
-};
 
 const bottomIllustration = {
   backgroundPosition: 'center',
@@ -70,12 +70,18 @@ const bottomIllustration = {
   bottom: '0px',
   height: '677px',
   backgroundImage: 'url(/images/homeBottom.png)',
+  position: 'relative',
 };
 
 const text = {
   fontWeight: 'bold',
   padding: '15px',
-  paddingLeft: '50px',
   color: 'black',
   fontSize: '24px',
+};
+
+const barStyle = {
+  position: 'relative',
+  marginTop: '-100px',
+  marginBottom: '1px',
 };

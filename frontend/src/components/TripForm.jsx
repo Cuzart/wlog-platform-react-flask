@@ -1,22 +1,22 @@
-import React, { Component } from "react";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import FormGroup from "react-bootstrap/FormGroup";
+import React, { Component } from 'react';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import FormGroup from 'react-bootstrap/FormGroup';
 
 class TripForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
       data: {
-        title: "",
-        country: "",
-        description: "",
+        title: '',
+        country: '',
+        description: '',
       },
       tripErrors: {
-        titleError: "",
-        countryError: "",
-        descriptionError: "",
+        titleError: '',
+        countryError: '',
+        descriptionError: '',
       },
     };
   }
@@ -28,14 +28,14 @@ class TripForm extends Component {
     this.setState(() => ({ data }));
     let tripErrors = this.state.tripErrors;
     switch (nam) {
-      case "title":
-        tripErrors.titleError = val.length > 0 ? "" : "required";
+      case 'title':
+        tripErrors.titleError = val.length > 0 ? '' : 'required';
         break;
-      case "country":
-        tripErrors.countryError = val.length > 0 ? "" : "required";
+      case 'country':
+        tripErrors.countryError = val.length > 0 ? '' : 'required';
         break;
-      case "description":
-        tripErrors.descriptionError = val.length > 0 ? "" : "required";
+      case 'description':
+        tripErrors.descriptionError = val.length > 0 ? '' : 'required';
         break;
       default:
         break;
@@ -45,7 +45,7 @@ class TripForm extends Component {
     const { tripErrors } = this.state;
     return (
       <div>
-        <div className="container">
+        <div className='container'>
           <h1 style={headerStyles}> Create an individual trip </h1> <br />
           <Form>
             <FormGroup as={Row}>
@@ -54,9 +54,9 @@ class TripForm extends Component {
               </Form.Label>
               <Col sm={5}>
                 <Form.Control
-                  className={tripErrors.titleError.length > 0 ? "error" : null}
-                  name="title"
-                  type="text"
+                  className={tripErrors.titleError.length > 0 ? 'error' : null}
+                  name='title'
+                  type='text'
                   onChange={(e) => {
                     this.props.handleChange(e);
                     this.validateInput();
@@ -70,8 +70,8 @@ class TripForm extends Component {
               </Form.Label>
               <Col sm={5}>
                 <Form.File
-                  id="formfile"
-                  accept="image/png, image/jpeg"
+                  id='formfile'
+                  accept='image/png, image/jpeg'
                   onChange={this.props.handleFileSelect}
                   label={this.props.fileFormLabel}
                   custom
@@ -84,35 +84,31 @@ class TripForm extends Component {
               </Form.Label>
               <Col sm={5}>
                 <Form.Control
-                  className={
-                    tripErrors.countryError.length > 0 ? "error" : null
-                  }
-                  name="country"
+                  className={tripErrors.countryError.length > 0 ? 'error' : null}
+                  name='country'
                   onChange={(e) => {
                     this.props.handleChange(e);
                     this.validateInput();
                   }}
-                  type="text"
+                  type='text'
                 />
               </Col>
             </FormGroup>
-            <FormGroup as={Row} style={{ paddingBottom: "40px" }}>
+            <FormGroup as={Row} style={{ paddingBottom: '40px' }}>
               <Form.Label column sm={1}>
                 Description
               </Form.Label>
               <Col sm={5}>
                 <Form.Control
-                  className={
-                    tripErrors.descriptionError.length > 0 ? "error" : null
-                  }
-                  as="textarea"
-                  name="description"
+                  className={tripErrors.descriptionError.length > 0 ? 'error' : null}
+                  as='textarea'
+                  name='description'
                   onChange={(e) => {
                     this.props.handleChange(e);
                     this.validateInput();
                   }}
-                  rows="3"
-                  maxLength="240"
+                  rows='3'
+                  maxLength='240'
                 />
               </Col>
             </FormGroup>
@@ -123,8 +119,8 @@ class TripForm extends Component {
   }
 }
 const headerStyles = {
-  fontFamily: "Libre Baskerville , serif",
-  margin: "35px 0px",
+  fontFamily: 'Libre Baskerville , serif',
+  margin: '35px 0px',
 };
 
 export default TripForm;
