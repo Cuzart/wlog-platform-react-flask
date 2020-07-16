@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import uuid from 'uuid';
 import TripImage from './TripImage';
-import Spinner from './Spinner';
+import Spinner from './layout/Spinner';
 
 class TripGrid extends Component {
   constructor(props) {

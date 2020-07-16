@@ -3,7 +3,7 @@ import SearchBar from '../SearchBar';
 import axios from 'axios';
 import ListGroup from 'react-bootstrap/ListGroup';
 import LeafletMap from '../LeafletMap';
-import Spinner from '../Spinner';
+import Spinner from '../layout/Spinner';
 import SlickGrid from '../SlickGrid';
 
 export class Explore extends Component {

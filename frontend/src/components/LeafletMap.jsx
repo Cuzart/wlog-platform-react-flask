@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Map, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import { Icon } from 'leaflet';
-import Spinner from 'react-bootstrap/Spinner';
+import Spinner from "./layout/Spinner"
 import '../App.css';
 
 const pin = new Icon({
@@ -74,7 +74,7 @@ class LeafletMap extends Component {
               );
             })
           ) : (
-            <Spinner className='spinner' animation='border' size='lg' />
+            <Spinner />
           )}
         </Map>
       </div>

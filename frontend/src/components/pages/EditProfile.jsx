@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import axios from 'axios';
 import SaveChangesModal from '../layout/SaveChangesModal';
-import Spinner from '../Spinner';
+import Spinner from '../layout/Spinner';
 
 var user = sessionStorage.getItem('user');
 

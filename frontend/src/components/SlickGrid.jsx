@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import uuid from 'uuid';
 import TripImage from './TripImage';
-import Spinner from './Spinner';
+import Spinner from './layout/Spinner';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';

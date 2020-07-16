@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import uuid from 'uuid';
 import '../../App.css';
 import LeafletMap from '../LeafletMap';
-import Spinner from '../Spinner';
+import Spinner from '../layout/Spinner';
 import Accordion from 'react-bootstrap/Accordion';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';

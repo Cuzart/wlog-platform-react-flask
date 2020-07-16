@@ -8,7 +8,7 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 import axios from 'axios';
-import Spinner from '../Spinner';
+import Spinner from '../layout/Spinner';
 
 export class CreatePost extends Component {
   constructor(props) {
