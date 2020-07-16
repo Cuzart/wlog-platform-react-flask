@@ -1,5 +1,6 @@
 from flask import current_app
 from api.db.model import Model
+from api.helper.instanceCache import InstanceCache
 from api.db.post import Post
 from api import conn_pool
 import mysql.connector
@@ -14,19 +15,25 @@ class Trip(Model):
     __INSERT_SQL = """INSERT INTO trips
                    (user_id, title, country, description, thumbnail)
                    VALUES (%(user_id)s, %(title)s, %(country)s, %(description)s, %(thumbnail)s)"""
-    __UPDATE_SQL = """UPDATE users
-                     SET title = %(title)s, country = %(country)s, description = %(thumbnail)s
+    __UPDATE_SQL = """UPDATE trips
+                     SET title = %(title)s, country = %(country)s,
+                         description = %(description)s, thumbnail = %(thumbnail)s
                      WHERE id = %(id)s"""
     __SELECT_SQL = """SELECT t.id, t.user_id, u.username as 'author', t.title,
                              t.country, t.description, t.thumbnail, t.created_at
                       FROM users u, trips t
-                      WHERE t.id = %(id)s"""
+                      WHERE t.id = %(id)s AND u.id = t.user_id"""
     __DELETE_SQL = "DELETE FROM trips WHERE id = %(id)s"
     __SELECT_ALL_USER_TRIPS_SQL = """SELECT t.id, t.user_id, u.username as 'author', t.title,
                                             t.country, t.description, t.thumbnail, t.created_at
                                      FROM users u, trips t
                                      WHERE  u.id = t.user_id AND t.user_id = %(user_id)s"""
     __SELECT_NEW_TRIPS_SQL = "SELECT * FROM `trips` ORDER BY `created_at` DESC LIMIT 20"
+    __SELECT_CLAPS_SQL = "SELECT COUNT(*) as 'claps' FROM `claps` WHERE `trip_id` = %(id)s"
+    __ADD_CLAP_SQL = "INSERT INTO `claps` (`trip_id`, `clapping_user`) VALUES (%(id)s, %(user_id)s)"
+    __DELETE_CLAP_SQL = "DELETE FROM `claps` WHERE `trip_id` = %(id)s AND `clapping_user` = %(user_id)s"
+    __USER_CLAPPED_SQL = """SELECT COUNT(*) as 'clap' FROM `claps` 
+                            WHERE `trip_id` = %(id)s AND `clapping_user` = %(user_id)s"""
 
     def __init__(self, trip_data):
         """Constructor of trip instance
@@ -148,6 +155,7 @@ class Trip(Model):
             cursor = cnx.cursor()
             cursor.execute(Trip.__DELETE_SQL, {'id': self.id})
             cnx.commit()
+            InstanceCache.remove('Trip', self.id)
             current_app.logger.debug("Trip {} deleted".format(self.id))
             return self.id
         except mysql.connector.Error as err:
@@ -171,12 +179,57 @@ class Trip(Model):
             return False
         return True
 
+    def add_clap(self, user_id):
+        """adds a new clap to the trip from a specific user
+
+        Args:
+            user_id (int): id of clapper
+
+        Returns:
+            bool: True if successfully clapped else False
+        """
+        try:
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor()
+            cursor.execute(Trip.__ADD_CLAP_SQL, {'id': self.id, 'user_id': user_id})
+            cnx.commit()
+            return True
+        except mysql.connector.IntegrityError:
+            # already clapped
+            return False
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
+            return False
+        finally:
+            cnx.close()
+
+    def delete_clap(self, user_id):
+        """removes a the clap from a user
+
+        Args:
+            user_id (int): id of clapper
+
+        Returns:
+            bool: True or False
+        """
+        try:
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor()
+            cursor.execute(Trip.__DELETE_CLAP_SQL, {'id': self.id, 'user_id': user_id})
+            cnx.commit()
+            return True
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
+            return False
+        finally:
+            cnx.close()
+
     ###########################
     ##   STATIC FUNCTIONS    ##
     ###########################
     @staticmethod
     def get(id):
-        """this method fetches a trip instance out of the database
+        """this method fetches a trip instance out of the DB or InstanceCache
 
         Args:
             id (int): id of the prefered trip instance
@@ -184,6 +237,9 @@ class Trip(Model):
         Returns:
             Trip: trip instance or None
         """
+        if InstanceCache.is_cached('Trip', id):
+            return InstanceCache.get('Trip', id)
+
         try:
             cnx = conn_pool.get_connection()
             cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -192,6 +248,7 @@ class Trip(Model):
             if result is None:
                 return None
             trip = Trip(result)
+            InstanceCache.add('Trip', id, trip)
             return trip
         except mysql.connector.Error as err:
             current_app.logger.error("An error occured: {}".format(err))
@@ -245,6 +302,11 @@ class Trip(Model):
 
     @staticmethod
     def get_new_trips():
+        """gets a list with the 20 newest trips
+
+        Returns:
+            list: with trips and their properties
+        """
         try:
             cnx = conn_pool.get_connection()
             cursor = cnx.cursor(dictionary=True)
@@ -257,5 +319,50 @@ class Trip(Model):
         except mysql.connector.Error as err:
             current_app.logger.error("An error occured: {}".format(err))
             return []
+        finally:
+            cnx.close()
+
+    @staticmethod
+    def get_claps(id):
+        """gets all claps from a trip
+
+        Args:
+            id (int): id of trip instance
+
+        Returns:
+            int: clap count
+        """
+        try:
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor(dictionary=True, buffered=True)
+            cursor.execute(Trip.__SELECT_CLAPS_SQL, {'id': id})
+            result = cursor.fetchone()
+            return result['claps']
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
+            return None
+        finally:
+            cnx.close()
+
+    @staticmethod
+    def has_user_clapped(id, user_id):
+        """checks whether the user has already clapped the trip
+
+        Args:
+            id (int): id of trip
+            user_id (int): id of user
+
+        Returns:
+            bool: True if already clapped, else False
+        """
+        try:
+            cnx = conn_pool.get_connection()
+            cursor = cnx.cursor(dictionary=True, buffered=True)
+            cursor.execute(Trip.__USER_CLAPPED_SQL, {'id': id, 'user_id': user_id})
+            result = cursor.fetchone()
+            return bool(result['clap'])
+        except mysql.connector.Error as err:
+            current_app.logger.error("An error occured: {}".format(err))
+            return False
         finally:
             cnx.close()

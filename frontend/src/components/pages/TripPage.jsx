@@ -65,7 +65,7 @@ export class TripPage extends Component {
         });
       })
 
-      .catch((error) => this.setState({ isLoading: false }));
+      .catch(() => this.setState({ isLoading: false }));
   }
 
   componentDidMount() {
@@ -75,16 +75,21 @@ export class TripPage extends Component {
   render() {
     return (
       <div className="container" style={containerStyle}>
-        <div className="row align-content-center justify-content-between" style={rowStyle}>
+        <div
+          className="row align-content-center justify-content-between"
+          style={rowStyle}
+        >
           <div className="col">
             <h1 style={headerStyle}>{this.state.tripData.title}</h1>
-            <h5 style={{ fontStyle: "italic" }}>{this.state.tripData.country}</h5>
+            <h5 style={{ fontStyle: "italic" }}>
+              {this.state.tripData.country}
+            </h5>
           </div>
-          
+
           <div className="mr-4">
             <Button
               active={this.state.liked}
-              variant="outline-success"
+              variant="outline-info"
               onClick={() => this.handleLike()}
             >
               {this.state.likedMessage}
@@ -105,27 +110,24 @@ export class TripPage extends Component {
                   by {this.state.tripData.author}
                 </Button>
               </div>
-          </div>
-          </div>
-            <div className="col-7 pr-0 ml-5 mt-4" style={leafletContainer}>
-              <LeafletMap
-                activePost={this.state.activePost}
-                posts={this.state.tripData.posts}
-                isLoading={this.state.isLoading}
-                polyline={polyline}
-                handleActiveMarker={this.handleActiveMarker}
-                zoom="8"
-                toTrip = {false}
-              />
             </div>
-          
+          </div>
+          <div className="col-7 pr-0 ml-5 mt-4" style={leafletContainer}>
+            <LeafletMap
+              activePost={this.state.activePost}
+              posts={this.state.tripData.posts}
+              isLoading={this.state.isLoading}
+              polyline={polyline}
+              handleActiveMarker={this.handleActiveMarker}
+              zoom="8"
+              toTrip={false}
+            />
+          </div>
         </div>
-        
+
         {/* render after data is loaded */}
         {!this.state.isLoading ? (
           <React.Fragment>
-
-
             <h2 style={headerStyle}>Posts</h2>
             <Accordion
               defaultActiveKey={this.state.tripData.posts[0].id}
@@ -196,10 +198,9 @@ const descriptionStyle = {
   borderRadius: "8px",
 };
 
-const leafletContainer = {
+const leafletContainer = {
   width: "600px",
   position: "relative",
-
-}
+};
 
 export default withRouter(TripPage);

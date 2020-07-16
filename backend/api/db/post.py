@@ -1,5 +1,6 @@
 from flask import current_app
 from api.db.model import Model
+from api.helper.instanceCache import InstanceCache
 from api import conn_pool
 import mysql.connector
 import html
@@ -156,6 +157,7 @@ class Post(Model):
             cursor = cnx.cursor()
             cursor.execute(Post.__DELETE_SQL, {'id': self.id})
             cnx.commit()
+            InstanceCache.remove('Post', self.id)
             current_app.logger.debug("Post {} deleted".format(self.id))
             return self.id
         except mysql.connector.Error as err:
@@ -169,7 +171,7 @@ class Post(Model):
     ###########################
     @staticmethod
     def get(id):
-        """this method fetches a post instance out of the database
+        """this method fetches a post instance out of the DB or InstanceCache
 
         Args:
             id (int): id of the prefered post instance
@@ -177,6 +179,9 @@ class Post(Model):
         Returns:
             Post: post instance or None
         """
+        if InstanceCache.is_cached('Post', id):
+            return InstanceCache.get('Post', id)
+
         try:
             cnx = conn_pool.get_connection()
             cursor = cnx.cursor(dictionary=True, buffered=True)
@@ -184,8 +189,9 @@ class Post(Model):
             result = cursor.fetchone()
             if result is None:
                 return None
-
-            return Post(result)
+            post = Post(result)
+            InstanceCache.add('Post', id, post)
+            return post
         except mysql.connector.Error as err:
             current_app.logger.error("Something went wrong: {}".format(err))
             return None

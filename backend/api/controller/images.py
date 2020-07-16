@@ -11,13 +11,13 @@ bp = Blueprint("images", __name__)
 
 
 @bp.route('/images/<string:filename>')
-def get_img(filename):
+def get_image(filename):
     return send_from_directory("/usr/src/app/assets", filename)
 
 
 @bp.route('/images', methods=["POST"])
 @login_required
-def upload_img():
+def upload_image():
     """Endpoint to upload an image. It is possible to upload an "postImg", "thumbnail", or "profileImg"
     In case of the "thumbnail", the client gets a uid to refer to the image in the next request.
     In case of the "profileImg" the old image gets removed and the new one saved.
@@ -52,13 +52,14 @@ def upload_img():
                 user = User.get(session["id"])
                 if user.profilepicture is not None:  # remove old profile picture
                     img_handler.remove_image(user.profilepicture)
-                filename = img_handler.save_image(
-                    uid, session["id"], 'profileImg')
+                filename = img_handler.save_image(uid, session["id"], 'profileImg')
                 user.profilepicture = "/images/{}".format(filename)
                 user.save()
                 return {'statusCode': 3, 'status': "profileImg successfully saved"}
             else:
                 return {'statusCode': 2, 'status': "file not allowed"}
+        else:
+            return {'statusCode': 4, 'status': "upload 'thumbnail', 'postImg' or 'profileImg"}
 
     else:
         return {'statusCode': 1, 'status': "invalid upload"}

@@ -62,7 +62,7 @@ def save_image(uid, user_id, filetype):
     extension = tmp_files[uid].rsplit('.', 1)[1]
     timestamp = str(time.time()).replace(".", "")
     new_filename = "{}_{}_{}.{}".format(
-        str(user_id).zfill(6), filetype, timestamp, extension)
+        str(user_id).zfill(6), filetype, timestamp, extension.lower())
 
     shutil.move("{}/{}".format(TMP_IMG_PATH, tmp_files[uid]),
                 "{}/{}".format(IMG_PATH, new_filename))
@@ -110,5 +110,5 @@ def remove_image(filename):
     Args:
         filename (string): saved image in DB
     """
-    filename = filename.replace("/img/", "")
+    filename = filename.replace("/images/", "")
     os.remove("{}/{}".format(IMG_PATH, filename))

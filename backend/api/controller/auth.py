@@ -15,8 +15,8 @@ def login_required(f):
     def wrap(*args, **kwargs):
         if 'id' in session:
             return f(*args, **kwargs)
-        # else:
-        #     return "Unauthorized", 401
+        else:
+            return "Unauthorized", 401
     return wrap
 
 
@@ -30,7 +30,6 @@ def login():
     """
     if request.is_json:
         login_data = request.get_json()
-
         username = login_data['username']
         password_candidate = login_data['password']
         id = User.check_login(username, password_candidate)

@@ -1,14 +1,9 @@
-DROP TABLE IF EXISTS `posts`;
-DROP TABLE IF EXISTS `trips`;
-DROP TABLE IF EXISTS `users`;
-
-
 -- phpMyAdmin SQL Dump
 -- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb
--- Generation Time: Jun 19, 2020 at 05:23 PM
+-- Generation Time: Jul 13, 2020 at 11:32 PM
 -- Server version: 10.4.13-MariaDB-1:10.4.13+maria~bionic
 -- PHP Version: 7.4.5
 
@@ -29,9 +24,30 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `claps`
+--
+
+DROP TABLE IF EXISTS `claps`;
+CREATE TABLE `claps` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `trip_id` int(10) UNSIGNED NOT NULL,
+  `clapping_user` int(10) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `claps`
+--
+
+INSERT INTO `claps` (`id`, `trip_id`, `clapping_user`) VALUES
+(1, 1, 1);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `posts`
 --
 
+DROP TABLE IF EXISTS `posts`;
 CREATE TABLE `posts` (
   `id` int(10) UNSIGNED NOT NULL,
   `trip_id` int(10) UNSIGNED NOT NULL,
@@ -57,6 +73,7 @@ INSERT INTO `posts` (`id`, `trip_id`, `subtitle`, `location_label`, `location_lo
 -- Table structure for table `trips`
 --
 
+DROP TABLE IF EXISTS `trips`;
 CREATE TABLE `trips` (
   `id` int(10) UNSIGNED NOT NULL,
   `user_id` int(10) UNSIGNED NOT NULL,
@@ -72,7 +89,7 @@ CREATE TABLE `trips` (
 --
 
 INSERT INTO `trips` (`id`, `user_id`, `title`, `country`, `description`, `thumbnail`, `created_at`) VALUES
-(1, 1, 'Work&Travel', 'New Zealand', 'reisen und arbeiten im schönsten Land der Welt', '/img/000001_thumbnail_nichtVorhanden', '2020-06-13 19:41:17');
+(1, 1, 'Work&Travel', 'New Zealand', 'reisen und arbeiten im schönsten Land der Welt', '/images/000001_thumbnail_nichtVorhanden', '2020-06-13 19:41:17');
 
 -- --------------------------------------------------------
 
@@ -80,6 +97,7 @@ INSERT INTO `trips` (`id`, `user_id`, `title`, `country`, `description`, `thumbn
 -- Table structure for table `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` int(10) UNSIGNED NOT NULL,
   `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -98,9 +116,18 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `name`, `surname`, `description`, `profilepicture`, `created_at`) VALUES
 (1, 'traveljunkie', 'user@mail.com', '$pbkdf2-sha256$29000$h1CKEcK4t1aqVeod4zwnxA$TkqOSbiekO5SUEFmquG9zSrTUOHaVzAn29/7h02ktUM', 'Max', 'Mustermann', NULL, NULL, '2020-05-29 14:40:13');
+
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `claps`
+--
+ALTER TABLE `claps`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_clap` (`trip_id`,`clapping_user`),
+  ADD KEY `fk_clapping_user` (`clapping_user`);
 
 --
 -- Indexes for table `posts`
@@ -128,10 +155,16 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `claps`
+--
+ALTER TABLE `claps`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `trips`
@@ -148,6 +181,13 @@ ALTER TABLE `users`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `claps`
+--
+ALTER TABLE `claps`
+  ADD CONSTRAINT `fk_clapped_trip` FOREIGN KEY (`trip_id`) REFERENCES `trips` (`id`),
+  ADD CONSTRAINT `fk_clapping_user` FOREIGN KEY (`clapping_user`) REFERENCES `users` (`id`);
 
 --
 -- Constraints for table `posts`

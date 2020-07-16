@@ -20,7 +20,7 @@ class PostForm extends Component {
       }
     };
   }
-  validateInput = (event) => {
+  validateInput = () => {
     let nam = window.event.target.name;
     let val = window.event.target.value;
     const data = { ...this.state.data, [nam]: val };
@@ -95,7 +95,7 @@ class PostForm extends Component {
                     required
                   >
                     {this.props.trips.map((trip) => {
-                      return <option value={trip.id}>{trip.title}</option>;
+                      return <option key={trip.id} value={trip.id}>{trip.title}</option>;
                     })}
                   </Form.Control>
                 </Col>
