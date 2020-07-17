@@ -5,7 +5,6 @@
 
 .home-bg {
   background-image: url(/images/wlogBG.jpg);
-  z-index: -10;
   height: 100vh;
   background-position: center;
   background-size: cover;
@@ -107,6 +106,7 @@ input {
   max-width: 400px;
   max-height: 300px;
   display: table;
+  cursor: pointer;
 }
 
 /* leaflet map container */
@@ -156,4 +156,28 @@ input {
   background-color: #9eb09177;
   color: rgb(255, 255, 255);
   border-radius: 20px 20px 0px 0px;
+}
+
+/* text on all forms bold */
+#formFont > * {
+  font-weight: bold;
+}
+
+#alert {
+  text-align: center;
+  font-weight: bold;
+}
+
+.home-caption{
+  z-index: 1;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 130px;
+  text-align: center;
+  font-family: Libre Baskerville , serif;
+  padding: 20px;
+  font-size: 45pt;
+  color: #f1f1f1;
+  line-height: 60px;
 }

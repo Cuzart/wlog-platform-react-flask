@@ -1,14 +1,13 @@
-import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import axios from "axios";
-import uuid from "uuid";
-import TripImage from "./TripImage";
-import Spinner from "./Spinner";
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import axios from 'axios';
+import uuid from 'uuid';
+import TripImage from './TripImage';
+import Spinner from './layout/Spinner';
 
 class TripGrid extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       tripData: [],
       isLoading: true,
@@ -18,7 +17,7 @@ class TripGrid extends Component {
   // fetching user trips from the API
   getTripData() {
     axios
-      .get("/users/" + this.props.userId + "/trips")
+      .get('/users/' + this.props.userId + '/trips')
       .then((res) => {
         this.setState({
           tripData: res.data,
@@ -34,8 +33,8 @@ class TripGrid extends Component {
 
   render() {
     return (
-      <div className="container" style={gridStyle}>
-        <div className="row ">
+      <div className='container' style={gridStyle}>
+        <div className='row '>
           {!this.state.isLoading ? (
             <React.Fragment>
               {this.state.tripData.map((trip) => {
@@ -43,8 +42,8 @@ class TripGrid extends Component {
                 return (
                   <div
                     key={uuid.v4()}
-                    className="col-6 my-4 d-flex justify-content-center"
-                    onClick={() => this.props.history.push("/trips/" + id)}
+                    className='col-6 my-4 d-flex justify-content-center'
+                    onClick={() => this.props.history.push('/trips/' + id)}
                   >
                     <TripImage
                       title={title}
@@ -67,11 +66,11 @@ class TripGrid extends Component {
 }
 
 const gridStyle = {
-  marginBottom: "80px",
-  minHeight: "200px",
-  backgroundColor: "white",
-  padding: "40px",
-  borderRadius: "0px 0px 20px 20px",
+  marginBottom: '80px',
+  minHeight: '200px',
+  backgroundColor: 'white',
+  padding: '40px',
+  borderRadius: '0px 0px 20px 20px',
 };
 
 export default withRouter(TripGrid);

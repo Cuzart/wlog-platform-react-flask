@@ -1,23 +1,23 @@
-import React, { Component } from "react";
-import { Editor } from "@tinymce/tinymce-react";
-import "../App.css";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import FormGroup from "react-bootstrap/FormGroup";
+import React, { Component } from 'react';
+import { Editor } from '@tinymce/tinymce-react';
+import '../App.css';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import FormGroup from 'react-bootstrap/FormGroup';
 
 class PostForm extends Component {
-  constructor(props){
-  super(props);
-  this.state={
+  constructor(props) {
+    super(props);
+    this.state = {
       data: {
-        caption: "",
-        location: "",
+        caption: '',
+        location: '',
       },
       postErrors: {
-        captionError: "",
-        locationError: "",
-      }
+        captionError: '',
+        locationError: '',
+      },
     };
   }
   validateInput = () => {
@@ -26,21 +26,21 @@ class PostForm extends Component {
     const data = { ...this.state.data, [nam]: val };
     this.setState(() => ({ data }));
     let postErrors = this.state.postErrors;
-    switch(nam) {
-      case "caption":
-        postErrors.captionError = val.length >0 ? "" : "required";
+    switch (nam) {
+      case 'caption':
+        postErrors.captionError = val.length > 0 ? '' : 'required';
         break;
-        case "location":
-          postErrors.locationError = val.length >0 ? "" : "required";
+      case 'location':
+        postErrors.locationError = val.length > 0 ? '' : 'required';
         break;
-        default:
+      default:
         break;
     }
-  }   
+  };
   render() {
     const { postErrors } = this.state;
     return (
-      <div className="container">
+      <div className='container'>
         <Form>
           <Col>
             <h3 style={headerStyles}> {this.props.heading}</h3>
@@ -50,10 +50,13 @@ class PostForm extends Component {
               </Form.Label>
               <Col sm={5}>
                 <Form.Control
-                  className={postErrors.captionError.length >0 ? "error" : null}
-                  name="caption"
+                  className={postErrors.captionError.length > 0 ? 'error' : null}
+                  name='caption'
                   //onChange={this.props.handleChange}
-                  onChange={e => {this.props.handleChange(e); this.validateInput()}}
+                  onChange={(e) => {
+                    this.props.handleChange(e);
+                    this.validateInput();
+                  }}
                 />
               </Col>
             </FormGroup>
@@ -63,10 +66,13 @@ class PostForm extends Component {
               </Form.Label>
               <Col sm={5}>
                 <Form.Control
-                className={postErrors.locationError.length >0 ? "error" : null}
-                  name="location"
+                  className={postErrors.locationError.length > 0 ? 'error' : null}
+                  name='location'
                   //onChange={this.props.handleChange}
-                  onChange={e => {this.props.handleChange(e); this.validateInput()}}
+                  onChange={(e) => {
+                    this.props.handleChange(e);
+                    this.validateInput();
+                  }}
                   onBlur={this.props.handleLocationApi}
                 />
               </Col>
@@ -76,10 +82,7 @@ class PostForm extends Component {
                 Logging
               </Form.Label>
               <Col sm={5}>
-                <Form.Control
-                  readOnly
-                  defaultValue={this.props.locationObject.label}
-                />
+                <Form.Control readOnly defaultValue={this.props.locationObject.label} />
               </Col>
             </FormGroup>
             {this.props.trips ? (
@@ -89,48 +92,52 @@ class PostForm extends Component {
                 </Form.Label>
                 <Col sm={5}>
                   <Form.Control
-                    as="select"
-                    name="tripId"
+                    as='select'
+                    name='tripId'
                     onChange={this.props.handleChange}
                     required
                   >
                     {this.props.trips.map((trip) => {
-                      return <option key={trip.id} value={trip.id}>{trip.title}</option>;
+                      return (
+                        <option key={trip.id} value={trip.id}>
+                          {trip.title}
+                        </option>
+                      );
                     })}
                   </Form.Control>
                 </Col>
               </FormGroup>
             ) : (
-              ""
+              ''
             )}
 
             <div style={paddingStyle}>
               <Editor
-                apiKey="ykdvtcb9mmz6dfe2dnupk22gz7or7ygc59unyeye0x1yr9g8"
-                id="uuid"
-                outputFormat="html"
-                initialValue="<h3>Tell your story now...</h3>"
+                apiKey='ykdvtcb9mmz6dfe2dnupk22gz7or7ygc59unyeye0x1yr9g8'
+                id='uuid'
+                outputFormat='html'
+                initialValue='<h3>Tell your story now...</h3>'
                 onEditorChange={this.props.handleEditorChange}
                 init={{
                   automatic_uploads: false,
                   height: 500,
                   menubar: true,
                   plugins: [
-                    "advlist lists link image imagetools charmap print preview  help",
-                    "searchreplace visualblocks autoresize autosave",
-                    "insertdatetime media table paste wordcount fullscreen",
+                    'advlist lists link image imagetools charmap print preview  help',
+                    'searchreplace visualblocks autoresize autosave',
+                    'insertdatetime media table paste wordcount fullscreen',
                   ],
                   toolbar:
-                    "undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | image  link table forecolor backcolor | save restoredraft help fullscreen",
+                    'undo redo | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | image  link table forecolor backcolor | save restoredraft help fullscreen',
 
                   contextmenu_never_use_native: true,
                   statusbar: false,
                   branding: false,
                   link_context_toolbar: true,
                   autosave_ask_before_unload: false,
-                  autosave_interval: "60s",
+                  autosave_interval: '60s',
                   image_title: true,
-                  file_picker_types: "image",
+                  file_picker_types: 'image',
                   convert_urls: false,
 
                   images_upload_handler: function (blobInfo, success, failure) {
@@ -138,20 +145,20 @@ class PostForm extends Component {
 
                     xhr = new XMLHttpRequest();
                     xhr.withCredentials = false;
-                    xhr.open("POST", "/images");
+                    xhr.open('POST', '/images');
 
                     xhr.onload = function () {
                       var json;
 
                       if (xhr.status < 200 || xhr.status >= 300) {
-                        failure("HTTP Error: " + xhr.status);
+                        failure('HTTP Error: ' + xhr.status);
                         return;
                       }
 
                       json = JSON.parse(xhr.responseText);
 
-                      if (!json || typeof json.location != "string") {
-                        failure("Invalid JSON: " + xhr.responseText);
+                      if (!json || typeof json.location != 'string') {
+                        failure('Invalid JSON: ' + xhr.responseText);
                         return;
                       }
 
@@ -160,11 +167,7 @@ class PostForm extends Component {
                     };
 
                     formData = new FormData();
-                    formData.append(
-                      "postImg",
-                      blobInfo.blob(),
-                      blobInfo.filename()
-                    );
+                    formData.append('postImg', blobInfo.blob(), blobInfo.filename());
 
                     xhr.send(formData);
                   },
@@ -179,12 +182,12 @@ class PostForm extends Component {
 }
 
 const headerStyles = {
-  fontFamily: "Libre Baskerville , serif",
-  margin: "35px 0px",
+  fontFamily: 'Libre Baskerville , serif',
+  margin: '35px 0px',
 };
 
 const paddingStyle = {
-  padding: "40px 0px",
+  padding: '40px 0px',
 };
 
 export default PostForm;

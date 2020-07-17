@@ -1,34 +1,32 @@
-import React, { Component } from "react";
-import { OpenStreetMapProvider } from "leaflet-geosearch";
-import { withRouter } from "react-router-dom";
-import TripForm from "../TripForm";
-import PostForm from "../PostForm";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import SaveChangesModal from "../layout/SaveChangesModal";
-import Button from "react-bootstrap/Button";
-import axios from "axios";
-import TripImage from "../TripImage";
-import Alert from "react-bootstrap/Alert";
+import React, { Component } from 'react';
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import { withRouter } from 'react-router-dom';
+import TripForm from '../TripForm';
+import PostForm from '../PostForm';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import SaveChangesModal from '../layout/SaveChangesModal';
+import Button from 'react-bootstrap/Button';
+import axios from 'axios';
+import TripImage from '../TripImage';
+import Alert from 'react-bootstrap/Alert';
 
 export class CreatePost extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: "",
+      title: '',
       thumbnail: null,
       thumbnailUrl: null,
-      fileFormLabel: "4:3 format",
-      country: "",
-      description: "",
-      caption: "",
-      location: "",
-      locationObject: { label: "" },
+      fileFormLabel: '4:3 format',
+      country: '',
+      description: '',
+      caption: '',
+      location: '',
+      locationObject: { label: '' },
       showModal: false,
-      variant: "",
-      note: "",
-      alertContent: "",
-      visible: false,
+      variant: '',
+      alertContent: '',
     };
   }
   // show Modal
@@ -61,22 +59,13 @@ export class CreatePost extends Component {
     });
   };
 
-  // shows success alert and dismisses it after 3 seconds, then forwards to profile
-  onShowAlert = () => {
-    this.setState({ visible: true }, () => {
-      window.setTimeout(() => {
-        this.setState({ visible: false }, () => {
-          this.props.history.push("/users/" + sessionStorage.getItem("user"));
-        });
-      }, 1000);
-    });
-  };
-
   // submitting a entire trip with a post as callback pipeline
   handleSubmit = () => {
     window.event.preventDefault();
     this.setState({ showModal: false });
     const fd = new FormData();
+    fd.append('thumbnail', this.state.thumbnail);
+    // checks if form is filled
     if (
       this.state.title.length > 0 &&
       this.state.country.length > 0 &&
@@ -84,9 +73,8 @@ export class CreatePost extends Component {
       this.state.caption.length > 0 &&
       this.state.location.length > 0
     ) {
-      fd.append("thumbnail", this.state.thumbnail);
       // submits the thumbnail
-      axios.post("/images", fd).then((res) => {
+      axios.post('/images', fd).then((res) => {
         let trip = {
           title: this.state.title,
           country: this.state.country,
@@ -94,13 +82,12 @@ export class CreatePost extends Component {
         };
         if (res.data.statusCode !== 0) {
           this.setState({
-            note: "Error",
-            alertContent: "Please add a valid thumbnail.",
-            variant: "danger",
+            alertContent: 'Please add a valid thumbnail.',
+            variant: 'danger',
           });
         } else {
           // submits the trip form
-          axios.post("/trips", trip).then((res) => {
+          axios.post('/trips', trip).then((res) => {
             // calls for each image in active editor /uploadImg
             let tripId = res.data.trip_id;
             window.tinymce.activeEditor.uploadImages(() => {
@@ -114,83 +101,50 @@ export class CreatePost extends Component {
                   text: window.tinymce.activeEditor.getContent(),
                 },
               };
+              // error handling trips
               switch (res.data.statusCode) {
-                case 0:
-                  this.setState({
-                    note: "Success",
-                    alertContent:
-                      "You created a Trip! Congrats. You'll be forwarded to your profile.",
-                    variant: "success",
-                  });
-                  window.scrollTo(0, 0);
-                  this.onShowAlert();
-                  break;
                 case 1:
                   this.setState({
-                    note: "Error",
-                    alertContent: "Did you miss some attributes?",
-                    variant: "danger",
+                    alertContent: 'Did you miss some attributes?',
+                    variant: 'danger',
                   });
-                  window.scrollTo(0, 0);
-                  break;
-                case 2:
-                  this.setState({
-                    note: "Error",
-                    alertContent: "Please add a thumbnail.",
-                    variant: "danger",
-                  });
-                  window.scrollTo(0, 0);
                   break;
                 case 3:
                   this.setState({
-                    note: "Success",
-                    alertContent:
-                      "Something went wrong. Could not save trip. Sorry!",
-                    variant: "danger",
+                    alertContent: 'Something went wrong. The trip could not be saved.',
+                    variant: 'danger',
                   });
-                  window.scrollTo(0, 0);
                   break;
                 default:
                   break;
               }
               // submits post with editor content
-              axios.post("/posts", post).then((res) => {
-                //check if successfully created
+              axios.post('/posts', post).then((res) => {
+                // error handling in total
                 switch (res.data.statusCode) {
                   case 0:
-                    this.setState({
-                      note: "Success",
-                      alertContent:
-                        "You created a post! Congrats. You'll be forwarded to your profile.",
-                      variant: "success",
-                    });
-                    window.scrollTo(0, 0);
-                    this.onShowAlert();
+                    this.props.showAlert('success', 'Successfully created a new trip');
+                    // close alerts
+                    this.props.history.push('/users/' + sessionStorage.getItem('user'));
+
                     break;
                   case 1:
                     this.setState({
-                      note: "Error",
-                      alertContent: "Did you miss some attributes?",
-                      variant: "danger",
+                      alertContent: 'Did you miss some attributes?',
+                      variant: 'danger',
                     });
-                    window.scrollTo(0, 0);
                     break;
                   case 2:
                     this.setState({
-                      note: "Error",
-                      alertContent: "No valid trip found.",
-                      variant: "danger",
+                      alertContent: 'No valid trip found.',
+                      variant: 'danger',
                     });
-                    window.scrollTo(0, 0);
                     break;
                   case 3:
                     this.setState({
-                      note: "Error",
-                      alertContent:
-                        "Something went wrong. Could not save post. Sorry!",
-                      variant: "danger",
+                      alertContent: 'Something went wrong. Could not save post. Sorry!',
+                      variant: 'danger',
                     });
-                    window.scrollTo(0, 0);
                     break;
                   default:
                     break;
@@ -202,21 +156,20 @@ export class CreatePost extends Component {
       });
     } else {
       this.setState({
-        note: "Error",
-        alertContent: "Did you miss some attributes?",
-        variant: "danger",
+        alertContent: 'Did you miss some attributes?',
+        variant: 'danger',
       });
     }
+    window.$('html, body').animate({ scrollTop: 0 }, '50');
   };
 
   render() {
     return (
       <div>
-        <Alert variant={this.state.variant} style={alertStyle}>
-          <Alert.Heading>{this.state.note}</Alert.Heading>
+        <Alert variant={this.state.variant} id='alert'>
           {this.state.alertContent}
         </Alert>
-        <div as={Row} className="container" style={formStyle}>
+        <div as={Row} className='container' style={formStyle}>
           <Col>
             <TripForm
               handleChange={this.handleChange}
@@ -225,7 +178,7 @@ export class CreatePost extends Component {
             />
             <hr style={hrStyle} />
             <PostForm
-              heading="add your first blog entry"
+              heading='add your first blog entry'
               handleChange={this.handleChange}
               handleEditorChange={this.handleEditorChange}
               handleLocationApi={this.handleLocationApi}
@@ -240,12 +193,7 @@ export class CreatePost extends Component {
               />
             </div>
             <div style={btnLayout}>
-              <Button
-                variant="outline-ownLight"
-                type="submit"
-                onClick={this.toggleModal}
-                size="lg"
-              >
+              <Button variant='outline-ownLight' type='submit' onClick={this.toggleModal} size='lg'>
                 Save
               </Button>
             </div>
@@ -255,7 +203,7 @@ export class CreatePost extends Component {
               show={this.state.showModal}
               onHide={() => this.setState({ showModal: false })}
               onSubmit={() => this.handleSubmit()}
-              heading={"Are you sure you are done?"}
+              heading={'Are you sure you are done?'}
             />
           </div>
         </div>
@@ -265,23 +213,19 @@ export class CreatePost extends Component {
 }
 
 const formStyle = {
-  paddingBottom: "100px",
+  paddingBottom: '100px',
 };
 const previewStyle = {
-  position: "absolute",
-  top: "5%",
-  left: "58%",
+  position: 'absolute',
+  top: '5%',
+  left: '58%',
 };
 const btnLayout = {
-  marginTop: "50px",
-  textAlign: "center",
+  marginTop: '50px',
+  textAlign: 'center',
 };
 const hrStyle = {
-  margin: "30px 0px",
+  margin: '30px 0px',
 };
 
-const alertStyle = {
-  textAlign: "center",
-  fontWeight: "bold",
-};
 export default withRouter(CreatePost);
