@@ -1,6 +1,6 @@
 #!/bin/bash
 
-docker-compose up --build -d
+sh ./bin/start.sh
 
 echo "starting the configuration for backend testing..."
 
@@ -11,6 +11,6 @@ docker-compose exec mariadb mysql -u root -p'iamroot' \
      FLUSH PRIVILEGES;"
 
 
-docker-compose down
+sh ./bin/stop.sh
 echo "--------------------------------"
 echo "test setup successfully executed"
