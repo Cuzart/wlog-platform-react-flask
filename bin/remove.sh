@@ -1,4 +1,4 @@
 #!/bin/bash
 
-docker system prune --force
+docker system prune
 docker volume rm wlog_mariadb-data
