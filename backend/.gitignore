@@ -1,6 +1,6 @@
 *.pyc
 *__pycache__
 .pytest_cache
-assets/*.png
-assets/*.jpg
-assets/*.jpeg
+# assets/*.png
+# assets/*.jpg
+# assets/*.jpeg
