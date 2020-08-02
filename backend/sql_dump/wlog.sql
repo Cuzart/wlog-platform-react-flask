@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mariadb
--- Generation Time: Jul 13, 2020 at 11:32 PM
+-- Generation Time: Jul 30, 2020 at 10:46 PM
 -- Server version: 10.4.13-MariaDB-1:10.4.13+maria~bionic
 -- PHP Version: 7.4.5
 
@@ -34,13 +34,6 @@ CREATE TABLE `claps` (
   `clapping_user` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `claps`
---
-
-INSERT INTO `claps` (`id`, `trip_id`, `clapping_user`) VALUES
-(1, 1, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -59,14 +52,6 @@ CREATE TABLE `posts` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Dumping data for table `posts`
---
-
-INSERT INTO `posts` (`id`, `trip_id`, `subtitle`, `location_label`, `location_longitude`, `location_latitude`, `text`, `created_at`) VALUES
-(1, 1, 'Auckland', 'Mount Eden', 174.772358, -36.868682, 'Des einzig schöne an Auckland. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.', '2020-06-13 19:41:17'),
-(2, 1, 'Coromandel', 'Fletcher Bay', 175.389745, -36.477082, 'Sehr schöner Campingplatz. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.', '2020-06-13 19:44:23');
-
 -- --------------------------------------------------------
 
 --
@@ -83,13 +68,6 @@ CREATE TABLE `trips` (
   `thumbnail` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `trips`
---
-
-INSERT INTO `trips` (`id`, `user_id`, `title`, `country`, `description`, `thumbnail`, `created_at`) VALUES
-(1, 1, 'Work&Travel', 'New Zealand', 'reisen und arbeiten im schönsten Land der Welt', '/images/000001_thumbnail_nichtVorhanden', '2020-06-13 19:41:17');
 
 -- --------------------------------------------------------
 
@@ -109,13 +87,6 @@ CREATE TABLE `users` (
   `profilepicture` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `username`, `email`, `password`, `name`, `surname`, `description`, `profilepicture`, `created_at`) VALUES
-(1, 'traveljunkie', 'user@mail.com', '$pbkdf2-sha256$29000$h1CKEcK4t1aqVeod4zwnxA$TkqOSbiekO5SUEFmquG9zSrTUOHaVzAn29/7h02ktUM', 'Max', 'Mustermann', NULL, NULL, '2020-05-29 14:40:13');
 
 --
 -- Indexes for dumped tables
@@ -158,25 +129,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `claps`
 --
 ALTER TABLE `claps`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `posts`
 --
 ALTER TABLE `posts`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `trips`
 --
 ALTER TABLE `trips`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
