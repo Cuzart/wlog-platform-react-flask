@@ -87,7 +87,7 @@ export class TripPage extends Component {
 
   render() {
     return (
-      <div className='container' style={containerStyle}>
+      <div className='container mt-5 pb-5'>
         <div className='row align-content-center justify-content-between' style={rowStyle}>
           <div className='col'>
             <h1 style={headerStyle}>{this.state.tripData.title}</h1>
@@ -191,9 +191,6 @@ const rowStyle = {
   paddingRight: '50px',
 };
 
-const containerStyle = {
-  margin: '32px 150px',
-};
 
 const headerStyle = {
   fontFamily: 'Libre Baskerville , serif',

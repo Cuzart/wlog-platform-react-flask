@@ -7,6 +7,7 @@ import CreateModal from '../layout/CreateModal';
 import Button from 'react-bootstrap/Button';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
+import Spinner from "../layout/Spinner"
 
 class ProfilePage extends Component {
   constructor(props) {
@@ -122,8 +123,8 @@ class ProfilePage extends Component {
               </div>
               <div className='col-4 align-self-center '>
                 <h1 style={headerStyle}> {this.state.userData.username}</h1>
-                <h4>{this.state.userData.name + ' ' + this.state.userData.surname}</h4>
-                <div className='pt-1'>
+                <h4>  {this.state.userData.name + ' ' + this.state.userData.surname}</h4>
+                <div className='pt-3'>
                   <Button
                     disabled='true'
                     active='true'
@@ -172,7 +173,7 @@ class ProfilePage extends Component {
             </div>
           </React.Fragment>
         ) : (
-          ''
+          <Spinner />
         )}
         <CreateModal
           show={this.state.showModal}
