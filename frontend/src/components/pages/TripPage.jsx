@@ -32,10 +32,10 @@ export class TripPage extends Component {
     this.setState({ activePost: post });
   };
 
+  // add clap to user if trip gets clapped
   handleClap = () => {
     axios.post('/trips/' + this.state.tripId + '/claps').then((res) => {
       if (res.data.statusCode === 0) {
-        console.log(res.data.statusCode);
         this.setState({
           clapped: true,
           likedMessage: 'Thank you!',
@@ -45,6 +45,7 @@ export class TripPage extends Component {
     });
   };
 
+  // remove clap from user
   handleDisclap = () => {
     axios.delete('/trips/' + this.state.tripId + '/claps').then((res) => {
       if (res.data.statusCode === 0) {
@@ -57,7 +58,7 @@ export class TripPage extends Component {
     this.getTripData();
   };
 
-  // fetching the data from the API
+  // fetching the trip data and check if trip is already clapped
   getTripData() {
     axios.get('/trips/' + this.state.tripId).then((res) => {
       this.setState({
@@ -76,6 +77,7 @@ export class TripPage extends Component {
         return 0;
       });
     });
+    // get claps of the trip
     axios.get('/trips/' + this.state.tripId + '/claps').then((res) => {
       this.setState({ claps: res.data.claps });
     });

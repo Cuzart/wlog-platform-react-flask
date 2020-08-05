@@ -7,7 +7,7 @@ import CreateModal from '../layout/CreateModal';
 import Button from 'react-bootstrap/Button';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
-import Spinner from "../layout/Spinner"
+import Spinner from '../layout/Spinner';
 
 class ProfilePage extends Component {
   constructor(props) {
@@ -123,14 +123,9 @@ class ProfilePage extends Component {
               </div>
               <div className='col-4 align-self-center '>
                 <h1 style={headerStyle}> {this.state.userData.username}</h1>
-                <h4>  {this.state.userData.name + ' ' + this.state.userData.surname}</h4>
+                <h4> {this.state.userData.name + ' ' + this.state.userData.surname}</h4>
                 <div className='pt-3'>
-                  <Button
-                    disabled='true'
-                    active='true'
-                    variant='dark'
-                    onClick={() => console.log(this.state.claps)}
-                  >
+                  <Button disabled='true' active='true' variant='dark'>
                     <span role='img' aria-labelledby='Clap'>
                       {this.state.claps} Claps 👏🏼
                     </span>

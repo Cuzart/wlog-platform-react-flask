@@ -19,7 +19,7 @@ export class SlickGrid extends Component {
     };
   }
 
-  // fetch 20 last trips
+  // fetch 20 latest trips
   getTripData() {
     axios
       .get('/trips')

@@ -44,7 +44,7 @@ export class CreatePost extends Component {
     this.getTripData();
   }
 
-  // Updates state when form is changed
+  // updates state when form is changed
   handleChange = () => {
     let nam = window.event.target.name;
     let val = window.event.target.value;
@@ -60,7 +60,12 @@ export class CreatePost extends Component {
     }
   };
 
-  // adds a post to a existing trip
+  // Shows modal on submit
+  toggleModal = () => {
+    this.setState({ showModal: !this.state.showModal });
+  };
+
+  // add a post to a existing trip
   handleSubmit = () => {
     this.setState({ showModal: false });
     // calls for each image in active editor /uploadImg
@@ -88,11 +93,6 @@ export class CreatePost extends Component {
     window.$('html, body').animate({ scrollTop: 0 }, '50');
   };
 
-  // Shows modal on submit
-  toggleModal = () => {
-    this.setState({ showModal: !this.state.showModal });
-  };
-
   render() {
     return (
       <div>
@@ -100,7 +100,7 @@ export class CreatePost extends Component {
           Something went wrong. Please check your inputs.
         </Alert>
 
-        <div as={Row} className='container' style={formStyle}>
+        <div as={Row} className='container pt-4 pb-5'>
           {!this.state.isLoading ? (
             <React.Fragment>
               <Col>
@@ -112,7 +112,7 @@ export class CreatePost extends Component {
                   locationObject={this.state.locationObject}
                   trips={this.state.trips}
                 />
-                <div style={btnLayout}>
+                <div className='text-center my-3'>
                   <Button
                     variant='outline-ownLight'
                     type='submit'
@@ -140,14 +140,5 @@ export class CreatePost extends Component {
     );
   }
 }
-const formStyle = {
-  paddingBottom: '100px',
-  paddingTop: '50px',
-};
-
-const btnLayout = {
-  marginTop: '50px',
-  textAlign: 'center',
-};
 
 export default withRouter(CreatePost);

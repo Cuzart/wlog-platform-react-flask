@@ -3,6 +3,13 @@
   height: 100%;
 }
 
+/* toggled alerts */
+#alert {
+  text-align: center;
+  font-weight: bold;
+}
+
+/* background for homepage */
 .home-bg {
   background-image: url(/images/wlogBG.jpg);
   height: 100vh;
@@ -10,7 +17,12 @@
   background-size: cover;
 }
 
-/* header navigation bar it's elements */
+/* text on all forms bold */
+#formFont > * {
+  font-weight: bold;
+}
+
+/* header navigation bar and elements */
 #navbar {
   background-color: #9eb091;
   color: #ffffff;
@@ -42,24 +54,16 @@ header > div {
 }
 
 #createLink {
-  padding: "8px 16px";
+  padding: '8px 16px';
 }
 
+/* red border on error */
 input.error,
 textarea.error {
   border: 2px solid #c45c5c;
 }
 
-input {
-  padding: 3px 3px;
-  border-radius: 5px;
-  outline: none;
-  border: 2px solid #cfcfcf;
-  margin-top: 5px;
-}
-
 /* trip thumbnails */
-
 .thumbnail {
   width: 400px;
   height: 300px;
@@ -158,24 +162,15 @@ input {
   border-radius: 20px 20px 0px 0px;
 }
 
-/* text on all forms bold */
-#formFont > * {
-  font-weight: bold;
-}
-
-#alert {
-  text-align: center;
-  font-weight: bold;
-}
-
-.home-caption{
+/* captions on homepage */
+.home-caption {
   z-index: 1;
   position: absolute;
   left: 0;
   right: 0;
   bottom: 130px;
   text-align: center;
-  font-family: Libre Baskerville , serif;
+  font-family: Libre Baskerville, serif;
   padding: 20px;
   font-size: 45pt;
   color: #f1f1f1;
@@ -183,6 +178,6 @@ input {
 }
 
 #start-now:hover {
-text-decoration: none;
-color: rgb(192, 138, 109) !important;
+  text-decoration: none;
+  color: rgb(192, 138, 109) !important;
 }

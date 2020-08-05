@@ -20,6 +20,8 @@ class PostForm extends Component {
       },
     };
   }
+
+  // validate form input length > 0
   validateInput = () => {
     let nam = window.event.target.name;
     let val = window.event.target.value;
@@ -52,9 +54,8 @@ class PostForm extends Component {
                 <Form.Control
                   className={postErrors.captionError.length > 0 ? 'error' : null}
                   name='caption'
-                  //onChange={this.props.handleChange}
-                  onChange={(e) => {
-                    this.props.handleChange(e);
+                  onChange={(event) => {
+                    this.props.handleChange(event);
                     this.validateInput();
                   }}
                 />
@@ -68,9 +69,8 @@ class PostForm extends Component {
                 <Form.Control
                   className={postErrors.locationError.length > 0 ? 'error' : null}
                   name='location'
-                  //onChange={this.props.handleChange}
-                  onChange={(e) => {
-                    this.props.handleChange(e);
+                  onChange={(event) => {
+                    this.props.handleChange(event);
                     this.validateInput();
                   }}
                   onBlur={this.props.handleLocationApi}
@@ -111,7 +111,7 @@ class PostForm extends Component {
               ''
             )}
 
-            <div style={paddingStyle}>
+            <div className="py-4">
               <Editor
                 apiKey='ykdvtcb9mmz6dfe2dnupk22gz7or7ygc59unyeye0x1yr9g8'
                 id='uuid'
@@ -161,8 +161,6 @@ class PostForm extends Component {
                         failure('Invalid JSON: ' + xhr.responseText);
                         return;
                       }
-
-                      console.log(json.location);
                       success(json.location);
                     };
 
@@ -184,10 +182,6 @@ class PostForm extends Component {
 const headerStyles = {
   fontFamily: 'Libre Baskerville , serif',
   margin: '35px 0px',
-};
-
-const paddingStyle = {
-  padding: '40px 0px',
 };
 
 export default PostForm;

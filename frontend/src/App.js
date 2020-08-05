@@ -48,6 +48,7 @@ class App extends Component {
             </Alert>
           </div>
           <Switch>
+            {/* use render instead of component to pass props */}
             <Route
               exact
               path="/"
@@ -94,7 +95,7 @@ class App extends Component {
               color: white;
               background-color:  #4e564b;
             }
-            
+  
             .btn-outline-ownLight {
               color: #20752f;
               border-color: #20752f;
