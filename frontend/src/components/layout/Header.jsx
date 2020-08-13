@@ -1,8 +1,8 @@
-import React from "react";
-import { NavLink, withRouter } from "react-router-dom";
+import React from 'react';
+import { NavLink, withRouter } from 'react-router-dom';
 
-import "../../App.css";
-import CreateModal from "./CreateModal";
+import '../../App.css';
+import CreateModal from './CreateModal';
 
 class Header extends React.Component {
   constructor(props) {
@@ -23,62 +23,37 @@ class Header extends React.Component {
     const {
       location: { pathname },
     } = this.props;
-    const linkClass = ["/add", "/create"].includes(pathname)
-      ? "nav-link-active"
-      : "nav-link";
+    const linkClass = ['/add', '/create'].includes(pathname) ? 'nav-link-active' : 'nav-link';
 
     return (
       <div>
-        <header id="navbar">
-          <NavLink
-            exact
-            to="/"
-            className="nav-link"
-            activeClassName="nav-link-active"
-          >
+        <header id='navbar'>
+          <NavLink exact to='/' className='nav-link' activeClassName='nav-link-active'>
             HOME
           </NavLink>
-          <NavLink
-            to="/explore"
-            className="nav-link"
-            activeClassName="nav-link-active"
-          >
+          <NavLink to='/explore' className='nav-link' activeClassName='nav-link-active'>
             EXPLORE
           </NavLink>
-          <NavLink
-            exact
-            to="/"
-            className="nav-link"
-            activeClassName="nav-link-active"
-          >
+          <NavLink exact to='/' className='nav-link' activeClassName='nav-link-active'>
             <img
-              src="/images/wlogLogo.svg"
-              alt="Link to wlog home"
-              style={{ width: "126px" }}
+              src='/images/wlogLogo.svg'
+              alt='Link to wlog home'
+              style={{ width: '126px' }}
             ></img>
           </NavLink>
-          <div
-            id="createLink"
-            className={linkClass}
-            onClick={() => this.handleModalToggle()}
-          >
+          <div id='createLink' className={linkClass} onClick={() => this.handleModalToggle()}>
             CREATE
           </div>
-          {!sessionStorage.getItem("authenticated") ? (
-            <NavLink
-              exact
-              className="nav-link"
-              activeClassName="nav-link-active"
-              to="/register"
-            >
+          {!sessionStorage.getItem('authenticated') ? (
+            <NavLink exact className='nav-link' activeClassName='nav-link-active' to='/register'>
               REGISTER
             </NavLink>
           ) : (
             <NavLink
               exact
-              className="nav-link"
-              activeClassName="nav-link-active"
-              to={"/users/" + sessionStorage.getItem("user")}
+              className='nav-link'
+              activeClassName='nav-link-active'
+              to={'/users/' + sessionStorage.getItem('user')}
             >
               PROFILE
             </NavLink>

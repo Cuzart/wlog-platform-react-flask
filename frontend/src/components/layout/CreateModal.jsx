@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import { withRouter } from "react-router-dom";
+import React, { Component } from 'react';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import { withRouter } from 'react-router-dom';
 
 class CreateModal extends Component {
   handleForwarding(path) {
@@ -12,46 +12,61 @@ class CreateModal extends Component {
   render() {
     return (
       <div>
-        {sessionStorage.getItem("authenticated") ? (
+        {sessionStorage.getItem('authenticated') ? (
           <div>
             <Modal
               {...this.props}
               open={this.props.open}
-              size="md"
-              aria-labelledby="contained-modal-title-vcenter"
+              size='md'
+              aria-labelledby='contained-modal-title-vcenter'
               centered
             >
               <Modal.Header closeButton>
-                <Modal.Title
-                  id="contained-modal-title-vcenter"
-                  style={titleStyle}
-                >
+                <Modal.Title id='contained-modal-title-vcenter' style={titleStyle}>
                   What do you want to create ?
                 </Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <div className="container">
-                  <div className="row ">
-                    <div className="col text-center ml-5 ">
-                      <Button variant="outline-ownLight">
-                        <span style={{ fontSize: "20px", fontWeight: "bold" }}>
+                <div className='container'>
+                  <div className='row '>
+                    <div className='col text-center ml-5 '>
+                      <Button
+                        variant='outline-ownLight'
+                        onClick={() => this.handleForwarding('/create')}
+                      >
+                        <span
+                          style={{
+                            fontSize: '20px',
+                            fontWeight: 'bold',
+                          }}
+                        >
                           <i
-                            onClick={() => this.handleForwarding("/create")}
-                            className="fas fa-plus-circle"
-                            fontSize="80px"
-                            style={{ fontSize: "80px" }}
+                            className='fas fa-plus-circle'
+                            fontSize='80px'
+                            style={{
+                              fontSize: '80px',
+                            }}
                           ></i>
                           <br /> new trip
                         </span>
                       </Button>
                     </div>
-                    <div className="col text-center mr-5">
-                      <Button variant="outline-ownLight">
-                        <span style={{ fontSize: "20px", fontWeight: "bold" }}>
+                    <div className='col text-center mr-5'>
+                      <Button
+                        variant='outline-ownLight'
+                        onClick={() => this.handleForwarding('/add')}
+                      >
+                        <span
+                          style={{
+                            fontSize: '20px',
+                            fontWeight: 'bold',
+                          }}
+                        >
                           <i
-                            onClick={() => this.handleForwarding("/add")}
-                            className="fas fa-book-open"
-                            style={{ fontSize: "80px" }}
+                            className='fas fa-book-open'
+                            style={{
+                              fontSize: '80px',
+                            }}
                           ></i>
                           <br />
                           blog entry
@@ -62,7 +77,7 @@ class CreateModal extends Component {
                 </div>
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="outline-own" onClick={this.props.onHide}>
+                <Button variant='outline-own' onClick={this.props.onHide}>
                   Back
                 </Button>
               </Modal.Footer>
@@ -72,33 +87,33 @@ class CreateModal extends Component {
           <Modal
             {...this.props}
             open={this.props.open}
-            size="md"
-            aria-labelledby="contained-modal-title-vcenter"
+            size='md'
+            aria-labelledby='contained-modal-title-vcenter'
             centered
           >
             <Modal.Header closeButton>
-              <Modal.Title
-                id="contained-modal-title-vcenter"
-                style={titleStyle}
-              >
+              <Modal.Title id='contained-modal-title-vcenter' style={titleStyle}>
                 Login required
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <div className="container">
-                <div className="row ">
-                  <p style={{ fontSize: "16px", fontWeight: "bold" }}>
-                    {" "}
-                    Please <a href="/">sign in</a> if you already have an
-                    account <br />
-                    or join our community and{" "}
-                    <a href="/register">register now</a>.
+              <div className='container'>
+                <div className='row '>
+                  <p
+                    style={{
+                      fontSize: '16px',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {' '}
+                    Please <a href='/'>sign in</a> if you already have an account <br />
+                    or join our community and <a href='/register'>register now</a>.
                   </p>
                 </div>
               </div>
             </Modal.Body>
             <Modal.Footer>
-              <Button variant="outline-own" onClick={this.props.onHide}>
+              <Button variant='outline-own' onClick={this.props.onHide}>
                 Back
               </Button>
             </Modal.Footer>
@@ -110,8 +125,8 @@ class CreateModal extends Component {
 }
 
 const titleStyle = {
-  fontSize: "20px",
-  fontWeight: "bold",
+  fontSize: '20px',
+  fontWeight: 'bold',
 };
 
 export default withRouter(CreateModal);
