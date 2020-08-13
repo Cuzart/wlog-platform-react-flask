@@ -39,8 +39,6 @@ class Register extends React.Component {
 
   //tests if a form is valid
   validateForm = () => {
-    console.log(this.state.user);
-    console.log(this.state.formErrors);
     let valid = true;
 
     //validate form errors being empty
@@ -197,6 +195,7 @@ class Register extends React.Component {
                 <Form.Control
                   className={formErrors.password.length > 0 ? "error" : null}
                   type="password"
+                  aria-label="password"
                   name="password"
                   onChange={this.handleChange}
                 />
@@ -207,7 +206,7 @@ class Register extends React.Component {
                   )}
                 </div>
               </FormGroup>
-              <FormGroup as={Col} sm="6" cla>
+              <FormGroup as={Col} sm="6">
                 <Form.Label>Confirm Password</Form.Label>
                 <Form.Control
                   className={formErrors.password2.length > 0 ? "error" : null}
