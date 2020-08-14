@@ -59,31 +59,34 @@ class EditProfile extends Component {
 
   // converts base64/URLEncoded data component to raw binary (blob)
   dataURItoBlob(dataURI) {
-    var byteString;
+    let byteString;
     if (dataURI.split(',')[0].indexOf('base64') >= 0) byteString = atob(dataURI.split(',')[1]);
     else byteString = unescape(dataURI.split(',')[1]);
 
     // separate out the mime component
-    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    let mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
 
     // write the bytes of the string to a typed array
-    var ia = new Uint8Array(byteString.length);
-    for (var i = 0; i < byteString.length; i++) {
-      ia[i] = byteString.charCodeAt(i);
+    let intArr = new Uint8Array(byteString.length);
+    for (let i = 0; i < byteString.length; i++) {
+      intArr[i] = byteString.charCodeAt(i);
     }
 
-    return new Blob([ia], { type: mimeString });
+    return new Blob([intArr], { type: mimeString });
   }
 
   // updates the edited profile in the database
   onSave = () => {
+    // only update if avatar was changed
     if (this.state.preview !== null) {
+      // converting URI to send as FormData
       const fd = new FormData();
       let blob = this.dataURItoBlob(this.state.preview);
       let file = new File([blob], 'preview.png', { type: 'image/png' });
       fd.append('profileImg', file);
       axios.post('/images', fd);
     }
+    // only update if description was changed
     if (this.state.description !== null) {
       axios.patch('/users/' + user, {
         description: this.state.description,
@@ -92,9 +95,9 @@ class EditProfile extends Component {
     this.setState({ showModal: false });
 
     this.props.history.push('/users/' + user);
-    window.setTimeout(() => {
-      window.location.reload();
-    }, 2000);
+    // window.setTimeout(() => {
+    //   window.location.reload();
+    // }, 2000);
     this.props.showAlert('success', 'Successfully updated your profile');
   };
 

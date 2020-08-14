@@ -114,7 +114,7 @@ class PostForm extends Component {
             <div className="py-4">
               <Editor
                 apiKey='ykdvtcb9mmz6dfe2dnupk22gz7or7ygc59unyeye0x1yr9g8'
-                id='uuid'
+                id='tinymce-editor'
                 outputFormat='html'
                 initialValue='<h3>Tell your story now...</h3>'
                 onEditorChange={this.props.handleEditorChange}
@@ -140,13 +140,17 @@ class PostForm extends Component {
                   file_picker_types: 'image',
                   convert_urls: false,
 
+                  // gets called when uploadImages() is called for activeEditor
+                  // request sends formdata for each image 
                   images_upload_handler: function (blobInfo, success, failure) {
                     var xhr, formData;
 
+                    // create XML HTTP Request
                     xhr = new XMLHttpRequest();
                     xhr.withCredentials = false;
                     xhr.open('POST', '/images');
 
+                    // handles errors
                     xhr.onload = function () {
                       var json;
 
@@ -164,6 +168,7 @@ class PostForm extends Component {
                       success(json.location);
                     };
 
+                    // append img to form data and send it
                     formData = new FormData();
                     formData.append('postImg', blobInfo.blob(), blobInfo.filename());
 

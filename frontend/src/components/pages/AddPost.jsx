@@ -51,7 +51,7 @@ export class CreatePost extends Component {
     this.setState({ [nam]: val });
   };
 
-  // leaflet-geosearch asynchronous API call to get a result{x: longitude, y: latitude, label: adress}
+  // leaflet-geosearch asynchronous API call to get array of results{x: longitude, y: latitude, label: adress}
   handleLocationApi = async () => {
     const provider = new OpenStreetMapProvider();
     const results = await provider.search({ query: this.state.location });
