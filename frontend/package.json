@@ -46,8 +46,7 @@
     ]
   },
   "devDependencies": {
-    "node-sass": "^4.14.1",
-    "eslint" : "6.6.0"
+    "node-sass": "^4.14.1"
   },
   "proxy": "http://api:5000"
 }

@@ -4,7 +4,7 @@ sh ./bin/start.sh
 
 echo "starting frontend tests..."
 
-docker-compose exec frontend npm test
+docker-compose exec frontend npm run test
 
 sh ./bin/stop.sh
 
