@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent, getByLabelText } from "@testing-library/react";
+import { render, fireEvent } from "@testing-library/react";
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from "react-router-dom";
 import Register from "../components/pages/Register";
