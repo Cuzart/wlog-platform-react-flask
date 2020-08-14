@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 class SearchBar extends Component {
-  // allows submission by pressing enter
+  // allows submission by pressing enter(13)
   handleKeyPress(target) {
     if (target.charCode === 13) {
       window.$('#searchBtn').click();

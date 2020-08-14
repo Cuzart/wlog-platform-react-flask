@@ -56,9 +56,9 @@ export default function InfoContent() {
       </div>
 
       <div style={bottomIllustration}>
-        <p className='home-caption' style={{ color: 'rgb(64,59,88)', bottom: '335px' }}>
+        <a href="/create" id="start-now" className='home-caption' style={{ color: 'rgb(64,59,88)', bottom: '335px' }}>
           start <br /> now.
-        </p>
+        </a>
       </div>
     </div>
   );

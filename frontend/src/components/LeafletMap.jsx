@@ -40,7 +40,7 @@ class LeafletMap extends Component {
             ''
           )}
 
-          {/* renders markers and polyline on map when data is loaded otherwise a it renders a spinner */}
+          {/* renders markers and polyline on map when data is loaded otherwise show Spinner*/}
           {!isLoading ? (
             posts.map((post) => {
               const {

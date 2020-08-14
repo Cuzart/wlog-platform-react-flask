@@ -38,8 +38,6 @@ class Register extends React.Component {
 
   //tests if a form is valid
   validateForm = () => {
-    console.log(this.state.user);
-    console.log(this.state.formErrors);
     let valid = true;
 
     //validate form errors being empty
@@ -243,10 +241,7 @@ class Register extends React.Component {
               ) : (
                 <div />
               )}
-              <div
-                className='col py-3 justify-content-between w-100'
-                style={{ textAlign: 'center' }}
-              >
+              <div className='col py-3 justify-content-between w-100 text-center'>
                 <Button variant='outline-own' type='submit' size='lg'>
                   Register
                 </Button>
