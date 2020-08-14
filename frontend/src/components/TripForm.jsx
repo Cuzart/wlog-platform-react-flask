@@ -21,6 +21,7 @@ class TripForm extends Component {
     };
   }
 
+  // validate form input > 0
   validateInput = () => {
     let nam = window.event.target.name;
     let val = window.event.target.value;
@@ -57,8 +58,8 @@ class TripForm extends Component {
                   className={tripErrors.titleError.length > 0 ? 'error' : null}
                   name='title'
                   type='text'
-                  onChange={(e) => {
-                    this.props.handleChange(e);
+                  onChange={(event) => {
+                    this.props.handleChange(event);
                     this.validateInput();
                   }}
                 />
@@ -86,8 +87,8 @@ class TripForm extends Component {
                 <Form.Control
                   className={tripErrors.countryError.length > 0 ? 'error' : null}
                   name='country'
-                  onChange={(e) => {
-                    this.props.handleChange(e);
+                  onChange={(event) => {
+                    this.props.handleChange(event);
                     this.validateInput();
                   }}
                   type='text'
@@ -103,8 +104,8 @@ class TripForm extends Component {
                   className={tripErrors.descriptionError.length > 0 ? 'error' : null}
                   as='textarea'
                   name='description'
-                  onChange={(e) => {
-                    this.props.handleChange(e);
+                  onChange={(event) => {
+                    this.props.handleChange(event);
                     this.validateInput();
                   }}
                   rows='3'
