@@ -144,12 +144,13 @@ class Register extends React.Component {
               <FormGroup as={Col} sm='6'>
                 <Form.Label>Username</Form.Label>
                 <Form.Control
-                  className={formErrors.username.length > 0 ? 'error' : null}
-                  type='text'
-                  name='username'
+                  className={formErrors.username.length > 0 ? "error" : null}
+                  type="text"
+                  aria-label="Username"
+                  name="username"
                   onChange={this.handleChange}
                 />
-                <div>
+                <div data-testid="usernameError">
                   {formErrors.username.length > 0 && (
                     <span style={errorMessage}>{formErrors.username}</span>
                   )}
@@ -158,12 +159,13 @@ class Register extends React.Component {
               <FormGroup as={Col} sm='6'>
                 <Form.Label>E-Mail</Form.Label>
                 <Form.Control
-                  className={formErrors.email.length > 0 ? 'error' : null}
-                  type='text'
-                  name='email'
+                  className={formErrors.email.length > 0 ? "error" : null}
+                  type="text"
+                  aria-label="E-Mail"
+                  name="email"
                   onChange={this.handleChange}
                 />
-                <div>
+                <div data-testid="emailError">
                   {formErrors.email.length > 0 && (
                     <span style={errorMessage}>{formErrors.email}</span>
                   )}
@@ -175,19 +177,20 @@ class Register extends React.Component {
                 <Form.Label>Password</Form.Label>
 
                 <Form.Control
-                  className={formErrors.password.length > 0 ? 'error' : null}
-                  type='password'
-                  name='password'
+                  className={formErrors.password.length > 0 ? "error" : null}
+                  type="password"
+                  aria-label="password"
+                  name="password"
                   onChange={this.handleChange}
                 />
 
-                <div>
+                <div data-testid="passwordError">
                   {formErrors.password.length > 0 && (
                     <span style={errorMessage}>{formErrors.password}</span>
                   )}
                 </div>
               </FormGroup>
-              <FormGroup as={Col} sm='6' cla>
+              <FormGroup as={Col} sm="6">
                 <Form.Label>Confirm Password</Form.Label>
                 <Form.Control
                   className={formErrors.password2.length > 0 ? 'error' : null}
@@ -206,12 +209,13 @@ class Register extends React.Component {
               <FormGroup as={Col} sm='6'>
                 <Form.Label>Name</Form.Label>
                 <Form.Control
-                  className={formErrors.name.length > 0 ? 'error' : null}
-                  type='text'
-                  name='name'
+                  className={formErrors.name.length > 0 ? "error" : null}
+                  type="text"
+                  aria-label="name"
+                  name="name"
                   onChange={this.handleChange}
                 />
-                <div>
+                <div data-testid="nameError">
                   {formErrors.name.length > 0 && (
                     <span style={errorMessage}>{formErrors.name}</span>
                   )}
@@ -220,12 +224,13 @@ class Register extends React.Component {
               <FormGroup as={Col} sm='6'>
                 <Form.Label>Surname</Form.Label>
                 <Form.Control
-                  className={formErrors.surname.length > 0 ? 'error' : null}
-                  type='text'
-                  name='surname'
+                  className={formErrors.surname.length > 0 ? "error" : null}
+                  type="text"
+                  aria-label="surname"
+                  name="surname"
                   onChange={this.handleChange}
                 />
-                <div>
+                <div data-testid="surnameError">
                   {formErrors.surname.length > 0 && (
                     <span style={errorMessage}>{formErrors.surname}</span>
                   )}
