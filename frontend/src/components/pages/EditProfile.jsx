@@ -58,7 +58,7 @@ class EditProfile extends Component {
   };
 
   // converts base64/URLEncoded data component to raw binary (blob)
-  dataURItoBlob(dataURI) {
+  dataUriToBlob(dataURI) {
     let byteString;
     if (dataURI.split(',')[0].indexOf('base64') >= 0) byteString = atob(dataURI.split(',')[1]);
     else byteString = unescape(dataURI.split(',')[1]);
@@ -81,7 +81,7 @@ class EditProfile extends Component {
     if (this.state.preview !== null) {
       // converting URI to send as FormData
       const fd = new FormData();
-      let blob = this.dataURItoBlob(this.state.preview);
+      let blob = this.dataUriToBlob(this.state.preview);
       let file = new File([blob], 'preview.png', { type: 'image/png' });
       fd.append('profileImg', file);
       axios.post('/images', fd);
