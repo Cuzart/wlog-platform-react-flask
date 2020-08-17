@@ -46,11 +46,9 @@ export class Explore extends Component {
   // fetches 15 latest posts
   getPostData = () => {
     axios.get('/posts').then((res) => {
-      this.setState({
-        posts: res.data,
-        activePost: res.data[0],
-        isLoading: false,
-      });
+      if (res.data.length > 0) {
+        this.setState({ isLoading: false, posts: res.data, activePost: res.data[0] });
+      }
     });
   };
 
@@ -126,7 +124,10 @@ export class Explore extends Component {
             </div>
           </div>
         ) : (
-          <Spinner />
+          <React.Fragment>
+            <Spinner />
+            <div style={{ height: '100vh' }}></div>
+          </React.Fragment>
         )}
       </div>
     );

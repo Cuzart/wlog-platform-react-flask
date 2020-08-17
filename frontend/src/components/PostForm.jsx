@@ -142,7 +142,8 @@ class PostForm extends Component {
 
                   // gets called when uploadImages() is called for activeEditor
                   // request sends formdata for each image 
-                  images_upload_handler: function (blobInfo, success, failure) {
+                  images_upload_handler: 
+                  function (blobInfo, success, failure) {
                     var xhr, formData;
 
                     // create XML HTTP Request
