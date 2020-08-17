@@ -2,5 +2,5 @@
 
 echo '----------Test Backend----------'
 sh ./backend/bin/test.sh
-echo '----------Test Fronted----------'
-echo 'coming...'
+echo '----------Test Frontend----------'
+sh ./frontend/bin/test.sh
