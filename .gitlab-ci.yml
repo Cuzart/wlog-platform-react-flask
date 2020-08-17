@@ -37,4 +37,3 @@ validate_frontend:
         - npm install eslint
     script:
         - npx eslint --ext .js --ext .jsx src/
-    allow_failure: true
