@@ -1,4 +1,4 @@
-FLASK==1.1
+FLASK==2.3.2
 mysql-connector==2.2.9
 passlib==1.7.2
 pytest==5.4.3
